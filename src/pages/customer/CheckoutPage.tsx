@@ -124,9 +124,14 @@ export function CheckoutPage() {
       const message = encodeURIComponent(
         `Bonjour Dar Nour 🌸\nJ'ai passé une commande:\n\n${itemsText}\n\nTotal: ${total} MAD\nNom: ${form.name}\nVille: ${form.city}\nAdresse: ${form.address}`
       )
-      window.open(`https://wa.me/212600000000?text=${message}`, '_blank')
+      window.open(`https://wa.me/212715100043?text=${message}`, '_blank')
+      navigate('/shop')
     } else {
       setShowCallDialog(true)
+      setTimeout(() => {
+        setShowCallDialog(false)
+        navigate('/shop')
+      }, 3000)
     }
   }
 
