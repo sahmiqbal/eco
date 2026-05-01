@@ -63,127 +63,134 @@ export function ProductPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 max-w-5xl py-8 animate-fade-up">
-      <Button variant="ghost" size="sm" className="mb-6 gap-2 text-muted-foreground" onClick={() => navigate(-1)}>
+    <div className="container mx-auto px-4 max-w-4xl py-6 animate-fade-up">
+      <Button variant="ghost" size="sm" className="mb-4 gap-2 text-muted-foreground" onClick={() => navigate(-1)}>
         <ArrowLeft className="size-4" /> Retour
       </Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div className="relative">
-          <div className="aspect-square rounded-2xl overflow-hidden bg-secondary border border-border">
-            {product.image_url ? (
-              <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Package className="size-20 text-muted-foreground/30" />
-              </div>
-            )}
+      <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+        <div className="space-y-6">
+          <div className="overflow-hidden rounded-3xl border border-border bg-secondary">
+            <div className="aspect-[4/5] sm:aspect-square w-full overflow-hidden">
+              {product.image_url ? (
+                <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center p-8">
+                  <Package className="size-20 text-muted-foreground/30" />
+                </div>
+              )}
+            </div>
           </div>
-          {product.category === 'pack' && (
-            <Badge className="absolute top-4 left-4 bg-gold text-gold-foreground shadow-md">
-              ✦ PACK COMPLET
-            </Badge>
-          )}
+
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {product.category === 'pack' ? 'Pack Hammam' : 'Produit individuel'}
+              </Badge>
+              {product.category === 'pack' && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  {[1,2,3,4,5].map((s) => <Star key={s} className="size-4 fill-gold text-gold" />)}
+                  <span>Bestseller</span>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-bold text-foreground leading-tight">{product.name}</h1>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{product.description}</p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-3xl border border-border bg-card p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">Prix</p>
+                <p className="text-2xl font-bold text-primary">{product.price} MAD</p>
+                {product.price_2 && <p className="text-xs text-muted-foreground mt-1">2 unités: {product.price_2} MAD</p>}
+                {product.price_3plus && <p className="text-xs text-muted-foreground mt-1">3+ unités: {product.price_3plus} MAD</p>}
+              </div>
+              <div className="rounded-3xl border border-border bg-card p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">Stock</p>
+                <p className={cn('text-sm font-medium', product.stock === 0 ? 'text-destructive' : 'text-foreground')}>
+                  {product.stock === 0 ? 'Rupture de stock' : `${product.stock} disponibles`}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <div className="mb-2">
-            <Badge variant="outline" className="text-xs mb-2">
-              {product.category === 'pack' ? 'Pack Hammam' : 'Produit individuel'}
-            </Badge>
-            {product.category === 'pack' && (
-              <div className="flex gap-0.5 mb-2">
-                {[1,2,3,4,5].map((s) => <Star key={s} className="size-4 fill-gold text-gold" />)}
-                <span className="text-xs text-muted-foreground ml-1">Bestseller</span>
+        <div className="space-y-6">
+          <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Commander</p>
+
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-border bg-secondary p-4">
+                <p className="text-xs text-muted-foreground mb-2">Tarifs dégressifs</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { qty: 1, price: product.price, label: '1 unité' },
+                    ...(product.price_2 ? [{ qty: 2, price: product.price_2, label: '2 unités' }] : []),
+                    ...(product.price_3plus ? [{ qty: 3, price: product.price_3plus, label: '3+ unités' }] : []),
+                  ].map((tier) => (
+                    <button
+                      key={tier.qty}
+                      type="button"
+                      onClick={() => setQty(tier.qty)}
+                      className={cn(
+                        'min-w-[96px] rounded-2xl px-3 py-2 text-xs transition-all',
+                        qty >= tier.qty
+                          ? 'border border-primary bg-primary/10 text-primary font-semibold'
+                          : 'border border-border bg-background text-muted-foreground hover:border-primary/50'
+                      )}
+                    >
+                      <div className="font-semibold">{tier.price} MAD</div>
+                      <div>{tier.label}</div>
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-secondary p-4">
+                <div className="text-sm text-muted-foreground">Quantité</div>
+                <div className="inline-flex items-center rounded-xl border border-border bg-background">
+                  <Button variant="ghost" size="icon" className="rounded-l-xl" onClick={() => setQty(Math.max(1, qty - 1))}>
+                    <Minus className="size-4" />
+                  </Button>
+                  <span className="min-w-[2rem] text-center text-sm font-semibold">{qty}</span>
+                  <Button variant="ghost" size="icon" className="rounded-r-xl" onClick={() => setQty(qty + 1)}>
+                    <Plus className="size-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-white p-4">
+                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-2xl font-bold text-primary">{total} MAD</p>
+              </div>
+
+              {product.stock === 0 ? (
+                <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
+                  <AlertCircle className="size-4 inline-block mr-2" /> Produit temporairement indisponible
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Button size="lg" className="w-full rounded-2xl gap-2" onClick={addToCart}>
+                    <ShoppingBag className="size-5" /> Ajouter au panier
+                  </Button>
+                  <Button size="lg" variant="outline" className="w-full rounded-2xl" onClick={() => { addToCart(); navigate('/cart') }}>
+                    Commander maintenant
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {cartItem && (
+              <p className="text-sm text-primary text-center">✓ {cartItem.quantity} dans votre panier</p>
             )}
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">{product.name}</h1>
           </div>
-
-          <p className="text-muted-foreground text-sm leading-relaxed mb-4">{product.description}</p>
-
-          {product.category === 'pack' && (
-            <div className="bg-secondary/60 rounded-xl p-4 mb-4">
-              <p className="text-xs font-semibold text-foreground mb-2">Ce pack comprend :</p>
-              <ul className="grid grid-cols-2 gap-1">
-                {['Savon Beldi', 'Tebrima', 'Gommage Corps', 'Huile Capillaire', 'Crème Éclaircissante', 'Cadeau 🎁'].map((item) => (
-                  <li key={item} className="text-xs text-muted-foreground flex items-center gap-1.5">
-                    <CheckCircle className="size-3 text-primary shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <Separator className="my-4" />
-
-          <div className="mb-4">
-            <p className="text-xs text-muted-foreground mb-2 font-medium">Tarifs dégressifs :</p>
-            <div className="flex gap-2 flex-wrap">
-              {[
-                { qty: 1, price: product.price, label: '1 unité' },
-                ...(product.price_2 ? [{ qty: 2, price: product.price_2, label: '2 unités' }] : []),
-                ...(product.price_3plus ? [{ qty: 3, price: product.price_3plus, label: '3+ unités' }] : []),
-              ].map((tier) => (
-                <button
-                  key={tier.qty}
-                  onClick={() => setQty(tier.qty)}
-                  className={cn(
-                    'px-3 py-2 rounded-xl text-xs border transition-all',
-                    qty >= tier.qty
-                      ? 'border-primary bg-primary/5 text-primary font-semibold'
-                      : 'border-border text-muted-foreground hover:border-primary/50'
-                  )}
-                >
-                  <span className="block font-bold">{tier.price} MAD</span>
-                  <span>{tier.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex items-center border border-border rounded-xl">
-              <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setQty(Math.max(1, qty - 1))}>
-                <Minus className="size-4" />
-              </Button>
-              <span className="w-10 text-center text-sm font-semibold">{qty}</span>
-              <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setQty(qty + 1)}>
-                <Plus className="size-4" />
-              </Button>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-primary">{total} MAD</p>
-              <p className="text-xs text-muted-foreground">{unitPrice} MAD / unité</p>
-            </div>
-          </div>
-
-          {product.stock === 0 ? (
-            <div className="flex items-center gap-2 p-3 bg-muted rounded-xl text-muted-foreground text-sm">
-              <AlertCircle className="size-4" /> Rupture de stock
-            </div>
-          ) : (
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="flex-1 rounded-xl gap-2 shadow-md" onClick={addToCart}>
-                <ShoppingBag className="size-5" />
-                Ajouter au panier
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-xl" onClick={() => { addToCart(); navigate('/cart') }}>
-                Commander maintenant
-              </Button>
-            </div>
-          )}
-
-          {cartItem && (
-            <p className="text-xs text-primary mt-2 text-center">
-              ✓ {cartItem.quantity} dans votre panier
-            </p>
-          )}
 
           {product.ingredients && (
-            <div className="mt-6 pt-4 border-t border-border">
-              <p className="text-xs font-semibold text-foreground mb-1">Ingrédients</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{product.ingredients}</p>
+            <div className="rounded-3xl border border-border bg-card p-5">
+              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">Ingrédients</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{product.ingredients}</p>
             </div>
           )}
         </div>

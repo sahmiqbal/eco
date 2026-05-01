@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore, getBundlePrice } from '@/store/cartStore'
+import { getProductImage } from '@/lib/utils'
 
 export function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice } = useCartStore()
@@ -39,8 +40,8 @@ export function CartPage() {
             return (
               <div key={product.id} className="bg-card border border-border rounded-2xl p-4 flex gap-4">
                 <div className="w-20 h-20 rounded-xl overflow-hidden bg-secondary shrink-0">
-                  {product.image_url ? (
-                    <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                  {getProductImage(product) ? (
+                    <img src={getProductImage(product)!} alt={product.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <Package className="size-8 text-muted-foreground/40" />

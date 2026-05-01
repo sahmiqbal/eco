@@ -16,12 +16,13 @@ import {
 } from '@/components/ui/alert-dialog'
 import { supabase } from '@/lib/supabase'
 import type { Product } from '@/types'
+import { getProductImage } from '@/lib/utils'
 
 type ProductForm = Omit<Product, 'id' | 'created_at'>
 
 const emptyForm: ProductForm = {
   name: '', slug: '', price: 0, price_2: null, price_3plus: null,
-  image_url: '', description: '', ingredients: '',
+  image_url: '', image_urls: [], description: '', ingredients: '',
   category: 'individual', stock: 0, is_featured: false,
 }
 
@@ -63,7 +64,7 @@ export function AdminProductsPage() {
     setForm({
       name: p.name, slug: p.slug, price: p.price,
       price_2: p.price_2 ?? null, price_3plus: p.price_3plus ?? null,
-      image_url: p.image_url ?? '', description: p.description,
+      image_url: p.image_url ?? '', image_urls: p.image_urls ?? (p.image_url ? [p.image_url] : []), description: p.description,
       ingredients: p.ingredients, category: p.category,
       stock: p.stock, is_featured: p.is_featured,
     })
@@ -83,11 +84,19 @@ export function AdminProductsPage() {
   const save = async () => {
     if (!validate()) return
     setSaving(true)
+    const cleanedImageUrls = form.image_urls?.filter(Boolean) ?? []
+    const fallbackImage = form.image_url?.trim() || null
+    const payload = {
+      ...form,
+      image_urls: cleanedImageUrls.length > 0 ? cleanedImageUrls : null,
+      image_url: cleanedImageUrls[0] ?? fallbackImage,
+    }
+
     if (editProduct) {
-      const { data } = await supabase.from('products').update(form).eq('id', editProduct.id).select().single()
+      const { data } = await supabase.from('products').update(payload).eq('id', editProduct.id).select().single()
       if (data) setProducts((prev) => prev.map((p) => p.id === editProduct.id ? data as Product : p))
     } else {
-      const { data } = await supabase.from('products').insert(form).select().single()
+      const { data } = await supabase.from('products').insert(payload).select().single()
       if (data) setProducts((prev) => [data as Product, ...prev])
     }
     setSaving(false)
@@ -136,8 +145,8 @@ export function AdminProductsPage() {
           {filtered.map((product) => (
             <div key={product.id} className="bg-card border border-border rounded-2xl flex items-center gap-3 p-3 hover:shadow-sm transition-shadow">
               <div className="w-14 h-14 rounded-xl overflow-hidden bg-secondary shrink-0">
-                {product.image_url
-                  ? <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                {getProductImage(product)
+                  ? <img src={getProductImage(product)!} alt={product.name} className="w-full h-full object-cover" />
                   : <div className="w-full h-full flex items-center justify-center"><Package className="size-6 text-muted-foreground/40" /></div>
                 }
               </div>
@@ -232,9 +241,17 @@ export function AdminProductsPage() {
                 <Label className="text-xs mb-1.5 block">Stock</Label>
                 <Input type="number" className="rounded-xl" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} />
               </div>
-              <div>
-                <Label className="text-xs mb-1.5 block">URL Image</Label>
-                <Input className="rounded-xl text-xs" value={form.image_url ?? ''} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="/image.webp" />
+              <div className="col-span-2">
+                <Label className="text-xs mb-1.5 block">Images (une URL par ligne)</Label>
+                <Textarea
+                  className="rounded-xl text-xs"
+                  value={(form.image_urls ?? []).join('\n')}
+                  onChange={(e) => setForm({
+                    ...form,
+                    image_urls: e.target.value.split(/\r?\n/).map((url) => url.trim()).filter(Boolean),
+                  })}
+                  placeholder="/image-1.webp\n/image-2.webp"
+                />
               </div>
             </div>
 

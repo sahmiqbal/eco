@@ -13,6 +13,7 @@ import { useCartStore, getBundlePrice } from '@/store/cartStore'
 import { supabase } from '@/lib/supabase'
 import type { ContactPreference } from '@/types'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 const MOROCCAN_CITIES = [
   'Casablanca', 'Rabat', 'Marrakech', 'Fès', 'Tanger', 'Agadir', 'Meknès',
@@ -41,6 +42,7 @@ export function CheckoutPage() {
   const [orderId, setOrderId] = useState<string | null>(null)
   const [showCallDialog, setShowCallDialog] = useState(false)
   const [errors, setErrors] = useState<Partial<FormData>>({})
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const [form, setForm] = useState<FormData>({
     name: '',
@@ -73,19 +75,24 @@ export function CheckoutPage() {
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
-
+   
   const submitOrder = async () => {
-    if (!validate()) return
-    setSubmitting(true)
-    const orderItems = items.map(({ product, quantity }) => ({
-      product_id: product.id,
-      product_name: product.name,
-      quantity,
-      unit_price: getBundlePrice(product, quantity),
-      subtotal: getBundlePrice(product, quantity) * quantity,
-    }))
+  if (!validate()) return
 
-    const { data, error } = await supabase.from('orders').insert({
+  setSubmitting(true)
+  setSubmitError(null)
+
+  const orderItems = items.map(({ product, quantity }) => ({
+    product_id: product.id,
+    product_name: product.name,
+    quantity,
+    unit_price: getBundlePrice(product, quantity),
+    subtotal: getBundlePrice(product, quantity) * quantity,
+  }))
+
+  const { error } = await supabase
+    .from('orders')
+    .insert({
       name: form.name,
       phone: form.phone,
       city: form.city,
@@ -94,29 +101,33 @@ export function CheckoutPage() {
       total,
       status: 'pending',
       contact_preference: form.contact_preference,
-    }).select('id').single()
+    })
 
-    if (error || !data) {
-      setSubmitting(false)
-      return
-    }
-
-    // Decrement stock
-    try {
-      await supabase.rpc('decrement_stock', {
-        items: items.map(({ product, quantity }) => ({ product_id: product.id, quantity }))
-      })
-    } catch (_) {
-      // non-critical
-    }
-
-    setOrderId(data.id)
+  if (error) {
     setSubmitting(false)
-    setStep(3)
+    setSubmitError(error.message)
+    return
   }
+
+  setOrderId('OK')
+
+  // optional: stock
+  try {
+    await supabase.rpc('decrement_stock', {
+      items: items.map(({ product, quantity }) => ({
+        product_id: product.id,
+        quantity
+      }))
+    })
+  } catch (_) {}
+
+  setSubmitting(false)
+  setStep(3)
+}
 
   const handleConfirm = () => {
     clearCart()
+    toast.success('Commande confirmée ! Votre panier a été vidé.')
     if (form.contact_preference === 'whatsapp') {
       const itemsText = items.map(({ product, quantity }) =>
         `• ${product.name} ×${quantity} = ${getBundlePrice(product, quantity) * quantity} MAD`
@@ -165,8 +176,8 @@ export function CheckoutPage() {
             return (
               <div key={product.id} className="flex gap-3 bg-card border border-border rounded-xl p-3">
                 <div className="w-14 h-14 rounded-lg overflow-hidden bg-secondary shrink-0">
-                  {product.image_url
-                    ? <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                  {getProductImage(product)
+                    ? <img src={getProductImage(product)!} alt={product.name} className="w-full h-full object-cover" />
                     : <Package className="size-8 m-3 text-muted-foreground/40" />
                   }
                 </div>
@@ -284,6 +295,12 @@ export function CheckoutPage() {
               </div>
             </div>
           </div>
+
+          {submitError && (
+            <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+              {submitError}
+            </div>
+          )}
 
           <div className="flex gap-3 pt-2">
             <Button variant="outline" className="rounded-xl" onClick={() => setStep(1)}>

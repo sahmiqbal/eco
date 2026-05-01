@@ -6,10 +6,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase'
 
+const adminEmail = import.meta.env.VITE_ADMIN_EMAIL ?? ''
+const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD ?? ''
+const isDev = import.meta.env.DEV
+
 export function AdminLoginPage() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState(adminEmail)
+  const [password, setPassword] = useState(adminPassword)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -71,6 +75,14 @@ export function AdminLoginPage() {
           {error && (
             <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive">
               <Lock className="size-3.5 shrink-0" /> {error}
+            </div>
+          )}
+
+          {isDev && adminEmail && adminPassword && (
+            <div className="rounded-2xl border border-border bg-secondary p-3 text-xs text-muted-foreground mb-2">
+              Test admin credentials:
+              <div className="mt-1 font-semibold text-foreground">{adminEmail}</div>
+              <div className="font-semibold text-foreground">{adminPassword}</div>
             </div>
           )}
 

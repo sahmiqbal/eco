@@ -30,6 +30,7 @@ export function AdminOrdersPage() {
       .from('orders')
       .select('*')
       .order('created_at', { ascending: false })
+    console.log('Fetched orders:', data)
     setOrders((data as Order[]) ?? [])
     setLoading(false)
   }, [])

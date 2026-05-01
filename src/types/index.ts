@@ -6,6 +6,7 @@ export interface Product {
   price_2?: number | null
   price_3plus?: number | null
   image_url?: string | null
+  image_urls?: string[] | null
   description: string
   ingredients: string
   category: 'pack' | 'individual'

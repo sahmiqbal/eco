@@ -81,23 +81,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ── Pack includes ── */}
-      <section className="bg-secondary/50 py-10">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-6">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Chaque pack comprend</p>
-            <h2 className="text-xl font-bold text-foreground">6 produits soins complets</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-            {packIncludes.map((item) => (
-              <div key={item} className="bg-card rounded-xl p-3 text-center border border-border shadow-sm">
-                <p className="text-xs font-medium text-foreground leading-snug">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Featured Products ── */}
       <section className="container mx-auto px-4 max-w-6xl py-16">
         <div className="flex items-end justify-between mb-8">

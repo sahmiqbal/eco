@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/store/cartStore'
 import type { Product } from '@/types'
-import { cn } from '@/lib/utils'
+import { cn, getProductImage } from '@/lib/utils'
 
 interface ProductCardProps {
   product: Product
@@ -19,6 +19,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
   const discount = product.price_2
     ? Math.round(((product.price - product.price_2) / product.price) * 100)
     : null
+  const image = getProductImage(product)
 
   return (
     <div className={cn(
@@ -51,9 +52,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
       <Link to={`/shop/${product.slug}`}>
         <div className="aspect-square overflow-hidden bg-secondary">
-          {product.image_url ? (
+          {image ? (
             <img
-              src={product.image_url}
+              src={image}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
@@ -66,23 +67,25 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="p-4">
-        {isPack && (
-          <div className="flex items-center gap-1 mb-1.5">
-            {[1,2,3,4,5].map((s) => (
-              <Star key={s} className="size-3 fill-gold text-gold" />
-            ))}
-            <span className="text-[10px] text-muted-foreground ml-1">Bestseller</span>
-          </div>
-        )}
+      <div className="p-4 min-h-[220px] flex flex-col justify-between">
+        <div>
+          {isPack && (
+            <div className="flex items-center gap-1 mb-1.5">
+              {[1,2,3,4,5].map((s) => (
+                <Star key={s} className="size-3 fill-gold text-gold" />
+              ))}
+              <span className="text-[10px] text-muted-foreground ml-1">Bestseller</span>
+            </div>
+          )}
+        </div>
         <Link to={`/shop/${product.slug}`}>
-          <h3 className="font-semibold text-sm text-foreground hover:text-primary transition-colors line-clamp-2 leading-snug">
+          <h3 className="font-semibold text-base text-foreground hover:text-primary transition-colors line-clamp-2 leading-snug">
             {product.name}
           </h3>
         </Link>
 
         {product.description && (
-          <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
         )}
@@ -100,6 +103,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           </div>
 
           <Button
+            type="button"
             size="sm"
             className="shrink-0 rounded-xl gap-1.5 text-xs"
             disabled={isOutOfStock}
