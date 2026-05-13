@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ShoppingBag, ArrowLeft, Package, Star, CircleCheck as CheckCircle, Minus, Plus, CircleAlert as AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
-import { useCartStore, getBundlePrice } from '@/store/cartStore'
-import { supabase } from '@/lib/supabase'
-import type { Product } from '@/types'
-import { cn } from '@/lib/utils'
+import { ShoppingBag, ArrowLeft, Package, Star, Minus, Plus, CircleAlert as AlertCircle } from 'lucide-react'
+import { Button } from '../../components/ui/button'
+import { Badge } from '../../components/ui/badge'
+import { Skeleton } from '../../components/ui/skeleton'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '../../components/ui/carousel'
+import { useCartStore, getBundlePrice } from '../../store/cartStore'
+import { supabase } from '../../lib/supabase'
+import { cn, getProductBeforeAfterImages, getProductImages } from '../../lib/utils'
+import { BeforeAfter } from '../../components/shop/BeforeAfter'
+import type { Product } from '../../types'
 
 export function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -20,16 +27,43 @@ export function ProductPage() {
 
   const cartItem = items.find((i) => i.product.id === product?.id)
 
+  const productImages = product ? getProductImages(product) : []
+  const carouselSlides = productImages.length
+    ? Array.from({ length: 4 }, (_, index) => productImages[index % productImages.length])
+    : []
+  const beforeAfterImages = product ? getProductBeforeAfterImages(product) : []
+
   useEffect(() => {
-    supabase
-      .from('products')
-      .select('*')
-      .eq('slug', slug)
-      .maybeSingle()
-      .then(({ data }) => {
-        setProduct(data as Product | null)
-        setLoading(false)
-      })
+    let isMounted = true
+
+    const loadProduct = async () => {
+      setLoading(true)
+
+      if (!slug) {
+        if (isMounted) {
+          setProduct(null)
+          setLoading(false)
+        }
+        return
+      }
+
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle() as { data: Product | null }
+
+      if (!isMounted) return
+
+      setProduct(data)
+      setLoading(false)
+    }
+
+    loadProduct()
+
+    return () => {
+      isMounted = false
+    }
   }, [slug])
 
   if (loading) return (
@@ -71,16 +105,53 @@ export function ProductPage() {
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div className="space-y-6">
           <div className="overflow-hidden rounded-3xl border border-border bg-secondary">
-            <div className="aspect-[4/5] sm:aspect-square w-full overflow-hidden">
-              {product.image_url ? (
-                <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center p-8">
-                  <Package className="size-20 text-muted-foreground/30" />
-                </div>
+            <Carousel opts={{ loop: true }} className="relative">
+              <CarouselContent className="min-h-[320px] sm:min-h-[420px]">
+                {carouselSlides.length > 0 ? (
+                  carouselSlides.map((src, index) => (
+                    <CarouselItem key={`product-slide-${index}`}>
+                      <div className="relative h-full w-full overflow-hidden">
+                        <img
+                          src={src}
+                          alt={`${product.name} image ${index + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-4 text-white">
+                          <p className="text-xs uppercase tracking-[0.3em] text-white/80">
+                            {product.category === 'pack' ? 'Pack Hammam' : 'Produit individuel'}
+                          </p>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))
+                ) : (
+                  <CarouselItem>
+                    <div className="h-[320px] sm:h-[420px] w-full flex items-center justify-center p-8">
+                      <Package className="size-20 text-muted-foreground/30" />
+                    </div>
+                  </CarouselItem>
+                )}
+              </CarouselContent>
+
+              {carouselSlides.length > 1 && (
+                <>
+                  <CarouselPrevious className="hidden md:flex" />
+                  <CarouselNext className="hidden md:flex" />
+                </>
               )}
-            </div>
+            </Carousel>
           </div>
+          {beforeAfterImages.length >= 2 && (
+            <div className="rounded-3xl border border-border bg-card p-4">
+              
+              <BeforeAfter
+                beforeImage={beforeAfterImages[0]}
+                afterImage={beforeAfterImages[1]}
+                beforeLabel="Avant"
+                afterLabel="Après"
+              />
+            </div>
+          )}
 
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Pencil, Trash2, Save, Package, Loader as Loader2, Star, CircleAlert as AlertCircle, Search } from 'lucide-react'
+import { Plus, Pencil, Trash2, Save, Package, Loader as Loader2, Star, CircleAlert as AlertCircle, Search, Upload, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -18,12 +18,17 @@ import { supabase } from '@/lib/supabase'
 import type { Product } from '@/types'
 import { getProductImage } from '@/lib/utils'
 
-type ProductForm = Omit<Product, 'id' | 'created_at'>
+type ProductForm = Omit<Product, 'id' | 'created_at'> & {
+  imageFiles: File[]
+  beforeImageFile: File | null
+  afterImageFile: File | null
+}
 
 const emptyForm: ProductForm = {
   name: '', slug: '', price: 0, price_2: null, price_3plus: null,
-  image_url: '', image_urls: [], description: '', ingredients: '',
+  image_url: '', image_urls: [], before_image: '', after_image: '', description: '', ingredients: '',
   category: 'individual', stock: 0, is_featured: false,
+  imageFiles: [], beforeImageFile: null, afterImageFile: null,
 }
 
 function toSlug(name: string) {
@@ -31,6 +36,54 @@ function toSlug(name: string) {
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s-]/g, '')
     .trim().replace(/\s+/g, '-')
+}
+
+function normalizeImageUrls(urls: string[] | string | null | undefined) {
+  if (!urls) return []
+  if (Array.isArray(urls)) {
+    return urls.map((url) => url.trim()).filter(Boolean)
+  }
+  return urls
+    .split(/\r?\n|,|;/)
+    .map((url) => url.trim())
+    .filter(Boolean)
+}
+
+async function uploadFile(file: File, path: string): Promise<string> {
+  const { data, error } = await supabase.storage
+    .from('product-images')
+    .upload(path, file, {
+      cacheControl: '3600',
+      upsert: true,
+    })
+
+  if (error || !data) {
+    console.error('Upload error:', error)
+    throw new Error(`Failed to upload ${file.name}: ${error?.message ?? 'unknown error'}`)
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('product-images')
+    .getPublicUrl(data.path)
+
+  if (!publicUrlData?.publicUrl) {
+    console.error('Public URL error: no public URL returned')
+    throw new Error(`Failed to get public URL for ${file.name}`)
+  }
+
+  return publicUrlData.publicUrl
+}
+
+async function uploadProductImages(files: File[], productId?: string): Promise<string[]> {
+  const uploadPromises = files.map(async (file, index) => {
+    const timestamp = Date.now()
+    const extension = file.name.split('.').pop() || 'jpg'
+    const fileName = `${productId || 'temp'}_${timestamp}_${index}.${extension}`
+    const path = `products/${fileName}`
+    return uploadFile(file, path)
+  })
+
+  return Promise.all(uploadPromises)
 }
 
 export function AdminProductsPage() {
@@ -43,6 +96,7 @@ export function AdminProductsPage() {
   const [form, setForm] = useState<ProductForm>(emptyForm)
   const [saving, setSaving] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<keyof ProductForm, string>>>({})
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
     supabase.from('products').select('*').order('created_at', { ascending: false })
@@ -64,11 +118,14 @@ export function AdminProductsPage() {
     setForm({
       name: p.name, slug: p.slug, price: p.price,
       price_2: p.price_2 ?? null, price_3plus: p.price_3plus ?? null,
-      image_url: p.image_url ?? '', image_urls: p.image_urls ?? (p.image_url ? [p.image_url] : []), description: p.description,
+      image_url: p.image_url ?? '', image_urls: normalizeImageUrls(p.image_urls ?? (p.image_url ? [p.image_url] : [])),
+      before_image: p.before_image ?? '', after_image: p.after_image ?? '', description: p.description,
       ingredients: p.ingredients, category: p.category,
       stock: p.stock, is_featured: p.is_featured,
+      imageFiles: [], beforeImageFile: null, afterImageFile: null,
     })
     setErrors({})
+    setSaveError('')
     setDialogOpen(true)
   }
 
@@ -77,6 +134,10 @@ export function AdminProductsPage() {
     if (!form.name.trim()) errs.name = 'Nom requis'
     if (!form.slug.trim()) errs.slug = 'Slug requis'
     if (form.price <= 0) errs.price = 'Prix invalide'
+    if ((form.before_image?.trim() || form.after_image?.trim()) && !(form.before_image?.trim() && form.after_image?.trim())) {
+      errs.before_image = 'Les deux images Avant et Après sont requises'
+      errs.after_image = 'Les deux images Avant et Après sont requises'
+    }
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -84,23 +145,70 @@ export function AdminProductsPage() {
   const save = async () => {
     if (!validate()) return
     setSaving(true)
-    const cleanedImageUrls = form.image_urls?.filter(Boolean) ?? []
-    const fallbackImage = form.image_url?.trim() || null
-    const payload = {
-      ...form,
-      image_urls: cleanedImageUrls.length > 0 ? cleanedImageUrls : null,
-      image_url: cleanedImageUrls[0] ?? fallbackImage,
-    }
+    setSaveError('')
 
-    if (editProduct) {
-      const { data } = await supabase.from('products').update(payload).eq('id', editProduct.id).select().single()
-      if (data) setProducts((prev) => prev.map((p) => p.id === editProduct.id ? data as Product : p))
-    } else {
-      const { data } = await supabase.from('products').insert(payload).select().single()
-      if (data) setProducts((prev) => [data as Product, ...prev])
+    try {
+      let imageUrls = normalizeImageUrls(form.image_urls)
+      let beforeImageUrl = form.before_image?.trim() || null
+      let afterImageUrl = form.after_image?.trim() || null
+
+      // Upload new image files
+      if (form.imageFiles.length > 0) {
+        const uploadedUrls = await uploadProductImages(form.imageFiles, editProduct?.id)
+        imageUrls = [...imageUrls, ...uploadedUrls]
+      }
+
+      // Upload before image file
+      if (form.beforeImageFile) {
+        const uploadedUrl = await uploadFile(form.beforeImageFile, `products/before_${Date.now()}.${form.beforeImageFile.name.split('.').pop()}`)
+        beforeImageUrl = uploadedUrl
+      }
+
+      // Upload after image file
+      if (form.afterImageFile) {
+        const uploadedUrl = await uploadFile(form.afterImageFile, `products/after_${Date.now()}.${form.afterImageFile.name.split('.').pop()}`)
+        afterImageUrl = uploadedUrl
+      }
+
+      const payload = {
+        name: form.name,
+        slug: form.slug,
+        price: form.price,
+        price_2: form.price_2,
+        price_3plus: form.price_3plus,
+        image_urls: imageUrls.length > 0 ? imageUrls : null,
+        image_url: imageUrls[0] || form.image_url || null,
+        before_image: beforeImageUrl,
+        after_image: afterImageUrl,
+        description: form.description,
+        ingredients: form.ingredients,
+        category: form.category,
+        stock: form.stock,
+        is_featured: form.is_featured,
+      }
+
+      if (editProduct) {
+        const { data, error } = await supabase.from('products').update(payload).eq('id', editProduct.id).select().single()
+        if (error) throw error
+        if (data) setProducts((prev) => prev.map((p) => p.id === editProduct.id ? data as Product : p))
+      } else {
+        const { data, error } = await supabase.from('products').insert(payload).select().single()
+        if (error) throw error
+        if (data) setProducts((prev) => [data as Product, ...prev])
+      }
+      setSaving(false)
+      setDialogOpen(false)
+    } catch (error) {
+      console.error('Upload error:', error)
+      const message = error instanceof Error
+        ? error.message
+        : (error && typeof error === 'object' && 'message' in error)
+          ? (error as any).message || JSON.stringify(error)
+          : String(error)
+      setSaveError(message)
+      setErrors({ name: message })
+      setSaving(false)
     }
-    setSaving(false)
-    setDialogOpen(false)
   }
 
   const deleteProduct = async () => {
@@ -189,6 +297,11 @@ export function AdminProductsPage() {
             <DialogTitle>{editProduct ? 'Modifier le produit' : 'Nouveau produit'}</DialogTitle>
             <DialogDescription>Remplissez les informations du produit</DialogDescription>
           </DialogHeader>
+          {saveError && (
+            <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {saveError}
+            </div>
+          )}
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
@@ -250,8 +363,142 @@ export function AdminProductsPage() {
                     ...form,
                     image_urls: e.target.value.split(/\r?\n/).map((url) => url.trim()).filter(Boolean),
                   })}
-                  placeholder="/image-1.webp\n/image-2.webp"
+                  placeholder="/image-1.jpg\n/image-2.png"
                 />
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Label className="text-xs mb-1.5 block">Télécharger des images du produit</Label>
+              <div className="border-2 border-dashed border-border rounded-xl p-4">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => setForm({ ...form, imageFiles: Array.from(e.target.files || []) })}
+                  className="hidden"
+                  id="product-images"
+                />
+                <label htmlFor="product-images" className="cursor-pointer flex flex-col items-center gap-2">
+                  <Upload className="size-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground text-center">
+                    Cliquez pour sélectionner des images<br />
+                    <span className="text-xs">JPG, PNG, WebP, etc.</span>
+                  </p>
+                </label>
+                {form.imageFiles.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {form.imageFiles.map((file, index) => (
+                      <div key={index} className="flex items-center gap-2 bg-secondary rounded-lg p-2">
+                        <span className="text-xs truncate flex-1">{file.name}</span>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="size-6"
+                          onClick={() => setForm({
+                            ...form,
+                            imageFiles: form.imageFiles.filter((_, i) => i !== index)
+                          })}
+                        >
+                          <X className="size-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs mb-1.5 block">Image Avant</Label>
+                <Input
+                  className="rounded-xl"
+                  value={form.before_image ?? ''}
+                  onChange={(e) => setForm({ ...form, before_image: e.target.value })}
+                  placeholder="/before-image.jpg"
+                  aria-invalid={!!errors.before_image}
+                />
+                {errors.before_image && <p className="text-xs text-destructive mt-1">{errors.before_image}</p>}
+              </div>
+              <div>
+                <Label className="text-xs mb-1.5 block">Image Après</Label>
+                <Input
+                  className="rounded-xl"
+                  value={form.after_image ?? ''}
+                  onChange={(e) => setForm({ ...form, after_image: e.target.value })}
+                  placeholder="/after-image.png"
+                  aria-invalid={!!errors.after_image}
+                />
+                {errors.after_image && <p className="text-xs text-destructive mt-1">{errors.after_image}</p>}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs mb-1.5 block">Télécharger Image Avant</Label>
+                <div className="border-2 border-dashed border-border rounded-xl p-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setForm({ ...form, beforeImageFile: e.target.files?.[0] || null })}
+                    className="hidden"
+                    id="before-image"
+                  />
+                  <label htmlFor="before-image" className="cursor-pointer flex flex-col items-center gap-1">
+                    <Upload className="size-6 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground text-center">
+                      Sélectionner<br />image avant
+                    </p>
+                  </label>
+                  {form.beforeImageFile && (
+                    <div className="mt-2 flex items-center gap-2 bg-secondary rounded p-1">
+                      <span className="text-xs truncate flex-1">{form.beforeImageFile.name}</span>
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="size-5"
+                        onClick={() => setForm({ ...form, beforeImageFile: null })}
+                      >
+                        <X className="size-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs mb-1.5 block">Télécharger Image Après</Label>
+                <div className="border-2 border-dashed border-border rounded-xl p-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setForm({ ...form, afterImageFile: e.target.files?.[0] || null })}
+                    className="hidden"
+                    id="after-image"
+                  />
+                  <label htmlFor="after-image" className="cursor-pointer flex flex-col items-center gap-1">
+                    <Upload className="size-6 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground text-center">
+                      Sélectionner<br />image après
+                    </p>
+                  </label>
+                  {form.afterImageFile && (
+                    <div className="mt-2 flex items-center gap-2 bg-secondary rounded p-1">
+                      <span className="text-xs truncate flex-1">{form.afterImageFile.name}</span>
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="size-5"
+                        onClick={() => setForm({ ...form, afterImageFile: null })}
+                      >
+                        <X className="size-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

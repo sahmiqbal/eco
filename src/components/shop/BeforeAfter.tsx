@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react'
-import { cn } from '@/lib/utils'
 
 interface BeforeAfterProps {
   beforeImage: string

@@ -10,13 +10,27 @@ export function AdminLayout() {
   const [newOrderCount, setNewOrderCount] = useState(0)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) navigate('/admin/login', { replace: true })
-      setChecking(false)
-    })
+    const checkSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession()
+        if (error) throw error
+        if (!data.session) {
+          navigate('/admin/login', { replace: true })
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        navigate('/admin/login', { replace: true })
+      } finally {
+        setChecking(false)
+      }
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_OUT') navigate('/admin/login', { replace: true })
+    checkSession()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        navigate('/admin/login', { replace: true })
+      }
     })
 
     const channel = supabase

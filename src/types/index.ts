@@ -1,4 +1,5 @@
 export interface Product {
+  beforeAfterImages?: string[] | null
   id: string
   name: string
   slug: string
@@ -7,6 +8,8 @@ export interface Product {
   price_3plus?: number | null
   image_url?: string | null
   image_urls?: string[] | null
+  before_image?: string | null
+  after_image?: string | null
   description: string
   ingredients: string
   category: 'pack' | 'individual'

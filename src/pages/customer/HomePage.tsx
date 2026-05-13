@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Package, Sparkles, Star, CircleCheck as CheckCircle, Truck, Shield } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { ProductCard } from '@/components/shop/ProductCard'
-import { supabase } from '@/lib/supabase'
-import type { Product } from '@/types'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '../../components/ui/button'
+import { Badge } from '../../components/ui/badge'
+import { ProductCard } from '../../components/shop/ProductCard'
+import { supabase } from '../../lib/supabase'
+import type { Product } from '../../types'
+import { Skeleton } from '../../components/ui/skeleton'
 
 export function HomePage() {
   const [featured, setFeatured] = useState<Product[]>([])
@@ -18,20 +18,11 @@ export function HomePage() {
       .select('*')
       .eq('is_featured', true)
       .order('created_at', { ascending: true })
-      .then(({ data }) => {
+      .then(({ data }: { data: Product[] | null }) => {
         setFeatured((data as Product[]) ?? [])
         setLoading(false)
       })
   }, [])
-
-  const packIncludes = [
-    'Savon Beldi naturel',
-    'Tebrima (Kessa)',
-    'Gommage Corps',
-    'Huile Capillaire',
-    'Crème Éclaircissante',
-    'Cadeau Surprise 🎁',
-  ]
 
   const perks = [
     { icon: Truck, title: 'Livraison Maroc', desc: 'Partout au Maroc en 2–4 jours' },

@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/dialog'
 import { useCartStore, getBundlePrice } from '@/store/cartStore'
 import { supabase } from '@/lib/supabase'
-import type { ContactPreference } from '@/types'
-import { cn } from '@/lib/utils'
+import type { ContactPreference, CartItem } from '@/types'
+import { cn, getProductImage } from '@/lib/utils'
 import { toast } from 'sonner'
 
 const MOROCCAN_CITIES = [
@@ -82,7 +82,7 @@ export function CheckoutPage() {
   setSubmitting(true)
   setSubmitError(null)
 
-  const orderItems = items.map(({ product, quantity }) => ({
+  const orderItems = items.map(({ product, quantity }: CartItem) => ({
     product_id: product.id,
     product_name: product.name,
     quantity,
@@ -129,7 +129,7 @@ export function CheckoutPage() {
     clearCart()
     toast.success('Commande confirmée ! Votre panier a été vidé.')
     if (form.contact_preference === 'whatsapp') {
-      const itemsText = items.map(({ product, quantity }) =>
+      const itemsText = items.map(({ product, quantity }: CartItem) =>
         `• ${product.name} ×${quantity} = ${getBundlePrice(product, quantity) * quantity} MAD`
       ).join('\n')
       const message = encodeURIComponent(
@@ -171,7 +171,7 @@ export function CheckoutPage() {
       {step === 1 && (
         <div className="space-y-4">
           <h2 className="text-xl font-bold mb-4">Récapitulatif du panier</h2>
-          {items.map(({ product, quantity }) => {
+          {items.map(({ product, quantity }: CartItem) => {
             const price = getBundlePrice(product, quantity)
             return (
               <div key={product.id} className="flex gap-3 bg-card border border-border rounded-xl p-3">
@@ -222,7 +222,7 @@ export function CheckoutPage() {
                 placeholder="Votre nom et prénom"
                 className="rounded-xl"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, name: e.target.value })}
                 aria-invalid={!!errors.name}
               />
               {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
@@ -235,7 +235,7 @@ export function CheckoutPage() {
                 placeholder="0612345678"
                 className="rounded-xl"
                 value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, phone: e.target.value })}
                 aria-invalid={!!errors.phone}
               />
               {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
@@ -263,7 +263,7 @@ export function CheckoutPage() {
                 placeholder="Rue, quartier, numéro..."
                 className="rounded-xl"
                 value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, address: e.target.value })}
                 aria-invalid={!!errors.address}
               />
               {errors.address && <p className="text-xs text-destructive mt-1">{errors.address}</p>}
@@ -339,7 +339,7 @@ export function CheckoutPage() {
           <div className="bg-card border border-border rounded-2xl p-5 text-left">
             <h3 className="font-semibold text-sm mb-3">Récapitulatif</h3>
             <div className="space-y-2">
-              {items.map(({ product, quantity }) => (
+              {items.map(({ product, quantity }: CartItem) => (
                 <div key={product.id} className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{product.name} ×{quantity}</span>
                   <span className="font-medium">{getBundlePrice(product, quantity) * quantity} MAD</span>

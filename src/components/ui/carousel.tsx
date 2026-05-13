@@ -58,11 +58,15 @@ function Carousel({
   )
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([])
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
     setCanScrollPrev(api.canScrollPrev())
     setCanScrollNext(api.canScrollNext())
+    setSelectedIndex(api.selectedScrollSnap())
+    setScrollSnaps(api.scrollSnapList())
   }, [])
 
   const scrollPrev = React.useCallback(() => {
@@ -71,6 +75,10 @@ function Carousel({
 
   const scrollNext = React.useCallback(() => {
     api?.scrollNext()
+  }, [api])
+
+  const scrollTo = React.useCallback((index: number) => {
+    api?.scrollTo(index)
   }, [api])
 
   const handleKeyDown = React.useCallback(
@@ -125,6 +133,21 @@ function Carousel({
         {...props}
       >
         {children}
+        {scrollSnaps.length > 1 && (
+          <div className="flex justify-center gap-2 mt-4">
+            {scrollSnaps.map((_, index) => (
+              <button
+                key={index}
+                className={cn(
+                  "size-2 rounded-full transition-colors",
+                  index === selectedIndex ? "bg-primary" : "bg-muted-foreground/30"
+                )}
+                onClick={() => scrollTo(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </CarouselContext.Provider>
   )
