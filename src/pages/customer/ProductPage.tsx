@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ShoppingBag, ArrowLeft, Package, Star, Minus, Plus, CircleAlert as AlertCircle } from 'lucide-react'
 import { Button } from '../../components/ui/button'
-import { Badge } from '../../components/ui/badge'
 import { Skeleton } from '../../components/ui/skeleton'
 import {
   Carousel,
@@ -166,26 +165,25 @@ export function ProductPage() {
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-3xl border border-border bg-card p-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">{t('priceLabel')}</p>
-                <p className="text-2xl font-bold text-primary">{product.price} MAD</p>
-                {product.price_2 && <p className="text-xs text-muted-foreground mt-1">2 unités: {product.price_2} MAD</p>}
-                {product.price_3plus && <p className="text-xs text-muted-foreground mt-1">3+ unités: {product.price_3plus} MAD</p>}
-              </div>
-              <div className="rounded-3xl border border-border bg-card p-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">{t('stockLabel')}</p>
-                <p className={cn('text-sm font-medium', product.stock === 0 ? 'text-destructive' : 'text-foreground')}>
-                  {product.stock === 0 ? t('outOfStock') : `${product.stock} ${t('available')}`}
-                </p>
-              </div>
-            </div>
+
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
-<p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">{t('orderSection')}</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">{t('orderSection')}</p>
+
+            <div className="mb-4 rounded-2xl border border-border bg-secondary p-3">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{t('stockLabel')}</span>
+                <span className={cn(
+                  'rounded-full px-3 py-1 text-[11px] font-semibold',
+                  product.stock === 0 ? 'bg-destructive/10 text-destructive' : 'bg-emerald-100 text-emerald-700'
+                )}>
+                  {product.stock === 0 ? t('outOfStock') : `${product.stock} ${t('available')}`}
+                </span>
+              </div>
+            </div>
 
             <div className="space-y-4">
               <div className="rounded-2xl border border-border bg-secondary p-4">
@@ -234,7 +232,7 @@ export function ProductPage() {
 
               {product.stock === 0 ? (
                 <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
-                  <AlertCircle className="size-4 inline-block mr-2" /> Produit temporairement indisponible
+                  <AlertCircle className="size-4 inline-block mr-2" /> {t('temporarilyUnavailable')}
                 </div>
               ) : (
                 <div className="space-y-3">

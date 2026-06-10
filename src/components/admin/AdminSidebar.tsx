@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import { useLanguage } from '@/lib/language'
 
 const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard', to: '/admin' },
-  { icon: ShoppingBag, label: 'Commandes', to: '/admin/orders' },
-  { icon: Package, label: 'Produits', to: '/admin/products' },
+  { icon: LayoutDashboard, label: 'dashboard', to: '/admin' },
+  { icon: ShoppingBag, label: 'orders', to: '/admin/orders' },
+  { icon: Package, label: 'productsTitle', to: '/admin/products' },
 ]
 
 interface AdminSidebarProps {
@@ -18,6 +19,7 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
+  const { t } = useLanguage()
   const location = useLocation()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -57,8 +59,8 @@ export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
               )}
             >
               <Icon className="size-4 shrink-0" />
-              {label}
-              {label === 'Commandes' && notifCount > 0 && (
+              {t(label)}
+              {label === 'orders' && notifCount > 0 && (
                 <span className="ml-auto bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                   {notifCount}
                 </span>
@@ -75,7 +77,7 @@ export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
           className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-xl"
           onClick={handleLogout}
         >
-          <LogOut className="size-4" /> Déconnexion
+          <LogOut className="size-4" /> {t('logout')}
         </Button>
       </div>
     </div>

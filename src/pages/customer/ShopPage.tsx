@@ -42,7 +42,6 @@ export function ShopPage() {
     <div className="container mx-auto px-4 max-w-6xl py-8 animate-fade-up">
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">{t('shopTitle')}</h1>
-        <p className="text-muted-foreground text-sm">{t('shopDescription')}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -69,7 +68,7 @@ export function ShopPage() {
                 setSearch('')
               }}
             >
-              {t(c.labelKey)}
+              {t(c.labelKey as any)}
             </Button>
           ))}
         </div>
@@ -94,7 +93,7 @@ export function ShopPage() {
             <ShoppingBag className="size-8 text-muted-foreground" />
           </div>
           <h3 className="font-semibold text-foreground mb-1">{t('noProductsFound')}</h3>
-          <p className="text-sm text-muted-foreground">{t('tryAnotherSearch')}</p>
+          <p className="text-sm text-muted-foreground">{t('tryAnotherSearch' as any)}</p>
         </div>
       ) : (
         <>

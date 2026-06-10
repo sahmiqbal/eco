@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
 } from '@/components/ui/dialog'
+import { useLanguage } from '@/lib/language'
 import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel
@@ -87,6 +88,7 @@ async function uploadProductImages(files: File[], productId?: string): Promise<s
 }
 
 export function AdminProductsPage() {
+  const { t } = useLanguage()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -153,12 +155,12 @@ export function AdminProductsPage() {
 
   const validate = () => {
     const errs: Partial<Record<keyof ProductForm, string>> = {}
-    if (!form.name.trim()) errs.name = 'Nom requis'
-    if (!form.slug.trim()) errs.slug = 'Slug requis'
-    if (form.price <= 0) errs.price = 'Prix invalide'
+    if (!form.name.trim()) errs.name = t('nameRequired')
+    if (!form.slug.trim()) errs.slug = t('slugRequired')
+    if (form.price <= 0) errs.price = t('invalidPrice')
     if ((form.before_image?.trim() || form.after_image?.trim()) && !(form.before_image?.trim() && form.after_image?.trim())) {
-      errs.before_image = 'Les deux images Avant et Après sont requises'
-      errs.after_image = 'Les deux images Avant et Après sont requises'
+      errs.before_image = t('beforeAfterImagesRequired')
+      errs.after_image = t('beforeAfterImagesRequired')
     }
     setErrors(errs)
     return Object.keys(errs).length === 0
@@ -253,19 +255,18 @@ export function AdminProductsPage() {
     <div className="p-4 md:p-6 space-y-5 animate-fade-up">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Produits</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">{products.length} produit(s)</p>
+          <h1 className="text-xl font-bold">{t('productsTitle')}</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">{products.length} {t('productCountPlural')}</p>
         </div>
         <Button size="sm" className="rounded-xl gap-2 shadow-sm" onClick={openNew}>
-          <Plus className="size-4" /> Nouveau
+          <Plus className="size-4" /> {t('newProduct')}
         </Button>
       </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-        <Input placeholder="Rechercher..." className="pl-9 rounded-xl" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Input placeholder={t('searchPlaceholder')} className="pl-9 rounded-xl" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
-
       {loading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-20 rounded-2xl" />)}
@@ -273,7 +274,7 @@ export function AdminProductsPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
           <Package className="size-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="font-semibold">Aucun produit</p>
+          <p className="font-semibold">{t('noProducts')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -290,7 +291,7 @@ export function AdminProductsPage() {
                   <p className="font-semibold text-sm truncate">{product.name}</p>
                   {product.is_featured && <Star className="size-3.5 fill-gold text-gold shrink-0" />}
                   <Badge variant="outline" className="text-[10px] h-4 px-1.5">
-                    {product.category === 'pack' ? 'Pack' : 'Individuel'}
+                    {product.category === 'pack' ? t('categoryPack') : t('categoryIndividual')}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2 mt-0.5 flex-wrap">
@@ -300,8 +301,8 @@ export function AdminProductsPage() {
                 </div>
                 <div className="flex items-center gap-1 mt-0.5">
                   {product.stock === 0
-                    ? <span className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="size-3" /> Rupture</span>
-                    : <span className="text-xs text-muted-foreground">Stock: {product.stock}</span>
+                    ? <span className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="size-3" /> {t('outOfStock')}</span>
+                    : <span className="text-xs text-muted-foreground">{t('stockAvailability', { count: product.stock })}</span>
                   }
                 </div>
               </div>
@@ -321,8 +322,8 @@ export function AdminProductsPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg rounded-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editProduct ? 'Modifier le produit' : 'Nouveau produit'}</DialogTitle>
-            <DialogDescription>Remplissez les informations du produit</DialogDescription>
+            <DialogTitle>{editProduct ? t('editProduct') : t('newProduct')}</DialogTitle>
+            <DialogDescription>{t('fillProductInfo')}</DialogDescription>
           </DialogHeader>
           {saveError && (
             <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -332,12 +333,12 @@ export function AdminProductsPage() {
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
-                <Label className="text-xs mb-1.5 block">Nom *</Label>
+                <Label className="text-xs mb-1.5 block">{t('productName')} *</Label>
                 <Input
                   className="rounded-xl"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value, slug: toSlug(e.target.value) })}
-                  placeholder="Nom du produit"
+                  placeholder={t('productName')}
                   aria-invalid={!!errors.name}
                 />
                 {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
@@ -348,44 +349,44 @@ export function AdminProductsPage() {
                 {errors.slug && <p className="text-xs text-destructive mt-1">{errors.slug}</p>}
               </div>
               <div>
-                <Label className="text-xs mb-1.5 block">Catégorie</Label>
+                <Label className="text-xs mb-1.5 block">{t('categoryLabel')}</Label>
                 <select
                   className="h-9 w-full rounded-xl border border-input bg-transparent px-3 text-sm"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value as 'pack' | 'individual' })}
                 >
-                  <option value="individual">Individuel</option>
-                  <option value="pack">Pack</option>
+                  <option value="individual">{t('categoryIndividual')}</option>
+                  <option value="pack">{t('categoryPack')}</option>
                 </select>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <Label className="text-xs mb-1.5 block">Prix (MAD) *</Label>
+                <Label className="text-xs mb-1.5 block">{t('priceLabel')} (MAD) *</Label>
                 <Input type="number" className="rounded-xl" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} aria-invalid={!!errors.price} />
                 {errors.price && <p className="text-xs text-destructive mt-1">{errors.price}</p>}
               </div>
               <div>
-                <Label className="text-xs mb-1.5 block">Prix ×2</Label>
+                <Label className="text-xs mb-1.5 block">{t('price2Label')}</Label>
                 <Input type="number" className="rounded-xl" value={form.price_2 ?? ''} onChange={(e) => setForm({ ...form, price_2: e.target.value ? +e.target.value : null })} placeholder="Optionnel" />
               </div>
               <div>
-                <Label className="text-xs mb-1.5 block">Prix ×3+</Label>
+                <Label className="text-xs mb-1.5 block">{t('price3plusLabel')}</Label>
                 <Input type="number" className="rounded-xl" value={form.price_3plus ?? ''} onChange={(e) => setForm({ ...form, price_3plus: e.target.value ? +e.target.value : null })} placeholder="Optionnel" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs mb-1.5 block">Stock</Label>
+                <Label className="text-xs mb-1.5 block">{t('productStock')}</Label>
                 <Input type="number" className="rounded-xl" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} />
               </div>
               <div className="col-span-2">
-                <Label className="text-xs mb-1.5 block">Image principale (URL)</Label>
+                <Label className="text-xs mb-1.5 block">{t('mainImageUrlLabel')}</Label>
                 <Input
                   className="rounded-xl"
-                  value={form.image_url}
+                  value={form.image_url ?? ''}
                   onChange={(e) => setForm({ ...form, image_url: e.target.value })}
                   placeholder="https://example.com/produit.webp"
                 />
@@ -397,7 +398,7 @@ export function AdminProductsPage() {
               </div>
 
               <div className="col-span-2">
-                <Label className="text-xs mb-1.5 block">Images supplémentaires (une URL par ligne)</Label>
+                <Label className="text-xs mb-1.5 block">{t('additionalImagesLabel')}</Label>
                 <Textarea
                   className="rounded-xl text-xs"
                   value={(form.image_urls ?? []).join('\n')}
@@ -411,7 +412,7 @@ export function AdminProductsPage() {
             </div>
 
             <div className="space-y-3">
-              <Label className="text-xs mb-1.5 block">Télécharger des images du produit</Label>
+              <Label className="text-xs mb-1.5 block">{t('uploadProductImages')}</Label>
               <div className="border-2 border-dashed border-border rounded-xl p-4">
                 <input
                   type="file"
@@ -424,7 +425,7 @@ export function AdminProductsPage() {
                 <label htmlFor="product-images" className="cursor-pointer flex flex-col items-center gap-2">
                   <Upload className="size-8 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground text-center">
-                    Cliquez pour sélectionner des images<br />
+                    {t('selectProductImages')}<br />
                     <span className="text-xs">JPG, PNG, WebP, etc.</span>
                   </p>
                 </label>
@@ -463,7 +464,7 @@ export function AdminProductsPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs mb-1.5 block">Image Avant</Label>
+                <Label className="text-xs mb-1.5 block">{t('imageBefore')}</Label>
                 <Input
                   className="rounded-xl"
                   value={form.before_image ?? ''}
@@ -474,7 +475,7 @@ export function AdminProductsPage() {
                 {errors.before_image && <p className="text-xs text-destructive mt-1">{errors.before_image}</p>}
               </div>
               <div>
-                <Label className="text-xs mb-1.5 block">Image Après</Label>
+                <Label className="text-xs mb-1.5 block">{t('imageAfter')}</Label>
                 <Input
                   className="rounded-xl"
                   value={form.after_image ?? ''}
@@ -488,7 +489,7 @@ export function AdminProductsPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs mb-1.5 block">Télécharger Image Avant</Label>
+                <Label className="text-xs mb-1.5 block">{t('uploadBeforeImageLabel')}</Label>
                 <div className="border-2 border-dashed border-border rounded-xl p-3">
                   <input
                     type="file"
@@ -500,7 +501,7 @@ export function AdminProductsPage() {
                   <label htmlFor="before-image" className="cursor-pointer flex flex-col items-center gap-1">
                     <Upload className="size-6 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground text-center">
-                      Sélectionner<br />image avant
+                      {t('selectBeforeImage')}
                     </p>
                   </label>
                   {form.beforeImageFile && (
@@ -527,7 +528,7 @@ export function AdminProductsPage() {
                 </div>
               </div>
               <div>
-                <Label className="text-xs mb-1.5 block">Télécharger Image Après</Label>
+                <Label className="text-xs mb-1.5 block">{t('uploadAfterImageLabel')}</Label>
                 <div className="border-2 border-dashed border-border rounded-xl p-3">
                   <input
                     type="file"
@@ -539,7 +540,7 @@ export function AdminProductsPage() {
                   <label htmlFor="after-image" className="cursor-pointer flex flex-col items-center gap-1">
                     <Upload className="size-6 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground text-center">
-                      Sélectionner<br />image après
+                      {t('selectAfterImage')}
                     </p>
                   </label>
                   {form.afterImageFile && (
@@ -568,30 +569,30 @@ export function AdminProductsPage() {
             </div>
 
             <div>
-              <Label className="text-xs mb-1.5 block">Description</Label>
+              <Label className="text-xs mb-1.5 block">{t('descriptionLabel')}</Label>
               <Textarea className="rounded-xl min-h-[70px] text-sm" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             </div>
 
             <div>
-              <Label className="text-xs mb-1.5 block">Ingrédients</Label>
+              <Label className="text-xs mb-1.5 block">{t('ingredientsLabel')}</Label>
               <Input className="rounded-xl text-sm" value={form.ingredients} onChange={(e) => setForm({ ...form, ingredients: e.target.value })} />
             </div>
 
             <div className="flex items-center gap-2">
               <input type="checkbox" id="featured" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="rounded" />
               <Label htmlFor="featured" className="text-sm cursor-pointer flex items-center gap-1">
-                <Star className="size-3.5 text-gold" /> Produit en vedette (page d'accueil)
+                <Star className="size-3.5 text-gold" /> {t('featuredProduct')}
               </Label>
             </div>
 
             <Separator />
             <div className="flex gap-3">
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setDialogOpen(false)}>
-                Annuler
+                {t('cancel')}
               </Button>
               <Button className="flex-1 rounded-xl gap-2 shadow-sm" onClick={save} disabled={saving}>
                 {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-                {saving ? 'Sauvegarde...' : 'Sauvegarder'}
+                {saving ? t('saving') : t('save')}
               </Button>
             </div>
           </div>
@@ -601,15 +602,15 @@ export function AdminProductsPage() {
       <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
         <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer ce produit ?</AlertDialogTitle>
+            <AlertDialogTitle>{t('confirmDeleteProduct')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action supprimera définitivement <strong>{deleteTarget?.name}</strong>. Cette opération est irréversible.
+              {t('deleteProductWarning', { name: deleteTarget?.name ?? '' })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl">{t('cancel')}</AlertDialogCancel>
             <AlertDialogAction className="rounded-xl bg-destructive text-white hover:bg-destructive/90" onClick={deleteProduct}>
-              Supprimer
+              {t('deleteProduct')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

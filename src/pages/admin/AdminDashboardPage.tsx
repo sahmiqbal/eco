@@ -4,6 +4,7 @@ import { ShoppingBag, Clock, CircleCheck as CheckCircle, TrendingUp, Bell, Messa
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useLanguage } from '@/lib/language'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem
 } from '@/components/ui/dropdown-menu'
@@ -17,6 +18,7 @@ function todayStr() {
 }
 
 export function AdminDashboardPage() {
+  const { t } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [newOrders, setNewOrders] = useState<Order[]>([])
@@ -79,8 +81,8 @@ export function AdminDashboardPage() {
     <div className="p-4 md:p-6 space-y-6 animate-fade-up">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Vue d'ensemble — Dar Nour</p>
+          <h1 className="text-xl font-bold text-foreground">{t('dashboard')}</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('adminPanel')} — Dar Nour</p>
         </div>
         <DropdownMenu onOpenChange={(open) => { if (!open) clearNotifs() }}>
           <DropdownMenuTrigger asChild>
@@ -95,7 +97,7 @@ export function AdminDashboardPage() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72">
             {newOrders.length === 0 ? (
-              <div className="p-4 text-sm text-muted-foreground text-center">Aucune nouvelle commande</div>
+              <div className="p-4 text-sm text-muted-foreground text-center">{t('noNewOrders')}</div>
             ) : (
               newOrders.map((o) => (
                 <DropdownMenuItem key={o.id} asChild>
@@ -115,19 +117,19 @@ export function AdminDashboardPage() {
           [...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-2xl" />)
         ) : (
           <>
-            <StatCard title="Commandes aujourd'hui" value={todayOrders.length} icon={TrendingUp} variant="primary" />
-            <StatCard title="En attente" value={pending.length} icon={Clock} trend="Nécessite action" />
-            <StatCard title="Confirmées" value={confirmed.length} icon={CheckCircle} variant="gold" />
-            <StatCard title="Total commandes" value={orders.length} icon={ShoppingBag} />
+            <StatCard title={t('ordersToday')} value={todayOrders.length} icon={TrendingUp} variant="primary" />
+            <StatCard title={t('orderStatusPending')} value={pending.length} icon={Clock} trend={t('needsAction')} />
+            <StatCard title={t('orderStatusConfirmed')} value={confirmed.length} icon={CheckCircle} variant="gold" />
+            <StatCard title={t('totalOrders')} value={orders.length} icon={ShoppingBag} />
           </>
         )}
       </div>
 
       <div className="bg-card border border-border rounded-2xl overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="font-semibold text-sm">Dernières commandes</h2>
+          <h2 className="font-semibold text-sm">{t('latestOrders')}</h2>
           <Button variant="ghost" size="sm" className="gap-1 text-primary text-xs" asChild>
-            <Link to="/admin/orders">Voir tout <ArrowRight className="size-3.5" /></Link>
+            <Link to="/admin/orders">{t('viewAllOrders')} <ArrowRight className="size-3.5" /></Link>
           </Button>
         </div>
         {loading ? (
@@ -137,7 +139,7 @@ export function AdminDashboardPage() {
         ) : recentOrders.length === 0 ? (
           <div className="p-8 text-center">
             <ShoppingBag className="size-8 text-muted-foreground/30 mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">Aucune commande pour le moment</p>
+            <p className="text-sm text-muted-foreground">{t('noOrders')}</p>
           </div>
         ) : (
           <div className="divide-y divide-border">
@@ -149,7 +151,7 @@ export function AdminDashboardPage() {
                 )} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate">{order.name}</p>
-                  <p className="text-xs text-muted-foreground">{order.city} · {order.items?.length ?? 0} article(s)</p>
+                  <p className="text-xs text-muted-foreground">{order.city} · {order.items?.length ?? 0} {t('itemsLabel')}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-sm font-bold text-primary">{order.total} MAD</p>
@@ -164,7 +166,7 @@ export function AdminDashboardPage() {
                           : 'bg-emerald-100 text-emerald-700 border-emerald-200'
                       )}
                     >
-                      {order.status === 'pending' ? 'En attente' : 'Confirmée'}
+                      {order.status === 'pending' ? t('orderStatusPending') : t('orderStatusConfirmed')}
                     </Badge>
                   </div>
                 </div>

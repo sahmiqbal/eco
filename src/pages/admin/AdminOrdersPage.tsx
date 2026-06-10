@@ -8,20 +8,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { supabase } from '@/lib/supabase'
 import type { Order } from '@/types'
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/lib/language'
 
 const STATUS_FILTERS = [
-  { value: 'all', label: 'Toutes' },
-  { value: 'pending', label: 'En attente' },
-  { value: 'confirmed', label: 'Confirmées' },
-  { value: 'preparing', label: 'Préparation' },
-  { value: 'dispatched', label: 'Expédiées' },
-  { value: 'delivered', label: 'Livrées' },
-  { value: 'cancelled', label: 'Annulées' },
+  { value: 'all', label: 'statusAll' },
+  { value: 'pending', label: 'orderStatusPending' },
+  { value: 'confirmed', label: 'orderStatusConfirmed' },
+  { value: 'preparing', label: 'orderStatusPreparing' },
+  { value: 'dispatched', label: 'orderStatusDispatched' },
+  { value: 'delivered', label: 'orderStatusDelivered' },
+  { value: 'cancelled', label: 'orderStatusCancelled' },
 ]
 
 const PAGE_SIZE = 15
 
 export function AdminOrdersPage() {
+  const { t } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -103,15 +105,15 @@ export function AdminOrdersPage() {
   return (
     <div className="p-4 md:p-6 space-y-5 animate-fade-up">
       <div>
-        <h1 className="text-xl font-bold">Commandes</h1>
-        <p className="text-xs text-muted-foreground mt-0.5">{orders.length} commande(s) au total</p>
+        <h1 className="text-xl font-bold">{t('orders')}</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">{orders.length} {t('totalOrders')}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Rechercher par nom, téléphone, ville..."
+            placeholder={t('searchOrdersPlaceholder')}
             className="pl-9 rounded-xl"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -126,7 +128,7 @@ export function AdminOrdersPage() {
               className="rounded-xl text-xs"
               onClick={() => setStatusFilter(f.value)}
             >
-              {f.label}
+              {t(f.label as any)}
             </Button>
           ))}
         </div>
@@ -139,8 +141,8 @@ export function AdminOrdersPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
           <ShoppingBag className="size-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="font-semibold text-foreground">Aucune commande</p>
-          <p className="text-xs text-muted-foreground mt-1">Essayez une autre recherche</p>
+          <p className="font-semibold text-foreground">{t('noOrders')}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('noOrdersSearch')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -169,17 +171,17 @@ export function AdminOrdersPage() {
                         'bg-muted text-muted-foreground border-border'
                       )}
                     >
-                      {order.status === 'pending' && 'En attente'}
-                      {order.status === 'confirmed' && 'Confirmée'}
-                      {order.status === 'preparing' && 'Préparation'}
-                      {order.status === 'dispatched' && 'Expédiée'}
-                      {order.status === 'delivered' && 'Livrée'}
-                      {order.status === 'cancelled' && 'Annulée'}
+                      {order.status === 'pending' && t('orderStatusPending')}
+                      {order.status === 'confirmed' && t('orderStatusConfirmed')}
+                      {order.status === 'preparing' && t('orderStatusPreparing')}
+                      {order.status === 'dispatched' && t('orderStatusDispatched')}
+                      {order.status === 'delivered' && t('orderStatusDelivered')}
+                      {order.status === 'cancelled' && t('orderStatusCancelled')}
                     </Badge>
                     <Badge variant="outline" className={cn('text-[10px] px-2 py-0 h-4',
                       order.contact_preference === 'whatsapp' ? 'text-emerald-600 border-emerald-300' : 'text-blue-600 border-blue-300'
                     )}>
-                      {order.contact_preference === 'whatsapp' ? '📱 WA' : '📞 Appel'}
+                      {order.contact_preference === 'whatsapp' ? '📱 WA' : t('phoneContactText')}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -216,7 +218,7 @@ export function AdminOrdersPage() {
                   </div>
 
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Articles commandés</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t('orderItems')}</p>
                     <div className="space-y-1">
                       {(order.items ?? []).map((item, idx) => (
                         <div key={idx} className="flex justify-between text-sm">
@@ -234,7 +236,7 @@ export function AdminOrdersPage() {
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1">
-                        <FileText className="size-3.5" /> Note interne
+                        <FileText className="size-3.5" /> {t('internalNote')}
                       </p>
                       {editingNoteId !== order.id && (
                         <Button
@@ -243,7 +245,7 @@ export function AdminOrdersPage() {
                           className="h-6 px-2 text-xs gap-1"
                           onClick={() => { setEditingNoteId(order.id); setNoteText(order.note ?? '') }}
                         >
-                          <Edit3 className="size-3" /> Modifier
+                          <Edit3 className="size-3" /> {t('modify')}
                         </Button>
                       )}
                     </div>
@@ -251,22 +253,22 @@ export function AdminOrdersPage() {
                       <div className="space-y-2">
                         <Textarea
                           className="text-sm rounded-xl min-h-[70px]"
-                          placeholder="Note interne..."
+                          placeholder={t('orderNotePlaceholder')}
                           value={noteText}
                           onChange={(e) => setNoteText(e.target.value)}
                         />
                         <div className="flex gap-2">
                           <Button size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => saveNote(order.id)} disabled={savingIds.has(order.id)}>
-                            <Save className="size-3" /> Sauvegarder
+                            <Save className="size-3" /> {t('save')}
                           </Button>
                           <Button size="sm" variant="outline" className="h-7 text-xs gap-1 rounded-lg" onClick={() => setEditingNoteId(null)}>
-                            <X className="size-3" /> Annuler
+                            <X className="size-3" /> {t('cancel')}
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <p className="text-sm text-muted-foreground italic">
-                        {order.note || 'Aucune note'}
+                        {order.note || t('noNotes')}
                       </p>
                     )}
                   </div>
@@ -277,7 +279,7 @@ export function AdminOrdersPage() {
                       className="rounded-xl gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs"
                       onClick={() => openWhatsApp(order)}
                     >
-                      <MessageCircle className="size-3.5" /> WhatsApp
+                      <MessageCircle className="size-3.5" /> {t('whatsappContactText')}
                     </Button>
                     <Button
                       size="sm"
@@ -285,7 +287,7 @@ export function AdminOrdersPage() {
                       className="rounded-xl gap-1.5 text-xs"
                       onClick={() => window.open(`tel:${order.phone}`)}
                     >
-                      <Phone className="size-3.5" /> Appeler
+                      <Phone className="size-3.5" /> {t('phoneContactText')}
                     </Button>
                     <Button
                       size="sm"
@@ -294,7 +296,7 @@ export function AdminOrdersPage() {
                       onClick={() => updateStatus(order.id, 'preparing')}
                       disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
                     >
-                      <Clock className="size-3.5" /> Préparer
+                      <Clock className="size-3.5" /> {t('prepareOrder')}
                     </Button>
                     <Button
                       size="sm"
@@ -303,7 +305,7 @@ export function AdminOrdersPage() {
                       onClick={() => updateStatus(order.id, 'dispatched')}
                       disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
                     >
-                      <CheckCircle className="size-3.5" /> Expédier
+                      <CheckCircle className="size-3.5" /> {t('dispatchOrder')}
                     </Button>
                     <Button
                       size="sm"
@@ -311,7 +313,7 @@ export function AdminOrdersPage() {
                       onClick={() => updateStatus(order.id, 'delivered')}
                       disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
                     >
-                      <CheckCircle className="size-3.5" /> Livrer
+                      <CheckCircle className="size-3.5" /> {t('deliverOrder')}
                     </Button>
                     <Button
                       size="sm"
@@ -320,7 +322,7 @@ export function AdminOrdersPage() {
                       onClick={() => updateStatus(order.id, 'cancelled')}
                       disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
                     >
-                      <X className="size-3.5" /> Annuler
+                      <X className="size-3.5" /> {t('cancel')}
                     </Button>
                   </div>
                 </div>

@@ -5,8 +5,10 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore, getBundlePrice } from '@/store/cartStore'
 import { getProductImage } from '@/lib/utils'
+import { useLanguage } from '@/lib/language'
 
 export function CartPage() {
+  const { t } = useLanguage()
   const { items, removeItem, updateQuantity, totalPrice } = useCartStore()
   const navigate = useNavigate()
   const total = totalPrice()
@@ -17,11 +19,11 @@ export function CartPage() {
         <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-5">
           <ShoppingBag className="size-10 text-muted-foreground/50" />
         </div>
-        <h2 className="text-xl font-semibold text-foreground mb-2">Votre panier est vide</h2>
-        <p className="text-muted-foreground text-sm mb-6">Découvrez nos produits et commencez votre rituel beauté</p>
+        <h2 className="text-xl font-semibold text-foreground mb-2">{t('emptyCartTitle')}</h2>
+        <p className="text-muted-foreground text-sm mb-6">{t('emptyCartText')}</p>
         <Button className="rounded-xl gap-2" asChild>
           <Link to="/shop">
-            <ShoppingBag className="size-4" /> Découvrir nos produits
+            <ShoppingBag className="size-4" /> {t('discoverProducts')}
           </Link>
         </Button>
       </div>
@@ -30,7 +32,7 @@ export function CartPage() {
 
   return (
     <div className="container mx-auto px-4 max-w-4xl py-8 animate-fade-up">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Mon Panier</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">{t('myCart')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-3">
@@ -88,7 +90,7 @@ export function CartPage() {
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-primary">{subtotal} MAD</p>
-                      <p className="text-[10px] text-muted-foreground">{unitPrice} MAD/u</p>
+                      <p className="text-[10px] text-muted-foreground">{unitPrice} MAD</p>
                     </div>
                   </div>
                 </div>
@@ -99,7 +101,7 @@ export function CartPage() {
 
         <div className="lg:col-span-1">
           <div className="bg-card border border-border rounded-2xl p-5 sticky top-24">
-            <h3 className="font-semibold text-foreground mb-4">Récapitulatif</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t('summary')}</h3>
 
             <div className="space-y-2 mb-4">
               {items.map(({ product, quantity }) => {
@@ -125,11 +127,11 @@ export function CartPage() {
               className="w-full rounded-xl gap-2 shadow-md"
               onClick={() => navigate('/checkout')}
             >
-              Commander <ArrowRight className="size-4" />
+              {t('checkout')} <ArrowRight className="size-4" />
             </Button>
 
             <Button variant="ghost" size="sm" className="w-full mt-2 text-muted-foreground" asChild>
-              <Link to="/shop">Continuer les achats</Link>
+              <Link to="/shop">{t('continueShopping')}</Link>
             </Button>
           </div>
         </div>

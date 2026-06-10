@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabase'
+import { useLanguage } from '@/lib/language'
 
 const adminEmail = import.meta.env.VITE_ADMIN_EMAIL ?? ''
 const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD ?? ''
 const isDev = import.meta.env.DEV
 
 export function AdminLoginPage() {
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const [email, setEmail] = useState(adminEmail)
   const [password, setPassword] = useState(adminPassword)
@@ -23,7 +25,7 @@ export function AdminLoginPage() {
     setError('')
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
     if (authError) {
-      setError('Email ou mot de passe incorrect')
+      setError(t('wrongCredentials'))
       setLoading(false)
       return
     }
@@ -38,13 +40,13 @@ export function AdminLoginPage() {
             <Sparkles className="size-7 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-sidebar-foreground">Dar Nour</h1>
-          <p className="text-sm text-sidebar-foreground/60 mt-1">Espace Administration</p>
+          <p className="text-sm text-sidebar-foreground/60 mt-1">{t('adminLoginTitle')}</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-sidebar-accent rounded-2xl p-6 border border-sidebar-border space-y-4">
           <div>
             <Label htmlFor="email" className="text-sm font-medium text-sidebar-foreground mb-1.5 block">
-              Email
+              {t('emailLabel')}
             </Label>
             <Input
               id="email"
@@ -59,7 +61,7 @@ export function AdminLoginPage() {
 
           <div>
             <Label htmlFor="password" className="text-sm font-medium text-sidebar-foreground mb-1.5 block">
-              Mot de passe
+              {t('passwordLabel')}
             </Label>
             <Input
               id="password"
@@ -88,7 +90,7 @@ export function AdminLoginPage() {
 
           <Button type="submit" className="w-full rounded-xl shadow-md" disabled={loading}>
             {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : <Lock className="size-4 mr-2" />}
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {loading ? t('loginLoading') : t('loginButton')}
           </Button>
         </form>
       </div>

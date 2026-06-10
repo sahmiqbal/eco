@@ -43,7 +43,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <div className="absolute inset-0 bg-background/60 z-20 flex items-center justify-center rounded-2xl">
           <div className="bg-background border border-border rounded-xl px-4 py-2 flex items-center gap-2 shadow-md">
             <AlertCircle className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Rupture de stock</span>
+            <span className="text-sm font-medium text-muted-foreground">{t('outOfStock')}</span>
           </div>
         </div>
       )}
