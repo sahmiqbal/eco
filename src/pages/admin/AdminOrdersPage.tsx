@@ -13,7 +13,13 @@ const STATUS_FILTERS = [
   { value: 'all', label: 'Toutes' },
   { value: 'pending', label: 'En attente' },
   { value: 'confirmed', label: 'Confirmées' },
+  { value: 'preparing', label: 'Préparation' },
+  { value: 'dispatched', label: 'Expédiées' },
+  { value: 'delivered', label: 'Livrées' },
+  { value: 'cancelled', label: 'Annulées' },
 ]
+
+const PAGE_SIZE = 15
 
 export function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -24,16 +30,30 @@ export function AdminOrdersPage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const [noteText, setNoteText] = useState('')
   const [savingIds, setSavingIds] = useState<Set<string>>(new Set())
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState<number | null>(null)
 
   const fetchOrders = useCallback(async () => {
-    const { data } = await supabase
+    setLoading(true)
+    const from = (page - 1) * PAGE_SIZE
+    const to = page * PAGE_SIZE - 1
+
+    const query = supabase
       .from('orders')
-      .select('*')
+      .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })
-    console.log('Fetched orders:', data)
+      .range(from, to)
+
+    const { data, count, error } = await query
+    if (error) {
+      console.error('Failed to fetch orders:', error)
+      setLoading(false)
+      return
+    }
     setOrders((data as Order[]) ?? [])
+    setTotalCount(count)
     setLoading(false)
-  }, [])
+  }, [page])
 
   useEffect(() => {
     fetchOrders()
@@ -42,9 +62,9 @@ export function AdminOrdersPage() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => fetchOrders())
       .subscribe()
     return () => { supabase.removeChannel(channel) }
-  }, [fetchOrders])
+  }, [fetchOrders, page])
 
-  const updateStatus = async (id: string, status: 'pending' | 'confirmed') => {
+  const updateStatus = async (id: string, status: Order['status']) => {
     setSavingIds((s) => new Set(s).add(id))
     await supabase.from('orders').update({ status }).eq('id', id)
     setOrders((prev) => prev.map((o) => o.id === id ? { ...o, status } : o))
@@ -77,6 +97,8 @@ export function AdminOrdersPage() {
       o.city.toLowerCase().includes(search.toLowerCase())
     return matchStatus && matchSearch
   })
+
+  const totalPages = totalCount ? Math.ceil(totalCount / PAGE_SIZE) : 1
 
   return (
     <div className="p-4 md:p-6 space-y-5 animate-fade-up">
@@ -138,12 +160,21 @@ export function AdminOrdersPage() {
                     <p className="font-semibold text-sm">{order.name}</p>
                     <Badge
                       className={cn('text-[10px] px-2 py-0 h-4',
-                        order.status === 'pending'
-                          ? 'bg-amber-100 text-amber-700 border-amber-200'
-                          : 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                        order.status === 'pending' ? 'bg-amber-100 text-amber-700 border-amber-200' :
+                        order.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' :
+                        order.status === 'preparing' ? 'bg-sky-100 text-sky-700 border-sky-200' :
+                        order.status === 'dispatched' ? 'bg-violet-100 text-violet-700 border-violet-200' :
+                        order.status === 'delivered' ? 'bg-emerald-200 text-emerald-800 border-emerald-300' :
+                        order.status === 'cancelled' ? 'bg-destructive/10 text-destructive border-destructive/30' :
+                        'bg-muted text-muted-foreground border-border'
                       )}
                     >
-                      {order.status === 'pending' ? 'En attente' : 'Confirmée'}
+                      {order.status === 'pending' && 'En attente'}
+                      {order.status === 'confirmed' && 'Confirmée'}
+                      {order.status === 'preparing' && 'Préparation'}
+                      {order.status === 'dispatched' && 'Expédiée'}
+                      {order.status === 'delivered' && 'Livrée'}
+                      {order.status === 'cancelled' && 'Annulée'}
                     </Badge>
                     <Badge variant="outline" className={cn('text-[10px] px-2 py-0 h-4',
                       order.contact_preference === 'whatsapp' ? 'text-emerald-600 border-emerald-300' : 'text-blue-600 border-blue-300'
@@ -256,27 +287,41 @@ export function AdminOrdersPage() {
                     >
                       <Phone className="size-3.5" /> Appeler
                     </Button>
-                    {order.status === 'pending' ? (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-xl gap-1.5 text-xs text-emerald-600 border-emerald-300 hover:bg-emerald-50"
-                        onClick={() => updateStatus(order.id, 'confirmed')}
-                        disabled={savingIds.has(order.id)}
-                      >
-                        <CheckCircle className="size-3.5" /> Confirmer
-                      </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-xl gap-1.5 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
-                        onClick={() => updateStatus(order.id, 'pending')}
-                        disabled={savingIds.has(order.id)}
-                      >
-                        <Clock className="size-3.5" /> Remettre en attente
-                      </Button>
-                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-xl gap-1.5 text-xs"
+                      onClick={() => updateStatus(order.id, 'preparing')}
+                      disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
+                    >
+                      <Clock className="size-3.5" /> Préparer
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-xl gap-1.5 text-xs"
+                      onClick={() => updateStatus(order.id, 'dispatched')}
+                      disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
+                    >
+                      <CheckCircle className="size-3.5" /> Expédier
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="rounded-xl gap-1.5 bg-primary text-primary-foreground text-xs"
+                      onClick={() => updateStatus(order.id, 'delivered')}
+                      disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
+                    >
+                      <CheckCircle className="size-3.5" /> Livrer
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="rounded-xl gap-1.5 text-xs"
+                      onClick={() => updateStatus(order.id, 'cancelled')}
+                      disabled={savingIds.has(order.id) || order.status === 'delivered' || order.status === 'cancelled'}
+                    >
+                      <X className="size-3.5" /> Annuler
+                    </Button>
                   </div>
                 </div>
               )}
@@ -284,6 +329,27 @@ export function AdminOrdersPage() {
           ))}
         </div>
       )}
+      <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-card">
+        <div className="text-xs text-muted-foreground">
+          Page {page} sur {totalPages}
+        </div>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-xl text-xs"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+          >Précédent</Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-xl text-xs"
+            onClick={() => setPage((p) => (p < totalPages ? p + 1 : p))}
+            disabled={page >= totalPages}
+          >Suivant</Button>
+        </div>
+      </div>
     </div>
   )
 }

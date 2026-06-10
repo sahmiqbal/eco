@@ -15,6 +15,32 @@ import type { ContactPreference, CartItem } from '@/types'
 import { cn, getProductImage } from '@/lib/utils'
 import { toast } from 'sonner'
 
+const CITY_DELIVERY_FEES: Record<string, number> = {
+  Casablanca: 20,
+  Rabat: 20,
+  Marrakech: 25,
+  Fès: 25,
+  Tanger: 28,
+  Agadir: 30,
+  Meknès: 25,
+  Oujda: 35,
+  Kenitra: 25,
+  Tétouan: 30,
+  Nador: 35,
+  Temara: 20,
+  'El Jadida': 25,
+  'Beni Mellal': 30,
+  Autre: 45,
+}
+
+const FREE_DELIVERY_MINIMUM = 500
+
+function getDeliveryFee(city: string, subtotal: number) {
+  if (!city) return 0
+  if (subtotal >= FREE_DELIVERY_MINIMUM) return 0
+  return CITY_DELIVERY_FEES[city] ?? CITY_DELIVERY_FEES.Autre
+}
+
 const MOROCCAN_CITIES = [
   'Casablanca', 'Rabat', 'Marrakech', 'Fès', 'Tanger', 'Agadir', 'Meknès',
   'Oujda', 'Kenitra', 'Tétouan', 'Nador', 'Temara', 'El Jadida', 'Beni Mellal', 'Autre'
@@ -52,7 +78,9 @@ export function CheckoutPage() {
     contact_preference: 'whatsapp',
   })
 
-  const total = totalPrice()
+  const subtotal = totalPrice()
+  const deliveryFee = 0
+  const total = subtotal
 
   if (items.length === 0 && step !== 3) {
     return (
@@ -72,58 +100,99 @@ export function CheckoutPage() {
     if (!form.phone.match(/^(\+212|0)[5-7]\d{8}$/)) errs.phone = 'Numéro invalide (ex: 0612345678)'
     if (!form.city) errs.city = 'Ville requise'
     if (!form.address.trim()) errs.address = 'Adresse requise'
+
+    const stockErrors = items
+      .filter(({ product, quantity }) => quantity > product.stock)
+      .map(({ product }) => product.name)
+
+    if (stockErrors.length > 0) {
+      errs.address = `Stock insuffisant pour: ${stockErrors.join(', ')}`
+    }
+
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
-   
+
   const submitOrder = async () => {
-  if (!validate()) return
+      if (!validate()) return
 
-  setSubmitting(true)
-  setSubmitError(null)
+    setSubmitting(true)
+    setSubmitError(null)
 
-  const orderItems = items.map(({ product, quantity }: CartItem) => ({
-    product_id: product.id,
-    product_name: product.name,
-    quantity,
-    unit_price: getBundlePrice(product, quantity),
-    subtotal: getBundlePrice(product, quantity) * quantity,
-  }))
+    try {
+      const productIds = items.map(({ product }) => product.id)
+      const { data: currentStocks, error: stockError } = await supabase
+        .from('products')
+        .select('id,stock')
+        .in('id', productIds)
 
-  const { error } = await supabase
-    .from('orders')
-    .insert({
-      name: form.name,
-      phone: form.phone,
-      city: form.city,
-      address: form.address,
-      items: orderItems,
-      total,
-      status: 'pending',
-      contact_preference: form.contact_preference,
-    })
+      if (stockError) {
+        throw new Error('Impossible de vérifier le stock. Réessayez plus tard.')
+      }
 
-  if (error) {
-    setSubmitting(false)
-    setSubmitError(error.message)
-    return
-  }
+      const insufficient = items.filter(({ product, quantity }) => {
+        const row = (currentStocks as { id: string, stock: number }[]).find((p) => p.id === product.id)
+        return !row || quantity > row.stock
+      })
 
-  setOrderId('OK')
+      if (insufficient.length > 0) {
+        setSubmitting(false)
+        setSubmitError(`Stock insuffisant pour: ${insufficient.map(({ product }) => product.name).join(', ')}`)
+        return
+      }
 
-  // optional: stock
-  try {
-    await supabase.rpc('decrement_stock', {
-      items: items.map(({ product, quantity }) => ({
+      const orderItems = items.map(({ product, quantity }: CartItem) => ({
         product_id: product.id,
-        quantity
+        product_name: product.name,
+        quantity,
+        unit_price: getBundlePrice(product, quantity),
+        subtotal: getBundlePrice(product, quantity) * quantity,
       }))
-    })
-  } catch (_) {}
 
-  setSubmitting(false)
-  setStep(3)
-}
+      const { data, error } = await supabase
+        .from('orders')
+        .insert({
+          name: form.name,
+          phone: form.phone,
+          city: form.city,
+          address: form.address,
+          items: orderItems,
+          total,
+          status: 'pending',
+          contact_preference: form.contact_preference,
+        })
+        .select()
+        .single()
+
+      if (error) {
+        throw new Error(error.message || JSON.stringify(error))
+      }
+
+      setOrderId(data?.id ?? null)
+
+      try {
+        await supabase.rpc('decrement_stock', {
+          items: items.map(({ product, quantity }) => ({
+            product_id: product.id,
+            quantity,
+          }))
+        })
+      } catch (err) {
+        console.warn('Stock decrement failed:', err)
+      }
+
+      setSubmitting(false)
+      setStep(3)
+    } catch (error) {
+      const message = error instanceof Error
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
+      setSubmitting(false)
+      setSubmitError(message || 'Une erreur est survenue. Réessayez.')
+    }
+  }
 
   const handleConfirm = () => {
     clearCart()
@@ -192,7 +261,7 @@ export function CheckoutPage() {
           <Separator />
           <div className="flex justify-between items-center text-sm">
             <span>Sous-total</span>
-            <span>{total} MAD</span>
+            <span>{subtotal} MAD</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="font-bold">Total</span>
@@ -347,7 +416,11 @@ export function CheckoutPage() {
               ))}
             </div>
             <Separator className="my-3" />
-            <div className="flex justify-between font-bold">
+            <div className="flex justify-between text-sm">
+              <span>Sous-total</span>
+              <span>{subtotal} MAD</span>
+            </div>
+            <div className="flex justify-between font-bold pt-2">
               <span>Total</span>
               <span className="text-primary text-lg">{total} MAD</span>
             </div>

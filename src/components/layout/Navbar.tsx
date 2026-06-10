@@ -5,16 +5,20 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/store/cartStore'
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/lib/language'
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const totalItems = useCartStore((s) => s.totalItems())
   const navigate = useNavigate()
+  const { language, setLanguage, t } = useLanguage()
 
-  const navLinks = [
-    { label: 'Accueil', to: '/' },
-    { label: 'Boutique', to: '/shop' },
-    { label: 'Nos Packs', to: '/shop?category=pack' },
+  type NavLinkKey = 'home' | 'shop' | 'packs'
+
+  const navLinks: { key: NavLinkKey; to: string }[] = [
+    { key: 'home', to: '/' },
+    { key: 'shop', to: '/shop' },
+    { key: 'packs', to: '/shop?category=pack' },
   ]
 
   return (
@@ -27,7 +31,7 @@ export function Navbar() {
             </div>
             <div className="flex flex-col leading-none">
               <span className="text-lg font-bold tracking-tight text-foreground">Dar Nour</span>
-              <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Cosmétiques Marocains</span>
+              <span className="text-[10px] text-muted-foreground tracking-widest uppercase">{t('brandTagline')}</span>
             </div>
           </Link>
 
@@ -38,18 +42,27 @@ export function Navbar() {
                 to={link.to}
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
             <Button
+              variant="outline"
+              size="sm"
+              className="rounded-xl"
+              onClick={() => setLanguage(language === 'fr' ? 'ar' : 'fr')}
+            >
+              {t('languageToggle')}
+            </Button>
+
+            <Button
               variant="ghost"
               size="icon"
               className="relative"
               onClick={() => navigate('/cart')}
-              aria-label="Panier"
+              aria-label={t('cartAria')}
             >
               <ShoppingBag className="size-5" />
               {totalItems > 0 && (
@@ -85,7 +98,7 @@ export function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="px-2 py-2.5 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             ))}
           </nav>

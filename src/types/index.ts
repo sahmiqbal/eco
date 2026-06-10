@@ -39,12 +39,13 @@ export interface Order {
   address: string
   items: OrderItem[]
   total: number
-  status: 'pending' | 'confirmed'
+  delivery_fee?: number | null
+  status: 'pending' | 'confirmed' | 'preparing' | 'dispatched' | 'delivered' | 'cancelled'
   contact_preference: 'whatsapp' | 'call'
-  call_time?: string | null
   note?: string | null
+  order_number?: string | null
   created_at: string
 }
 
-export type OrderStatus = 'pending' | 'confirmed'
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'dispatched' | 'delivered' | 'cancelled'
 export type ContactPreference = 'whatsapp' | 'call'

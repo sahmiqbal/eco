@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { Toaster } from '@/components/ui/sonner'
 import { CustomerLayout } from '@/components/layout/CustomerLayout'
 import { AdminLayout } from '@/components/admin/AdminLayout'
+import { LanguageProvider } from '@/lib/language'
 import { HomePage } from '@/pages/customer/HomePage'
 import { ShopPage } from '@/pages/customer/ShopPage'
 import { ProductPage } from '@/pages/customer/ProductPage'
@@ -16,9 +17,15 @@ import { AdminProductsPage } from '@/pages/admin/AdminProductsPage'
 function ScrollToTop() {
   const { pathname } = useLocation()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  }, [])
 
   return null
 }
@@ -26,8 +33,9 @@ function ScrollToTop() {
 export function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
+      <LanguageProvider>
+        <ScrollToTop />
+        <Routes>
         <Route element={<CustomerLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
@@ -48,6 +56,7 @@ export function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toaster />
+      </LanguageProvider>
     </BrowserRouter>
   )
 }

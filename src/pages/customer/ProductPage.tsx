@@ -13,6 +13,7 @@ import {
 } from '../../components/ui/carousel'
 import { useCartStore, getBundlePrice } from '../../store/cartStore'
 import { supabase } from '../../lib/supabase'
+import { useLanguage } from '../../lib/language'
 import { cn, getProductBeforeAfterImages, getProductImages } from '../../lib/utils'
 import { BeforeAfter } from '../../components/shop/BeforeAfter'
 import type { Product } from '../../types'
@@ -20,6 +21,7 @@ import type { Product } from '../../types'
 export function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [qty, setQty] = useState(1)
@@ -82,9 +84,9 @@ export function ProductPage() {
 
   if (!product) return (
     <div className="container mx-auto px-4 max-w-5xl py-20 text-center">
-      <h2 className="text-xl font-semibold mb-2">Produit introuvable</h2>
+      <h2 className="text-xl font-semibold mb-2">{t('productNotFound')}</h2>
       <Button variant="outline" asChild className="mt-4">
-        <Link to="/shop">Retour à la boutique</Link>
+        <Link to="/shop">{t('returnToShop')}</Link>
       </Button>
     </div>
   )
@@ -99,14 +101,14 @@ export function ProductPage() {
   return (
     <div className="container mx-auto px-4 max-w-4xl py-6 animate-fade-up">
       <Button variant="ghost" size="sm" className="mb-4 gap-2 text-muted-foreground" onClick={() => navigate(-1)}>
-        <ArrowLeft className="size-4" /> Retour
+        <ArrowLeft className="size-4" /> {t('back')}
       </Button>
 
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div className="space-y-6">
           <div className="overflow-hidden rounded-3xl border border-border bg-secondary">
             <Carousel opts={{ loop: true }} className="relative">
-              <CarouselContent className="min-h-[320px] sm:min-h-[420px]">
+              <CarouselContent className="w-full">
                 {carouselSlides.length > 0 ? (
                   carouselSlides.map((src, index) => (
                     <CarouselItem key={`product-slide-${index}`}>
@@ -116,17 +118,12 @@ export function ProductPage() {
                           alt={`${product.name} image ${index + 1}`}
                           className="h-full w-full object-cover"
                         />
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-4 text-white">
-                          <p className="text-xs uppercase tracking-[0.3em] text-white/80">
-                            {product.category === 'pack' ? 'Pack Hammam' : 'Produit individuel'}
-                          </p>
-                        </div>
                       </div>
                     </CarouselItem>
                   ))
                 ) : (
                   <CarouselItem>
-                    <div className="h-[320px] sm:h-[420px] w-full flex items-center justify-center p-8">
+                    <div className="relative h-full w-full flex items-center justify-center p-8">
                       <Package className="size-20 text-muted-foreground/30" />
                     </div>
                   </CarouselItem>
@@ -155,13 +152,11 @@ export function ProductPage() {
 
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                {product.category === 'pack' ? 'Pack Hammam' : 'Produit individuel'}
-              </Badge>
+
               {product.category === 'pack' && (
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   {[1,2,3,4,5].map((s) => <Star key={s} className="size-4 fill-gold text-gold" />)}
-                  <span>Bestseller</span>
+                  <span>{t('bestseller')}</span>
                 </div>
               )}
             </div>
@@ -173,15 +168,15 @@ export function ProductPage() {
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-3xl border border-border bg-card p-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">Prix</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">{t('priceLabel')}</p>
                 <p className="text-2xl font-bold text-primary">{product.price} MAD</p>
                 {product.price_2 && <p className="text-xs text-muted-foreground mt-1">2 unités: {product.price_2} MAD</p>}
                 {product.price_3plus && <p className="text-xs text-muted-foreground mt-1">3+ unités: {product.price_3plus} MAD</p>}
               </div>
               <div className="rounded-3xl border border-border bg-card p-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">Stock</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] mb-2">{t('stockLabel')}</p>
                 <p className={cn('text-sm font-medium', product.stock === 0 ? 'text-destructive' : 'text-foreground')}>
-                  {product.stock === 0 ? 'Rupture de stock' : `${product.stock} disponibles`}
+                  {product.stock === 0 ? t('outOfStock') : `${product.stock} ${t('available')}`}
                 </p>
               </div>
             </div>
@@ -190,11 +185,11 @@ export function ProductPage() {
 
         <div className="space-y-6">
           <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Commander</p>
+<p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">{t('orderSection')}</p>
 
             <div className="space-y-4">
               <div className="rounded-2xl border border-border bg-secondary p-4">
-                <p className="text-xs text-muted-foreground mb-2">Tarifs dégressifs</p>
+                <p className="text-xs text-muted-foreground mb-2">{t('tierPricing')}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { qty: 1, price: product.price, label: '1 unité' },
@@ -220,7 +215,7 @@ export function ProductPage() {
               </div>
 
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-secondary p-4">
-                <div className="text-sm text-muted-foreground">Quantité</div>
+                <div className="text-sm text-muted-foreground">{t('quantity')}</div>
                 <div className="inline-flex items-center rounded-xl border border-border bg-background">
                   <Button variant="ghost" size="icon" className="rounded-l-xl" onClick={() => setQty(Math.max(1, qty - 1))}>
                     <Minus className="size-4" />
@@ -244,23 +239,23 @@ export function ProductPage() {
               ) : (
                 <div className="space-y-3">
                   <Button size="lg" className="w-full rounded-2xl gap-2" onClick={addToCart}>
-                    <ShoppingBag className="size-5" /> Ajouter au panier
+                    <ShoppingBag className="size-5" /> {t('addToCart')}
                   </Button>
                   <Button size="lg" variant="outline" className="w-full rounded-2xl" onClick={() => { addToCart(); navigate('/cart') }}>
-                    Commander maintenant
+                    {t('orderNow')}
                   </Button>
                 </div>
               )}
             </div>
 
             {cartItem && (
-              <p className="text-sm text-primary text-center">✓ {cartItem.quantity} dans votre panier</p>
+              <p className="text-sm text-primary text-center">✓ {cartItem.quantity} {t('inYourCart')}</p>
             )}
           </div>
 
           {product.ingredients && (
             <div className="rounded-3xl border border-border bg-card p-5">
-              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">Ingrédients</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">{t('ingredients')}</p>
               <p className="text-sm text-muted-foreground leading-relaxed">{product.ingredients}</p>
             </div>
           )}

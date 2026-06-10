@@ -10,6 +10,7 @@ import {
   CarouselNext,
 } from '../ui/carousel'
 import { useCartStore } from '../../store/cartStore'
+import { useLanguage } from '../../lib/language'
 import type { Product } from '../../types'
 import { cn, getProductImages } from '../../lib/utils'
 
@@ -19,6 +20,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const { t } = useLanguage()
   const addItem = useCartStore((s) => s.addItem)
   const isOutOfStock = product.stock === 0
   const isPack = product.category === 'pack'
@@ -37,20 +39,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
       'shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1',
       className
     )}>
-      {isPack && (
-        <div className="absolute top-2 left-2 z-10">
-          <Badge className="bg-gold text-gold-foreground text-[10px] font-semibold px-2 py-0.5 shadow-sm">
-            ✦ PACK
-          </Badge>
-        </div>
-      )}
-      {discount && !isPack && (
-        <div className="absolute top-2 left-2 z-10">
-          <Badge className="bg-primary text-primary-foreground text-[10px] font-semibold">
-            -{discount}%
-          </Badge>
-        </div>
-      )}
       {isOutOfStock && (
         <div className="absolute inset-0 bg-background/60 z-20 flex items-center justify-center rounded-2xl">
           <div className="bg-background border border-border rounded-xl px-4 py-2 flex items-center gap-2 shadow-md">
@@ -61,9 +49,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
       )}
 
       <Link to={`/shop/${product.slug}`} className="block">
-        <div className="relative overflow-hidden bg-secondary">
+        <div className="relative overflow-hidden bg-card">
           <Carousel opts={{ loop: true }} className="relative">
-            <CarouselContent className="min-h-[240px] sm:min-h-[280px]">
+            <CarouselContent className="w-full">
               {carouselSlides.length > 0 ? (
                 carouselSlides.map((src, index) => (
                   <CarouselItem key={`${product.id}-slide-${index}`}>
@@ -79,7 +67,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 ))
               ) : (
                 <CarouselItem>
-                  <div className="h-[240px] sm:h-[280px] w-full flex items-center justify-center">
+                  <div className="relative h-full w-full flex items-center justify-center">
                     <Package className="size-12 text-muted-foreground/30" />
                   </div>
                 </CarouselItem>
@@ -97,7 +85,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <div className="absolute inset-x-0 top-2 flex items-center justify-between px-3">
             {isPack ? (
               <Badge className="bg-gold text-gold-foreground text-[10px] font-semibold px-2 py-1 shadow-sm">
-                ✦ PACK
+                {t('packBadge')}
               </Badge>
             ) : discount ? (
               <Badge className="bg-primary text-primary-foreground text-[10px] font-semibold px-2 py-1">
@@ -115,7 +103,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               {[1,2,3,4,5].map((s) => (
                 <Star key={s} className="size-3 fill-gold text-gold" />
               ))}
-              <span className="text-[10px] text-muted-foreground ml-1">Bestseller</span>
+              <span className="text-[10px] text-muted-foreground ml-1">{t('bestseller')}</span>
             </div>
           )}
         </div>
@@ -141,12 +129,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </div>
             <div className="text-xs text-muted-foreground space-y-0.5">
               {product.price_2 && (
-                <p>2 unités: <span className="font-medium text-foreground">{product.price_2} MAD</span></p>
+                <p>{t('twoUnits', { price: product.price_2 })}</p>
               )}
               {product.price_3plus && (
-                <p>3+ unités: <span className="font-medium text-foreground">{product.price_3plus} MAD</span></p>
+                <p>{t('threePlusUnits', { price: product.price_3plus })}</p>
               )}
-              <p>Stock: <span className="font-medium text-foreground">{product.stock} disponibles</span></p>
+              <p>{t('stockAvailability', { count: product.stock })}</p>
             </div>
           </div>
 
@@ -158,7 +146,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             onClick={() => addItem(product)}
           >
             <ShoppingBag className="size-3.5" />
-            Ajouter
+            {t('addToCart')}
           </Button>
         </div>
       </div>

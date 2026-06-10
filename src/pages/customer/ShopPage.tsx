@@ -5,16 +5,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useLanguage } from '@/lib/language'
 import { supabase } from '@/lib/supabase'
 import type { Product } from '@/types'
 
 const CATEGORIES = [
-  { value: 'all', label: 'Tout' },
-  { value: 'pack', label: '✦ Packs' },
-  { value: 'individual', label: 'Individuels' },
+  { value: 'all', labelKey: 'categoryAll' },
+  { value: 'pack', labelKey: 'categoryPack' },
+  { value: 'individual', labelKey: 'categoryIndividual' },
 ]
 
 export function ShopPage() {
+  const { t } = useLanguage()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -39,15 +41,15 @@ export function ShopPage() {
   return (
     <div className="container mx-auto px-4 max-w-6xl py-8 animate-fade-up">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">Notre Boutique</h1>
-        <p className="text-muted-foreground text-sm">Découvrez nos soins naturels marocains</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">{t('shopTitle')}</h1>
+        <p className="text-muted-foreground text-sm">{t('shopDescription')}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Rechercher un produit..."
+            placeholder={t('searchPlaceholder')}
             className="pl-9 rounded-xl"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -67,7 +69,7 @@ export function ShopPage() {
                 setSearch('')
               }}
             >
-              {c.label}
+              {t(c.labelKey)}
             </Button>
           ))}
         </div>
@@ -91,13 +93,15 @@ export function ShopPage() {
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
             <ShoppingBag className="size-8 text-muted-foreground" />
           </div>
-          <h3 className="font-semibold text-foreground mb-1">Aucun produit trouvé</h3>
-          <p className="text-sm text-muted-foreground">Essayez une autre recherche</p>
+          <h3 className="font-semibold text-foreground mb-1">{t('noProductsFound')}</h3>
+          <p className="text-sm text-muted-foreground">{t('tryAnotherSearch')}</p>
         </div>
       ) : (
         <>
           <p className="text-xs text-muted-foreground mb-4">
-            {filtered.length} produit{filtered.length > 1 ? 's' : ''}
+            {filtered.length === 1
+              ? t('productCountSingular')
+              : t('productCountPlural', { count: filtered.length })}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {filtered.map((product) => (

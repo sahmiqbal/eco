@@ -49,17 +49,23 @@ function Carousel({
   children,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
-  const [carouselRef, api] = useEmblaCarousel(
-    {
-      ...opts,
-      axis: orientation === "horizontal" ? "x" : "y",
-    },
-    plugins
-  )
+  const carouselOptions = React.useMemo<CarouselOptions>(() => ({
+    align: "center",
+    loop: true,
+    dragFree: false,
+    skipSnaps: false,
+    speed: 9,
+    containScroll: "trimSnaps",
+    ...opts,
+    axis: orientation === "horizontal" ? "x" : "y",
+  }), [orientation, opts])
+
+  const [carouselRef, api] = useEmblaCarousel(carouselOptions, plugins)
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([])
+  const [isPaused, setIsPaused] = React.useState(false)
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
@@ -110,6 +116,19 @@ function Carousel({
     }
   }, [api, onSelect])
 
+  React.useEffect(() => {
+    if (!api || scrollSnaps.length <= 1) return
+
+    const interval = window.setInterval(() => {
+      if (isPaused) return
+
+      const nextIndex = (api.selectedScrollSnap() + 1) % scrollSnaps.length
+      api.scrollTo(nextIndex)
+    }, 3000)
+
+    return () => window.clearInterval(interval)
+  }, [api, isPaused, scrollSnaps.length])
+
   return (
     <CarouselContext.Provider
       value={{
@@ -126,6 +145,12 @@ function Carousel({
     >
       <div
         onKeyDownCapture={handleKeyDown}
+        onPointerDown={() => setIsPaused(true)}
+        onPointerUp={() => setIsPaused(false)}
+        onPointerLeave={() => setIsPaused(false)}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        style={{ touchAction: "pan-y" }}
         className={cn("relative", className)}
         role="region"
         aria-roledescription="carousel"
@@ -134,7 +159,7 @@ function Carousel({
       >
         {children}
         {scrollSnaps.length > 1 && (
-          <div className="flex justify-center gap-2 mt-4">
+          <div className="absolute inset-x-0 bottom-3 flex justify-center gap-2">
             {scrollSnaps.map((_, index) => (
               <button
                 key={index}
@@ -159,13 +184,13 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       ref={carouselRef}
-      className="overflow-hidden"
+      className="overflow-hidden aspect-square w-full"
       data-slot="carousel-content"
     >
       <div
         className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+          "flex h-full",
+          orientation === "vertical" ? "flex-col" : "flex-row",
           className
         )}
         {...props}
@@ -175,8 +200,6 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
-  const { orientation } = useCarousel()
-
   return (
     <div
       role="group"
@@ -184,7 +207,6 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="carousel-item"
       className={cn(
         "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
       {...props}

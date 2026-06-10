@@ -97,6 +97,28 @@ export function AdminProductsPage() {
   const [saving, setSaving] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<keyof ProductForm, string>>>({})
   const [saveError, setSaveError] = useState('')
+  const [previewUrls, setPreviewUrls] = useState({
+    productImages: [] as string[],
+    beforeImage: null as string | null,
+    afterImage: null as string | null,
+  })
+
+  useEffect(() => {
+    const urls: string[] = []
+    const productImages = form.imageFiles.map((file) => {
+      const url = URL.createObjectURL(file)
+      urls.push(url)
+      return url
+    })
+    const beforeImage = form.beforeImageFile ? URL.createObjectURL(form.beforeImageFile) : null
+    if (beforeImage) urls.push(beforeImage)
+    const afterImage = form.afterImageFile ? URL.createObjectURL(form.afterImageFile) : null
+    if (afterImage) urls.push(afterImage)
+
+    setPreviewUrls({ productImages, beforeImage, afterImage })
+
+    return () => urls.forEach((url) => URL.revokeObjectURL(url))
+  }, [form.imageFiles, form.beforeImageFile, form.afterImageFile])
 
   useEffect(() => {
     supabase.from('products').select('*').order('created_at', { ascending: false })
@@ -149,6 +171,7 @@ export function AdminProductsPage() {
 
     try {
       let imageUrls = normalizeImageUrls(form.image_urls)
+      const mainImageUrl = form.image_url?.trim() || null
       let beforeImageUrl = form.before_image?.trim() || null
       let afterImageUrl = form.after_image?.trim() || null
 
@@ -170,14 +193,18 @@ export function AdminProductsPage() {
         afterImageUrl = uploadedUrl
       }
 
+      const allImageUrls = mainImageUrl
+        ? [mainImageUrl, ...imageUrls.filter((url) => url !== mainImageUrl)]
+        : imageUrls
+
       const payload = {
         name: form.name,
         slug: form.slug,
         price: form.price,
         price_2: form.price_2,
         price_3plus: form.price_3plus,
-        image_urls: imageUrls.length > 0 ? imageUrls : null,
-        image_url: imageUrls[0] || form.image_url || null,
+        image_urls: allImageUrls.length > 0 ? allImageUrls : null,
+        image_url: mainImageUrl || allImageUrls[0] || null,
         before_image: beforeImageUrl,
         after_image: afterImageUrl,
         description: form.description,
@@ -355,7 +382,22 @@ export function AdminProductsPage() {
                 <Input type="number" className="rounded-xl" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} />
               </div>
               <div className="col-span-2">
-                <Label className="text-xs mb-1.5 block">Images (une URL par ligne)</Label>
+                <Label className="text-xs mb-1.5 block">Image principale (URL)</Label>
+                <Input
+                  className="rounded-xl"
+                  value={form.image_url}
+                  onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                  placeholder="https://example.com/produit.webp"
+                />
+                {form.image_url && (
+                  <div className="mt-3 w-full overflow-hidden rounded-2xl border border-border bg-secondary">
+                    <img src={form.image_url} alt="Aperçu de l'image principale" className="w-full h-48 object-cover" />
+                  </div>
+                )}
+              </div>
+
+              <div className="col-span-2">
+                <Label className="text-xs mb-1.5 block">Images supplémentaires (une URL par ligne)</Label>
                 <Textarea
                   className="rounded-xl text-xs"
                   value={(form.image_urls ?? []).join('\n')}
@@ -363,7 +405,7 @@ export function AdminProductsPage() {
                     ...form,
                     image_urls: e.target.value.split(/\r?\n/).map((url) => url.trim()).filter(Boolean),
                   })}
-                  placeholder="/image-1.jpg\n/image-2.png"
+                  placeholder="https://example.com/image-1.jpg\nhttps://example.com/image-2.webp"
                 />
               </div>
             </div>
@@ -387,24 +429,33 @@ export function AdminProductsPage() {
                   </p>
                 </label>
                 {form.imageFiles.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {form.imageFiles.map((file, index) => (
-                      <div key={index} className="flex items-center gap-2 bg-secondary rounded-lg p-2">
-                        <span className="text-xs truncate flex-1">{file.name}</span>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          className="size-6"
-                          onClick={() => setForm({
-                            ...form,
-                            imageFiles: form.imageFiles.filter((_, i) => i !== index)
-                          })}
-                        >
-                          <X className="size-3" />
-                        </Button>
-                      </div>
-                    ))}
+                  <div className="mt-3 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      {previewUrls.productImages.map((src, index) => (
+                        <div key={index} className="overflow-hidden rounded-2xl border border-border bg-secondary">
+                          <img src={src} alt={`Aperçu image ${index + 1}`} className="w-full h-24 object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="space-y-2">
+                      {form.imageFiles.map((file, index) => (
+                        <div key={index} className="flex items-center gap-2 bg-secondary rounded-lg p-2">
+                          <span className="text-xs truncate flex-1">{file.name}</span>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            className="size-6"
+                            onClick={() => setForm({
+                              ...form,
+                              imageFiles: form.imageFiles.filter((_, i) => i !== index)
+                            })}
+                          >
+                            <X className="size-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -417,7 +468,7 @@ export function AdminProductsPage() {
                   className="rounded-xl"
                   value={form.before_image ?? ''}
                   onChange={(e) => setForm({ ...form, before_image: e.target.value })}
-                  placeholder="/before-image.jpg"
+                  placeholder="https://example.com/before-image.webp"
                   aria-invalid={!!errors.before_image}
                 />
                 {errors.before_image && <p className="text-xs text-destructive mt-1">{errors.before_image}</p>}
@@ -428,7 +479,7 @@ export function AdminProductsPage() {
                   className="rounded-xl"
                   value={form.after_image ?? ''}
                   onChange={(e) => setForm({ ...form, after_image: e.target.value })}
-                  placeholder="/after-image.png"
+                  placeholder="https://example.com/after-image.webp"
                   aria-invalid={!!errors.after_image}
                 />
                 {errors.after_image && <p className="text-xs text-destructive mt-1">{errors.after_image}</p>}
@@ -453,18 +504,25 @@ export function AdminProductsPage() {
                     </p>
                   </label>
                   {form.beforeImageFile && (
-                    <div className="mt-2 flex items-center gap-2 bg-secondary rounded p-1">
-                      <span className="text-xs truncate flex-1">{form.beforeImageFile.name}</span>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        className="size-5"
-                        onClick={() => setForm({ ...form, beforeImageFile: null })}
-                      >
-                        <X className="size-3" />
-                      </Button>
-                    </div>
+                    <>
+                      <div className="mt-2 flex items-center gap-2 bg-secondary rounded p-1">
+                        <span className="text-xs truncate flex-1">{form.beforeImageFile.name}</span>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="size-5"
+                          onClick={() => setForm({ ...form, beforeImageFile: null })}
+                        >
+                          <X className="size-3" />
+                        </Button>
+                      </div>
+                      {previewUrls.beforeImage && (
+                        <div className="mt-2 overflow-hidden rounded-2xl border border-border bg-secondary">
+                          <img src={previewUrls.beforeImage} alt="Aperçu image avant" className="w-full h-24 object-cover" />
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -485,18 +543,25 @@ export function AdminProductsPage() {
                     </p>
                   </label>
                   {form.afterImageFile && (
-                    <div className="mt-2 flex items-center gap-2 bg-secondary rounded p-1">
-                      <span className="text-xs truncate flex-1">{form.afterImageFile.name}</span>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        className="size-5"
-                        onClick={() => setForm({ ...form, afterImageFile: null })}
-                      >
-                        <X className="size-3" />
-                      </Button>
-                    </div>
+                    <>
+                      <div className="mt-2 flex items-center gap-2 bg-secondary rounded p-1">
+                        <span className="text-xs truncate flex-1">{form.afterImageFile.name}</span>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="size-5"
+                          onClick={() => setForm({ ...form, afterImageFile: null })}
+                        >
+                          <X className="size-3" />
+                        </Button>
+                      </div>
+                      {previewUrls.afterImage && (
+                        <div className="mt-2 overflow-hidden rounded-2xl border border-border bg-secondary">
+                          <img src={previewUrls.afterImage} alt="Aperçu image après" className="w-full h-24 object-cover" />
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

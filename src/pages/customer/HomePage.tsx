@@ -5,10 +5,12 @@ import { Button } from '../../components/ui/button'
 import { Badge } from '../../components/ui/badge'
 import { ProductCard } from '../../components/shop/ProductCard'
 import { supabase } from '../../lib/supabase'
+import { useLanguage } from '../../lib/language'
 import type { Product } from '../../types'
 import { Skeleton } from '../../components/ui/skeleton'
 
 export function HomePage() {
+  const { t } = useLanguage()
   const [featured, setFeatured] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -25,9 +27,9 @@ export function HomePage() {
   }, [])
 
   const perks = [
-    { icon: Truck, title: 'Livraison Maroc', desc: 'Partout au Maroc en 2–4 jours' },
-    { icon: Shield, title: '100% Naturel', desc: 'Formules authentiques marocaines' },
-    { icon: CheckCircle, title: 'Qualité Garantie', desc: 'Satisfaite ou remboursée' },
+    { icon: Truck, title: t('delivery'), desc: t('deliveryDesc') },
+    { icon: Shield, title: t('natural'), desc: t('naturalDesc') },
+    { icon: CheckCircle, title: t('quality'), desc: t('qualityDesc') },
   ]
 
   return (
@@ -45,26 +47,25 @@ export function HomePage() {
         <div className="relative container mx-auto px-4 max-w-6xl py-24 md:py-36">
           <div className="max-w-lg">
             <Badge className="bg-gold/90 text-gold-foreground mb-4 text-xs px-3 py-1">
-              ✦ Cosmétiques Marocains Authentiques
+              {t('heroBadge')}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
-              Le Rituel Hammam
+              {t('heroTitleLine1')}
               <br />
-              <span className="gold-text">de Luxe</span>
+              <span className="gold-text">{t('heroTitleLine2')}</span>
             </h1>
             <p className="text-white/80 text-base md:text-lg leading-relaxed mb-8">
-              Redécouvrez la tradition du hammam marocain avec nos soins naturels
-              formulés à base des trésors de beauté du Maroc.
+              {t('heroDescription')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button size="lg" className="rounded-xl gap-2 shadow-lg" asChild>
                 <Link to="/shop">
-                  Découvrir nos packs <ArrowRight className="size-4" />
+                  {t('discoverPacks')} <ArrowRight className="size-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="rounded-xl bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white" asChild>
                 <Link to="/shop?category=individual">
-                  Produits individuels
+                  {t('individualProducts')}
                 </Link>
               </Button>
             </div>
@@ -76,14 +77,14 @@ export function HomePage() {
       <section className="container mx-auto px-4 max-w-6xl py-16">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Nos bestsellers</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">{t('featuredSub')}</p>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-              Packs <span className="text-primary">Populaires</span>
+              {t('packsPopular')}
             </h2>
           </div>
           <Button variant="ghost" size="sm" className="gap-1 text-primary hidden sm:flex" asChild>
             <Link to="/shop">
-              Tout voir <ArrowRight className="size-4" />
+              {t('viewAllProducts')} <ArrowRight className="size-4" />
             </Link>
           </Button>
         </div>
@@ -111,7 +112,7 @@ export function HomePage() {
 
         <div className="text-center mt-8 sm:hidden">
           <Button variant="outline" className="rounded-xl gap-2" asChild>
-            <Link to="/shop">Voir tous les produits <ArrowRight className="size-4" /></Link>
+            <Link to="/shop">{t('viewAllProductsShort')} <ArrowRight className="size-4" /></Link>
           </Button>
         </div>
       </section>
@@ -138,14 +139,14 @@ export function HomePage() {
       {/* ── Testimonials ── */}
       <section className="container mx-auto px-4 max-w-6xl py-16">
         <div className="text-center mb-10">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Elles nous font confiance</p>
-          <h2 className="text-2xl font-bold text-foreground">Avis de nos clientes</h2>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">{t('trustTitle')}</p>
+          <h2 className="text-2xl font-bold text-foreground">{t('trustHeading')}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { name: 'Fatima Z.', city: 'Casablanca', text: 'Le pack Aker Fassi est incroyable ! Ma peau n\'a jamais été aussi douce et lumineuse. Je recommande vivement.', rating: 5 },
-            { name: 'Samira B.', city: 'Marrakech', text: 'Qualité exceptionnelle, produits 100% naturels. Le gommage est le meilleur que j\'ai utilisé. Livraison rapide!', rating: 5 },
-            { name: 'Nadia K.', city: 'Rabat', text: 'J\'achète le pack Nila chaque mois. L\'huile capillaire a transformé mes cheveux. Merci Dar Nour!', rating: 5 },
+            { name: 'Fatima Z.', city: 'Casablanca', textKey: 'review1Text', rating: 5 },
+            { name: 'Samira B.', city: 'Marrakech', textKey: 'review2Text', rating: 5 },
+            { name: 'Nadia K.', city: 'Rabat', textKey: 'review3Text', rating: 5 },
           ].map((review) => (
             <div key={review.name} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
               <div className="flex gap-0.5 mb-3">
@@ -153,7 +154,7 @@ export function HomePage() {
                   <Star key={i} className="size-4 fill-gold text-gold" />
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{review.text}"</p>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t(review.textKey)}"</p>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                   <span className="text-xs font-bold text-primary">{review.name[0]}</span>
@@ -173,15 +174,15 @@ export function HomePage() {
         <div className="container mx-auto px-4 max-w-lg">
           <Sparkles className="size-8 text-primary-foreground/60 mx-auto mb-4" />
           <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-3">
-            Commandez Maintenant
+            {t('orderNowSectionTitle')}
           </h2>
           <p className="text-primary-foreground/80 mb-6 text-sm">
-            Profitez de nos offres bundle exclusives — Plus vous commandez, plus vous économisez.
+            {t('orderNowSectionText')}
           </p>
           <Button size="lg" variant="outline" className="rounded-xl border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary gap-2" asChild>
             <Link to="/shop">
               <Package className="size-4" />
-              Voir nos packs
+              {t('viewOurPacks')}
             </Link>
           </Button>
         </div>
