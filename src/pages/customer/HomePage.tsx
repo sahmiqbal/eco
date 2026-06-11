@@ -42,32 +42,41 @@ export function HomePage() {
             alt="Dar Nour"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/55 to-transparent" />
+          <div className="absolute left-0 top-0 w-1/3 h-full bg-gradient-to-r from-foreground/98/40 to-transparent opacity-60" />
         </div>
-        <div className="relative container mx-auto px-4 max-w-6xl py-24 md:py-36">
-          <div className="max-w-lg">
-            <Badge className="bg-gold/90 text-gold-foreground mb-4 text-xs px-3 py-1">
-              {t('heroBadge')}
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
-              {t('heroTitleLine1')}
-              <br />
-              <span className="gold-text">{t('heroTitleLine2')}</span>
-            </h1>
-            <p className="text-white/80 text-base md:text-lg leading-relaxed mb-8">
-              {t('heroDescription')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="rounded-xl gap-2 shadow-lg" asChild>
-                <Link to="/shop">
-                  {t('discoverPacks')} <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-xl bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white" asChild>
-                <Link to="/shop?category=individual">
-                  {t('individualProducts')}
-                </Link>
-              </Button>
+
+        <div className="relative container mx-auto px-4 max-w-6xl py-28 md:py-40">
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 items-center">
+            <div className="md:col-span-6 lg:col-span-5">
+              <Badge className="bg-gold/90 text-gold-foreground mb-4 text-xs px-3 py-1 inline-flex items-center">
+                {t('heroBadge')}
+              </Badge>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4 max-w-xl">
+                {t('heroTitleLine1')}
+                <br />
+                <span className="gold-text">{t('heroTitleLine2')}</span>
+              </h1>
+              <p className="text-white/85 text-lg md:text-xl leading-relaxed mb-8 max-w-prose">
+                {t('heroDescription')}
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button size="lg" className="rounded-xl gap-2 shadow-lg bg-gold text-gold-foreground hover:brightness-95" asChild>
+                  <Link to="/shop">
+                    {t('discoverPacks')} <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="rounded-xl border-white/30 text-white hover:bg-white/10" asChild>
+                  <Link to="/shop?category=individual">
+                    {t('individualProducts')}
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="hidden md:block md:col-span-6 lg:col-span-7" aria-hidden>
+              {/* decorative spacing column to keep image visible and composition balanced */}
             </div>
           </div>
         </div>
@@ -128,7 +137,7 @@ export function HomePage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-sm text-foreground">{title}</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{desc}</p>
                 </div>
               </div>
             ))}
@@ -149,15 +158,15 @@ export function HomePage() {
             { name: 'Nadia K.', city: 'Rabat', textKey: 'review3Text', rating: 5 },
           ].map((review) => (
             <div key={review.name} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-              <div className="flex gap-0.5 mb-3">
+              <div className="flex gap-1.5 mb-3">
                 {[...Array(review.rating)].map((_, i) => (
                   <Star key={i} className="size-4 fill-gold text-gold" />
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t(review.textKey)}"</p>
-              <div className="flex items-center gap-2">
+              <p className="text-base text-muted-foreground leading-relaxed mb-4">"{t(review.textKey)}"</p>
+              <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-xs font-bold text-primary">{review.name[0]}</span>
+                  <span className="text-sm font-bold text-primary">{review.name[0]}</span>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">{review.name}</p>

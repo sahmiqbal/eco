@@ -80,6 +80,7 @@ export function Navbar() {
               className="md:hidden"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Menu"
+              aria-expanded={menuOpen}
             >
               {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             </Button>
@@ -88,15 +89,15 @@ export function Navbar() {
 
         <div className={cn(
           'md:hidden overflow-hidden transition-all duration-300',
-          menuOpen ? 'max-h-48 pb-4' : 'max-h-0'
+          menuOpen ? 'max-h-72 pb-4' : 'max-h-0'
         )}>
-          <nav className="flex flex-col gap-1 pt-2">
+          <nav className="flex flex-col gap-2 pt-3 px-2">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setMenuOpen(false)}
-                className="px-2 py-2.5 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
+                className="block w-full px-3 py-3 text-base font-semibold text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
               >
                 {t(link.key)}
               </Link>
