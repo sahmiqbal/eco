@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ShoppingBag, ArrowLeft, Package, Star, Minus, Plus, CircleAlert as AlertCircle } from 'lucide-react'
 import { Button } from '../../components/ui/button'
+import { Badge } from '../../components/ui/badge'
 import { Skeleton } from '../../components/ui/skeleton'
 import {
   Carousel,
@@ -24,15 +25,27 @@ export function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [qty, setQty] = useState(1)
+  const [carouselApi, setCarouselApi] = useState<any>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const { addItem, items } = useCartStore()
 
   const cartItem = items.find((i) => i.product.id === product?.id)
 
   const productImages = product ? getProductImages(product) : []
-  const carouselSlides = productImages.length
-    ? Array.from({ length: 4 }, (_, index) => productImages[index % productImages.length])
-    : []
+  const carouselSlides = productImages.length > 0 ? productImages : []
   const beforeAfterImages = product ? getProductBeforeAfterImages(product) : []
+
+  useEffect(() => {
+    if (!carouselApi) return
+    const onSelect = () => {
+      setSelectedIndex(carouselApi.selectedScrollSnap())
+    }
+    carouselApi.on('select', onSelect)
+    onSelect()
+    return () => {
+      carouselApi.off('select', onSelect)
+    }
+  }, [carouselApi])
 
   useEffect(() => {
     let isMounted = true
@@ -105,8 +118,8 @@ export function ProductPage() {
 
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div className="space-y-6">
-          <div className="overflow-hidden rounded-3xl border border-border bg-secondary">
-            <Carousel opts={{ loop: true }} className="relative">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-secondary">
+            <Carousel opts={{ loop: true }} className="relative" setApi={setCarouselApi}>
               <CarouselContent className="w-full">
                 {carouselSlides.length > 0 ? (
                   carouselSlides.map((src, index) => (
@@ -136,7 +149,53 @@ export function ProductPage() {
                 </>
               )}
             </Carousel>
+            <div className="absolute inset-0 z-10 flex flex-col justify-between gap-3 p-3 sm:p-4 pointer-events-none">
+              <div className="flex justify-between items-center gap-2">
+                {product.category === 'pack' && (
+                  <>
+                    <Badge className="bg-gold/15 text-gold text-[10px] sm:text-[11px] font-bold rounded-lg px-3 py-1.5 shadow-md">
+                      {t('packBadge')}
+                    </Badge>
+                   
+                  </>
+                )}
+                
+                 <Badge className="bg-gold/15 text-gold text-[9px] sm:text-[10px] font-semibold rounded-lg px-3 py-1.5 flex items-center gap-1">
+                      <Star className="size-3.5 fill-gold" />
+                      {t('bestseller')}
+                    </Badge>
+              </div>
+            </div>
           </div>
+          {productImages.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                <span>Galerie</span>
+                <span>{productImages.length} images</span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {productImages.map((src, index) => (
+                  <button
+                    key={`product-thumb-${index}`}
+                    onClick={() => carouselApi?.scrollTo(index)}
+                    className={cn(
+                      'h-16 w-20 sm:h-20 sm:w-28 min-w-[5rem] sm:min-w-[7rem] overflow-hidden rounded-3xl transition-all flex-shrink-0',
+                      selectedIndex === index
+                        ? 'border-2 border-primary shadow-md scale-105'
+                        : 'border-2 border-transparent bg-card/80 shadow-sm hover:border-border'
+                    )}
+                  >
+                    <img
+                      src={src}
+                      alt={`Product thumbnail ${index + 1}`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {beforeAfterImages.length >= 2 && (
             <div className="rounded-3xl border border-border bg-card p-4">
               
@@ -150,45 +209,21 @@ export function ProductPage() {
           )}
 
           <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2">
-
-              {product.category === 'pack' && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  {[1,2,3,4,5].map((s) => <Star key={s} className="size-4 fill-gold text-gold" />)}
-                  <span>{t('bestseller')}</span>
-                </div>
-              )}
-            </div>
-
             <div>
               <h1 className="text-3xl font-bold text-foreground leading-tight">{product.name}</h1>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
-
-
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">{t('orderSection')}</p>
-
-            <div className="mb-4 rounded-2xl border border-border bg-secondary p-3">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{t('stockLabel')}</span>
-                <span className={cn(
-                  'rounded-full px-3 py-1 text-[11px] font-semibold',
-                  product.stock === 0 ? 'bg-destructive/10 text-destructive' : 'bg-emerald-100 text-emerald-700'
-                )}>
-                  {product.stock === 0 ? t('outOfStock') : `${product.stock} ${t('available')}`}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-border bg-secondary p-4">
-                <p className="text-xs text-muted-foreground mb-2">{t('tierPricing')}</p>
-                <div className="flex flex-wrap gap-2">
+        <div className="space-y-4">
+          <div className="rounded-3xl border border-border bg-card p-1 shadow-sm">
+            <div className="space-y-2 text-center">
+              <div className="rounded-3xl border border-border bg-secondary p-au">
+                
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground p-1">{t('tierPricing')}</p>
+                
+                <div className="flex flex-wrap justify-center gap-3 p-1">
                   {[
                     { qty: 1, price: product.price, label: '1 unité' },
                     ...(product.price_2 ? [{ qty: 2, price: product.price_2, label: '2 unités' }] : []),
@@ -199,61 +234,67 @@ export function ProductPage() {
                       type="button"
                       onClick={() => setQty(tier.qty)}
                       className={cn(
-                        'min-w-[96px] rounded-2xl px-3 py-2 text-xs transition-all',
+                        'min-w-[96px] max-w-[12rem] rounded-3xl px-4 py-3 text-sm transition-all text-center flex-1 sm:flex-none',
                         qty >= tier.qty
-                          ? 'border border-primary bg-primary/10 text-primary font-semibold'
-                          : 'border border-border bg-background text-muted-foreground hover:border-primary/50'
+                          ? 'border border-primary bg-primary/10 text-primary font-semibold shadow-sm'
+                          : 'border border-border bg-white text-foreground hover:border-primary/50'
                       )}
                     >
-                      <div className="font-semibold">{tier.price} MAD</div>
-                      <div>{tier.label}</div>
+                      <div className="font-semibold leading-tight">{tier.price} MAD</div>
+                      <div className="leading-tight text-xs text-muted-foreground">{tier.label}</div>
                     </button>
                   ))}
                 </div>
               </div>
-
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-secondary p-4">
-                <div className="text-sm text-muted-foreground">{t('quantity')}</div>
-                <div className="inline-flex items-center rounded-xl border border-border bg-background">
-                  <Button variant="ghost" size="icon" className="rounded-l-xl" onClick={() => setQty(Math.max(1, qty - 1))}>
+                      {product.stock > 0 && (
+                <Badge className="bg-emerald-100/95 text-emerald-700 text-[10px] font-bold rounded-lg px-3 py-1.5 shadow-md">
+                  {product.stock} {t('available')}
+                </Badge>
+              )}
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{t('quantity')}</p>
+                <div className="inline-flex items-center justify-center rounded-full border border-border bg-background gap-3">
+                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setQty(Math.max(1, qty - 1))}>
                     <Minus className="size-4" />
                   </Button>
                   <span className="min-w-[2rem] text-center text-sm font-semibold">{qty}</span>
-                  <Button variant="ghost" size="icon" className="rounded-r-xl" onClick={() => setQty(qty + 1)}>
+                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setQty(qty + 1)}>
                     <Plus className="size-4" />
                   </Button>
                 </div>
               </div>
-
-              <div className="rounded-2xl border border-border bg-white p-4">
-                <p className="text-xs text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold text-primary">{total} MAD</p>
+              <div className="self-end">
+            
+            </div>
+              <div className="mx-auto max-w-[200px] space-y-1 rounded-3xl bg-white text-center">
+                <p className="text-xs uppercase font-bold tracking-[0.3em] text-muted-foreground">Total</p>
+                <p className="text-xl font-bold text-primary">{total} MAD</p>
               </div>
 
               {product.stock === 0 ? (
-                <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
+                <div className="rounded-3xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
                   <AlertCircle className="size-4 inline-block mr-2" /> {t('temporarilyUnavailable')}
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <Button size="lg" className="w-full rounded-2xl gap-2" onClick={addToCart}>
+                  <Button size="lg" className="w-full rounded-3xl gap-2" onClick={addToCart}>
                     <ShoppingBag className="size-5" /> {t('addToCart')}
                   </Button>
-                  <Button size="lg" variant="outline" className="w-full rounded-2xl" onClick={() => { addToCart(); navigate('/cart') }}>
+                  <Button size="lg" variant="outline" className="w-full rounded-3xl" onClick={() => { addToCart(); navigate('/cart') }}>
                     {t('orderNow')}
                   </Button>
                 </div>
               )}
             </div>
-
-            {cartItem && (
-              <p className="text-sm text-primary text-center">✓ {cartItem.quantity} {t('inYourCart')}</p>
-            )}
           </div>
+
+          {cartItem && (
+            <p className="text-sm text-primary text-center">✓ {cartItem.quantity} {t('inYourCart')}</p>
+          )}
 
           {product.ingredients && (
             <div className="rounded-3xl border border-border bg-card p-5">
-              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">{t('ingredients')}</p>
+              <p className="text-xs text-center uppercase tracking-[0.3em] text-muted-foreground mb-3">{t('ingredients')}</p>
               <p className="text-sm text-muted-foreground leading-relaxed">{product.ingredients}</p>
             </div>
           )}

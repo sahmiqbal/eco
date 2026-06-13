@@ -3,15 +3,27 @@ import { ShoppingBag, Menu, X, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 import { useCartStore } from '@/store/cartStore'
 import { cn } from '@/lib/utils'
-import { useLanguage } from '@/lib/language'
+import { useLanguage, type Language } from '@/lib/language'
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const totalItems = useCartStore((s) => s.totalItems())
   const navigate = useNavigate()
   const { language, setLanguage, t } = useLanguage()
+
+  const languageLabels: Record<Language, string> = {
+    fr: 'Français',
+    en: 'English',
+    ar: 'العربية',
+  }
 
   type NavLinkKey = 'home' | 'shop' | 'packs'
 
@@ -48,14 +60,27 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-xl"
-              onClick={() => setLanguage(language === 'fr' ? 'ar' : 'fr')}
-            >
-              {t('languageToggle')}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="rounded-xl">
+                  {languageLabels[language]}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={8}>
+                {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
+                  <DropdownMenuItem
+                    key={lang}
+                    onSelect={() => setLanguage(lang)}
+                    className={cn(
+                      language === lang ? 'font-semibold text-foreground' : 'text-muted-foreground',
+                      'cursor-pointer'
+                    )}
+                  >
+                    {languageLabels[lang]}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <Button
               variant="ghost"

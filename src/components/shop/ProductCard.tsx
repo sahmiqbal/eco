@@ -81,67 +81,75 @@ export function ProductCard({ product, className }: ProductCardProps) {
               </>
             )}
           </Carousel>
-
-          <div className="absolute inset-x-0 top-2 flex items-center justify-between px-3">
-            {isPack ? (
-              <Badge className="bg-gold text-gold-foreground text-[10px] font-semibold px-2 py-1 shadow-sm">
-                {t('packBadge')}
-              </Badge>
-            ) : discount ? (
-              <Badge className="bg-primary text-primary-foreground text-[10px] font-semibold px-2 py-1">
-                -{discount}%
-              </Badge>
-            ) : null}
+          <div className="absolute inset-0 flex flex-col items-start justify-between p-3 pointer-events-none">
+            <div className="flex justify-between w-full">
+              {isPack && (
+                <>
+                  <Badge className="bg-gold/15 text-gold text-[10px] font-bold rounded-lg px-3 py-1.5 shadow-md">
+                    {t('packBadge')}
+                  </Badge>
+                  <Badge className="bg-gold/15 text-gold text-[9px] font-semibold rounded-lg px-3 py-1.5 flex items-center gap-1">
+                    <Star className="size-3.5 fill-gold" />
+                    {t('bestseller')}
+                  </Badge>
+                  
+                </>
+                )}
+                {discount && !isPack && (
+                  <Badge className="bg-primary text-primary-foreground text-[10px] font-bold rounded-lg px-3 py-1.5 shadow-md">
+                    -{discount}%
+                  </Badge>
+                )}
+            </div>
+            
           </div>
         </div>
       </Link>
 
-      <div className="p-3 flex flex-col justify-between" style={{ minHeight: '220px' }}>
-        <div>
-          {isPack && (
-            <div className="flex items-center gap-1 mb-1">
-              {[1,2,3,4,5].map((s) => (
-                <Star key={s} className="size-3 fill-gold text-gold" />
-              ))}
-              <span className="text-[10px] text-muted-foreground ml-1">{t('bestseller')}</span>
-            </div>
-          )}
-        </div>
-        <Link to={`/shop/${product.slug}`}>
+      <div className="p-3 flex flex-col items-center justify-between text-center" style={{ minHeight: '240px' }}>
+        <Link to={`/shop/${product.slug}`} className="w-full">
           <h3 className="font-semibold text-sm text-foreground hover:text-primary transition-colors line-clamp-2 leading-snug">
             {product.name}
           </h3>
         </Link>
 
         {product.description && (
-          <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
         )}
 
-        <div className="flex items-end justify-between gap-2 mt-2">
-          <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col items-center gap-3 mt-1 w-full">
+          <div className="flex flex-col items-center gap-3 w-full">
+            
             <div className="flex items-center gap-2">
+              
               <span className="text-lg font-bold text-primary">{product.price} MAD</span>
               {discount && !isPack && (
-                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">-{discount}%</Badge>
+                <Badge variant="secondary" className="text-xs px-2 py-1 rounded-full">-{discount}%</Badge>
               )}
             </div>
-            <div className="text-xs text-muted-foreground space-y-0.5">
+
+            <div className="flex justify-center w-full gap-2 text-[11px] text-muted-foreground sm:grid-cols-2">
               {product.price_2 && (
-                <p>{t('twoUnits', { price: product.price_2 })}</p>
+                <div className="rounded-2xl border border-pink-300 bg-muted/10 px-2 py-2 flex items-center justify-between">
+                  <span>{t('twoUnits', { price: product.price_2 })}</span>
+                 
+                </div>
               )}
               {product.price_3plus && (
-                <p>{t('threePlusUnits', { price: product.price_3plus })}</p>
+                <div className="rounded-2xl border border-pink-300 bg-muted/10 px-2 py-2 flex items-center justify-between">
+                  <span>{t('threePlusUnits', { price: product.price_3plus })}</span>
+                  
+                </div>
               )}
-              <p>{t('stockAvailability', { count: product.stock })}</p>
             </div>
           </div>
 
           <Button
             type="button"
             size="sm"
-            className="shrink-0 rounded-xl gap-1.5 text-xs"
+            className="w-full rounded-xl gap-1.5 text-xs"
             disabled={isOutOfStock}
             onClick={() => addItem(product)}
           >
