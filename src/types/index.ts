@@ -10,6 +10,8 @@ export interface Product {
   image_urls?: string[] | null
   before_image?: string | null
   after_image?: string | null
+  comparatives_images?: string[] | null
+  others_images?: string[] | null
   description: string
   ingredients: string
   category: 'pack' | 'individual'

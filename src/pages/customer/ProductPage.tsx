@@ -118,7 +118,7 @@ export function ProductPage() {
 
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div className="space-y-6">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-secondary">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-background">
             <Carousel opts={{ loop: true }} className="relative" setApi={setCarouselApi}>
               <CarouselContent className="w-full">
                 {carouselSlides.length > 0 ? (
@@ -168,11 +168,7 @@ export function ProductPage() {
             </div>
           </div>
           {productImages.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                <span>Galerie</span>
-                <span>{productImages.length} images</span>
-              </div>
+            <div>
               <div className="flex flex-wrap justify-center gap-2">
                 {productImages.map((src, index) => (
                   <button
@@ -219,7 +215,7 @@ export function ProductPage() {
         <div className="space-y-4">
           <div className="rounded-3xl border border-border bg-card p-1 shadow-sm">
             <div className="space-y-2 text-center">
-              <div className="rounded-3xl border border-border bg-secondary p-au">
+              <div className="rounded-3xl border border-border bg-background p-au">
                 
                 <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground p-1">{t('tierPricing')}</p>
                 
@@ -300,6 +296,23 @@ export function ProductPage() {
           )}
         </div>
       </div>
+
+      {product.comparatives_images && product.comparatives_images.length > 0 && (
+        <div className="mt-10 flex gap-3 overflow-x-auto">
+          {(product.comparatives_images ?? []).map((src, i) => (
+            <img key={src + i} src={src} alt={`Comparative ${i + 1}`} className="min-w-[72%] sm:min-w-[48%] md:min-w-[32%] h-auto rounded-2xl" />
+          ))}
+        </div>
+      )}
+
+      {product.others_images && product.others_images.length > 0 && (
+        <div className=" flex gap-3 overflow-x-auto">
+          {(product.others_images ?? []).map((src, i) => (
+            <img key={src + i} src={src} alt={`Others ${i + 1}`} className="w-full h-auto rounded-2xl" />
+          ))}
+        </div>
+      )}
+
     </div>
   )
 }

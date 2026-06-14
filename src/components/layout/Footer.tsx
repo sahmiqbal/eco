@@ -1,107 +1,79 @@
-declare module '../../config/business' {
-  export const business: {
-    name: string
-    whatsapp: string
-    phone: string
-    email: string
-  }
-}
-
-import { Link } from 'react-router-dom'
-import { Heart, MessageCircle, Phone, Sparkles, AtSign } from 'lucide-react'
-import { useLanguage } from '../../lib/language'
+import { useState } from 'react'
+import { MessageCircle, Phone, Sparkles, AtSign, Home, ShoppingCart, Gift, ShoppingBag } from 'lucide-react'
 import { business } from '../../config/business'
 
 export function Footer() {
-  const { t } = useLanguage()
+  const [isShopActive, setIsShopActive] = useState(false)
+
+  const contactItems = [
+    { icon: MessageCircle, text: business.whatsapp },
+    { icon: Phone, text: business.phone },
+    { icon: AtSign, text: business.email },
+  ]
+
+  const navItems = [
+    { icon: Home, text: 'HOME', active: false },
+    { icon: ShoppingBag, text: 'SHOP', active: isShopActive },
+    { icon: Gift, text: 'PACKS', active: false },
+    { icon: ShoppingCart, text: 'CART', active: false },
+  ]
 
   return (
-    <footer className="relative mt-16 bg-foreground text-background">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-30" />
-
-      <div className="container mx-auto px-4 max-w-6xl py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center ring-1 ring-gold/20 shrink-0">
-                <Sparkles className="size-5 text-gold-foreground" />
-              </div>
+    <footer className="w-full bg-background text-foreground py-10">
+      <div className="flex w-full flex-col items-center justify-center gap-8 px-4 text-center">
+        <div className="relative w-full overflow-hidden rounded-[2rem] border border-primary/30 bg-white px-6 py-8 shadow-[0_10px_40px_-15px_rgba(213,82,163,0.2)]">
+          <div className="relative z-10 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-x-3 text-primary justify-center">
+              <Sparkles className="w-8 h-8" />
               <div>
-                <div className="text-lg font-bold leading-tight">{business.name}</div>
-                <p className="text-sm opacity-70 mt-1">{t('brandTagline')}</p>
+                <span className="font-semibold text-2xl tracking-[0.25em] uppercase text-foreground">{business.name}</span>
+                <p className="text-sm text-muted-foreground">Moroccan cosmetics</p>
               </div>
             </div>
-            <p className="text-sm opacity-75 leading-relaxed">
-              {t('footerBlurb')}
-            </p>
+            <p className="max-w-xl text-sm text-foreground/80">Pure, natural, and timeless care with elevated elegance.</p>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-3 text-sm uppercase tracking-widest opacity-80">{t('footerNavigation')}</h4>
-            <ul className="space-y-2 text-sm">
-              {[
-                { label: t('home'), to: '/' },
-                { label: t('shop'), to: '/shop' },
-                { label: t('packs'), to: '/shop?category=pack' },
-                { label: t('cart'), to: '/cart' },
-              ].map((link) => (
-                <li key={link.to}>
-                  <Link to={link.to} className="opacity-75 hover:opacity-100 hover:text-primary transition-opacity">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="relative z-10 mt-8 flex flex-wrap justify-center gap-3">
+            {navItems.map((link, index) => {
+              const Icon = link.icon
+              return (
+                <a
+                  key={index}
+                  href="#"
+                  className={`flex items-center gap-x-2 rounded-full border px-4 py-2 text-sm transition-all duration-300 ${link.active ? 'border-primary bg-primary/10 text-primary shadow-[0_0_20px_rgba(213,82,163,0.15)]' : 'border-border text-foreground/70 hover:border-primary hover:text-primary'}`}
+                  onMouseEnter={() => link.text === 'SHOP' && setIsShopActive(true)}
+                  onMouseLeave={() => link.text === 'SHOP' && setIsShopActive(false)}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="tracking-[0.2em]">{link.text}</span>
+                </a>
+              )
+            })}
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-3 text-sm uppercase tracking-widest opacity-80">{t('footerContact')}</h4>
-            <ul className="space-y-3 text-sm opacity-85">
-              <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-accent/5 flex items-center justify-center">
-                  <MessageCircle className="size-4 text-primary" />
-                </div>
-                <div>
-                  <div className="opacity-90">{t('whatsappContact')}</div>
-                  <a href={`https://wa.me/${business.whatsapp.replace(/[^0-9]/g, '')}`} className="text-sm opacity-80 hover:text-primary transition-colors">
-                    {business.whatsapp}
-                  </a>
-                </div>
-              </li>
-
-              <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-accent/5 flex items-center justify-center">
-                  <Phone className="size-4 text-primary" />
-                </div>
-                <div>
-                  <div className="opacity-90">{t('phoneContact')}</div>
-                  <a href={`tel:${business.phone.replace(/[^0-9+]/g, '')}`} className="text-sm opacity-80 hover:text-primary transition-colors">
-                    {business.phone}
-                  </a>
-                </div>
-              </li>
-
-              <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-accent/5 flex items-center justify-center">
-                  <AtSign className="size-4 text-primary" />
-                </div>
-                <div>
-                  <div className="opacity-90">{t('emailContact')}</div>
-                  <a href={`mailto:${business.email}`} className="text-sm opacity-80 hover:text-primary transition-colors">
-                    {business.email}
-                  </a>
-                </div>
-              </li>
-            </ul>
+          <div className="relative z-10 mt-8 flex flex-col items-center gap-3 text-sm text-gold sm:flex-row sm:justify-center">
+            {contactItems.map((item, index) => {
+              const Icon = item.icon
+              const isEmail = typeof item.text === 'string' && item.text.includes('@')
+              const isPhone = typeof item.text === 'string' && item.text.replace(/\s+/g, '').startsWith('+')
+              const href = isEmail ? `mailto:${item.text}` : isPhone ? `tel:${item.text.replace(/\s+/g, '')}` : '#'
+              return (
+                <a key={index} href={href} className="flex items-center gap-x-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 transition hover:bg-white/10">
+                  <Icon className="w-4 h-4 text-gold" />
+                  <span>{item.text}</span>
+                </a>
+              )
+            })}
           </div>
         </div>
 
-        <div className="border-t border-background/10 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs opacity-60">
-          <p>{t('rights')}</p>
-          <p className="flex items-center gap-2">
-            <span>{t('madeWithLove')}</span>
-            <Heart className="size-3 text-primary" />
-          </p>
+        <div className="relative z-10 flex flex-col items-center gap-2 text-xs text-foreground/50">
+          <span>© 2026 {business.name}. Purely Moroccan.</span>
+          <div className="flex items-center gap-x-2 text-gold">
+            <Sparkles className="w-3 h-3" />
+            <Sparkles className="w-3 h-3" />
+            <Sparkles className="w-3 h-3" />
+          </div>
         </div>
       </div>
     </footer>

@@ -153,9 +153,9 @@ export function HomePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { name: 'Fatima Z.', city: 'Casablanca', textKey: 'review1Text', rating: 5 },
-            { name: 'Samira B.', city: 'Marrakech', textKey: 'review2Text', rating: 5 },
-            { name: 'Nadia K.', city: 'Rabat', textKey: 'review3Text', rating: 5 },
+            { name: 'Fatima Z.', city: 'Casablanca', textKey: 'review1Text' as const, rating: 5 },
+            { name: 'Samira B.', city: 'Marrakech', textKey: 'review2Text' as const, rating: 5 },
+            { name: 'Nadia K.', city: 'Rabat', textKey: 'review3Text' as const, rating: 5 },
           ].map((review) => (
             <div key={review.name} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
               <div className="flex gap-1.5 mb-3">
@@ -179,21 +179,23 @@ export function HomePage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-primary py-16 text-center">
-        <div className="container mx-auto px-4 max-w-lg">
-          <Sparkles className="size-8 text-primary-foreground/60 mx-auto mb-4" />
-          <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-3">
-            {t('orderNowSectionTitle')}
-          </h2>
-          <p className="text-primary-foreground/80 mb-6 text-sm">
-            {t('orderNowSectionText')}
-          </p>
-          <Button size="lg" variant="outline" className="rounded-xl border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary gap-2" asChild>
-            <Link to="/shop">
-              <Package className="size-4" />
-              {t('viewOurPacks')}
-            </Link>
-          </Button>
+      <section className="bg-white py-16">
+        <div className="mx-auto flex max-w-3xl flex-col items-center justify-center rounded-[2rem] border border-primary/20 bg-primary/5 px-6 py-14 text-center shadow-[0_10px_40px_-15px_rgba(213,82,163,0.15)]">
+          <div className="relative z-10 flex flex-col items-center gap-5">
+            <Sparkles className="size-10 text-primary mx-auto" />
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+              {t('orderNowSectionTitle')}
+            </h2>
+            <p className="max-w-xl text-foreground/80 text-sm md:text-base">
+              {t('orderNowSectionText')}
+            </p>
+            <Button size="lg" className="rounded-3xl bg-primary px-8 py-4 text-white shadow-[0_10px_30px_-10px_rgba(213,82,163,0.3)] transition hover:bg-primary/90" asChild>
+              <Link to="/shop" className="flex items-center gap-2">
+                <Package className="size-4" />
+                {t('viewOurPacks')}
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>

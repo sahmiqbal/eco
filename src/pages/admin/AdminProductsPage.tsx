@@ -23,13 +23,17 @@ type ProductForm = Omit<Product, 'id' | 'created_at'> & {
   imageFiles: File[]
   beforeImageFile: File | null
   afterImageFile: File | null
+  comparatives_images: string[]
+  comparativesFiles: File[]
+  others_images: string[]
+  othersFiles: File[]
 }
 
 const emptyForm: ProductForm = {
   name: '', slug: '', price: 0, price_2: null, price_3plus: null,
-  image_url: '', image_urls: [], before_image: '', after_image: '', description: '', ingredients: '',
+  image_url: '', image_urls: [], before_image: '', after_image: '', comparatives_images: [], others_images: [], description: '', ingredients: '',
   category: 'individual', stock: 0, is_featured: false,
-  imageFiles: [], beforeImageFile: null, afterImageFile: null,
+  imageFiles: [], beforeImageFile: null, afterImageFile: null, comparativesFiles: [], othersFiles: [],
 }
 
 function toSlug(name: string) {
@@ -103,6 +107,8 @@ export function AdminProductsPage() {
     productImages: [] as string[],
     beforeImage: null as string | null,
     afterImage: null as string | null,
+    comparativesImages: [] as string[],
+    othersImages: [] as string[],
   })
 
   useEffect(() => {
@@ -116,11 +122,21 @@ export function AdminProductsPage() {
     if (beforeImage) urls.push(beforeImage)
     const afterImage = form.afterImageFile ? URL.createObjectURL(form.afterImageFile) : null
     if (afterImage) urls.push(afterImage)
+    const comparativesImages = form.comparativesFiles.map((file) => {
+      const url = URL.createObjectURL(file)
+      urls.push(url)
+      return url
+    })
+    const othersImages = form.othersFiles.map((file) => {
+      const url = URL.createObjectURL(file)
+      urls.push(url)
+      return url
+    })
 
-    setPreviewUrls({ productImages, beforeImage, afterImage })
+    setPreviewUrls({ productImages, beforeImage, afterImage, comparativesImages, othersImages })
 
     return () => urls.forEach((url) => URL.revokeObjectURL(url))
-  }, [form.imageFiles, form.beforeImageFile, form.afterImageFile])
+  }, [form.imageFiles, form.beforeImageFile, form.afterImageFile, form.comparativesFiles, form.othersFiles])
 
   useEffect(() => {
     supabase.from('products').select('*').order('created_at', { ascending: false })
@@ -143,10 +159,11 @@ export function AdminProductsPage() {
       name: p.name, slug: p.slug, price: p.price,
       price_2: p.price_2 ?? null, price_3plus: p.price_3plus ?? null,
       image_url: p.image_url ?? '', image_urls: normalizeImageUrls(p.image_urls ?? (p.image_url ? [p.image_url] : [])),
-      before_image: p.before_image ?? '', after_image: p.after_image ?? '', description: p.description,
-      ingredients: p.ingredients, category: p.category,
+      before_image: p.before_image ?? '', after_image: p.after_image ?? '',
+      comparatives_images: normalizeImageUrls(p.comparatives_images ?? []), others_images: normalizeImageUrls(p.others_images ?? []),
+      description: p.description, ingredients: p.ingredients, category: p.category,
       stock: p.stock, is_featured: p.is_featured,
-      imageFiles: [], beforeImageFile: null, afterImageFile: null,
+      imageFiles: [], beforeImageFile: null, afterImageFile: null, comparativesFiles: [], othersFiles: [],
     })
     setErrors({})
     setSaveError('')
@@ -176,8 +193,10 @@ export function AdminProductsPage() {
       const mainImageUrl = form.image_url?.trim() || null
       let beforeImageUrl = form.before_image?.trim() || null
       let afterImageUrl = form.after_image?.trim() || null
+      let comparativesImages = normalizeImageUrls(form.comparatives_images)
+      let othersImages = normalizeImageUrls(form.others_images)
 
-      // Upload new image files
+      // Upload new product images
       if (form.imageFiles.length > 0) {
         const uploadedUrls = await uploadProductImages(form.imageFiles, editProduct?.id)
         imageUrls = [...imageUrls, ...uploadedUrls]
@@ -195,6 +214,18 @@ export function AdminProductsPage() {
         afterImageUrl = uploadedUrl
       }
 
+      // Upload comparatives images
+      if (form.comparativesFiles.length > 0) {
+        const uploadedUrls = await uploadProductImages(form.comparativesFiles, editProduct?.id)
+        comparativesImages = [...comparativesImages, ...uploadedUrls]
+      }
+
+      // Upload others images
+      if (form.othersFiles.length > 0) {
+        const uploadedUrls = await uploadProductImages(form.othersFiles, editProduct?.id)
+        othersImages = [...othersImages, ...uploadedUrls]
+      }
+
       const allImageUrls = mainImageUrl
         ? [mainImageUrl, ...imageUrls.filter((url) => url !== mainImageUrl)]
         : imageUrls
@@ -208,8 +239,8 @@ export function AdminProductsPage() {
         image_urls: allImageUrls.length > 0 ? allImageUrls : null,
         image_url: mainImageUrl || allImageUrls[0] || null,
         before_image: beforeImageUrl,
-        after_image: afterImageUrl,
-        description: form.description,
+        after_image: afterImageUrl,        comparatives_images: comparativesImages.length > 0 ? comparativesImages : null,
+        others_images: othersImages.length > 0 ? othersImages : null,        description: form.description,
         ingredients: form.ingredients,
         category: form.category,
         stock: form.stock,
@@ -563,6 +594,106 @@ export function AdminProductsPage() {
                         </div>
                       )}
                     </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <div>
+                <Label className="text-xs mb-1.5 block">COMPARATIVES</Label>
+                <Textarea
+                  className="rounded-xl text-xs"
+                  value={form.comparatives_images.join('\n')}
+                  onChange={(e) => setForm({
+                    ...form,
+                    comparatives_images: e.target.value.split(/\r?\n/).map((url) => url.trim()).filter(Boolean),
+                  })}
+                  placeholder="https://example.com/comparative-1.jpg\nhttps://example.com/comparative-2.jpg"
+                />
+              </div>
+              <div>
+                <Label className="text-xs mb-1.5 block">OTHERS</Label>
+                <Textarea
+                  className="rounded-xl text-xs"
+                  value={form.others_images.join('\n')}
+                  onChange={(e) => setForm({
+                    ...form,
+                    others_images: e.target.value.split(/\r?\n/).map((url) => url.trim()).filter(Boolean),
+                  })}
+                  placeholder="https://example.com/others-1.jpg\nhttps://example.com/others-2.jpg"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs mb-1.5 block">Téléverser COMPARATIVES</Label>
+                <div className="border-2 border-dashed border-border rounded-xl p-3">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => setForm({ ...form, comparativesFiles: Array.from(e.target.files || []) })}
+                    className="hidden"
+                    id="comparatives-images"
+                  />
+                  <label htmlFor="comparatives-images" className="cursor-pointer flex flex-col items-center gap-1">
+                    <Upload className="size-6 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground text-center">Sélectionnez des images COMPARATIVES</p>
+                  </label>
+                  {form.comparativesFiles.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {form.comparativesFiles.map((file, index) => (
+                        <div key={index} className="flex items-center gap-2 bg-secondary rounded p-2">
+                          <span className="text-xs truncate flex-1">{file.name}</span>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            className="size-5"
+                            onClick={() => setForm({ ...form, comparativesFiles: form.comparativesFiles.filter((_, i) => i !== index) })}
+                          >
+                            <X className="size-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs mb-1.5 block">Téléverser OTHERS</Label>
+                <div className="border-2 border-dashed border-border rounded-xl p-3">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => setForm({ ...form, othersFiles: Array.from(e.target.files || []) })}
+                    className="hidden"
+                    id="others-images"
+                  />
+                  <label htmlFor="others-images" className="cursor-pointer flex flex-col items-center gap-1">
+                    <Upload className="size-6 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground text-center">Sélectionnez des images OTHERS</p>
+                  </label>
+                  {form.othersFiles.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {form.othersFiles.map((file, index) => (
+                        <div key={index} className="flex items-center gap-2 bg-secondary rounded p-2">
+                          <span className="text-xs truncate flex-1">{file.name}</span>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            className="size-5"
+                            onClick={() => setForm({ ...form, othersFiles: form.othersFiles.filter((_, i) => i !== index) })}
+                          >
+                            <X className="size-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>

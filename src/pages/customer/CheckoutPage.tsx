@@ -55,7 +55,8 @@ export function CheckoutPage() {
   })
 
   const subtotal = totalPrice()
-  const total = subtotal
+  const deliveryFee = 0 // Always free
+  const total = subtotal + deliveryFee
 
   if (items.length === 0 && step !== 3) {
     return (
@@ -238,6 +239,10 @@ export function CheckoutPage() {
             <span>{t('subtotal')}</span>
             <span>{subtotal} MAD</span>
           </div>
+          <div className="flex justify-between items-center text-sm">
+            <span>{t('deliveryFee') || 'Delivery Fee'}</span>
+            <span className="text-green-600">Free</span>
+          </div>
           <div className="flex justify-between items-center">
             <span className="font-bold">{t('total')}</span>
             <span className="text-xl font-bold text-primary">{total} MAD</span>
@@ -394,6 +399,10 @@ export function CheckoutPage() {
             <div className="flex justify-between text-sm">
               <span>{t('subtotal')}</span>
               <span>{subtotal} MAD</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span>{t('deliveryFee') || 'Delivery Fee'}</span>
+              <span className="text-green-600">Free</span>
             </div>
             <div className="flex justify-between font-bold pt-2">
               <span>{t('total')}</span>
