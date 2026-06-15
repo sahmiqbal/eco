@@ -213,13 +213,13 @@ export function ProductPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-3xl border border-border bg-card p-1 shadow-sm">
-            <div className="space-y-2 text-center">
-              <div className="rounded-3xl border border-border bg-background p-au">
+          <div className="rounded-3xl border border-border bg-card p-3 sm:p-4 shadow-sm">
+            <div className="space-y-3 text-center">
+              <div className="rounded-3xl border border-border bg-background p-4 sm:p-5">
                 
-                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground p-1">{t('tierPricing')}</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground pb-3">{t('tierPricing')}</p>
                 
-                <div className="flex flex-wrap justify-center gap-3 p-1">
+                <div className="flex flex-wrap justify-center gap-3 px-2 pb-3">
                   {[
                     { qty: 1, price: product.price, label: '1 unité' },
                     ...(product.price_2 ? [{ qty: 2, price: product.price_2, label: '2 unités' }] : []),

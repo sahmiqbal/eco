@@ -50,10 +50,10 @@ export function CartPage() {
                     </div>
                   )}
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-between gap-4">
+                <div className="flex-1 min-w-0 flex flex-col justify-between gap-5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h3 className="font-bold text-2xl sm:text-xl text-foreground leading-tight tracking-tight line-clamp-2">{product.name}</h3>
+                      <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight tracking-tight line-clamp-2">{product.name}</h3>
                       {product.category === 'pack' && (
                         <Badge className="bg-primary/10 text-primary border-0 text-xs mt-2">Pack</Badge>
                       )}

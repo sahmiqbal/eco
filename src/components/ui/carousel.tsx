@@ -26,6 +26,8 @@ type CarouselContextProps = {
   scrollNext: () => void
   canScrollPrev: boolean
   canScrollNext: boolean
+  pauseAutoplay: () => void
+  resumeAutoplay: () => void
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -87,6 +89,9 @@ function Carousel({
     api?.scrollTo(index)
   }, [api])
 
+  const pauseAutoplay = React.useCallback(() => setIsPaused(true), [])
+  const resumeAutoplay = React.useCallback(() => setIsPaused(false), [])
+
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.key === "ArrowLeft") {
@@ -141,6 +146,8 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
+        pauseAutoplay,
+        resumeAutoplay,
       }}
     >
       <div
@@ -159,7 +166,7 @@ function Carousel({
       >
         {children}
         {scrollSnaps.length > 1 && (
-          <div className="absolute inset-x-0 bottom-3 flex justify-center gap-2">
+          <div className="mt-3 flex justify-center gap-2">
             {scrollSnaps.map((_, index) => (
               <button
                 key={index}
@@ -178,13 +185,15 @@ function Carousel({
   )
 }
 
-function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
+export { useCarousel }
+
+function CarouselContent({ className, containerClassName, ...props }: React.ComponentProps<"div"> & { containerClassName?: string }) {
   const { carouselRef, orientation } = useCarousel()
 
   return (
     <div
       ref={carouselRef}
-      className="overflow-hidden aspect-square w-full"
+      className={cn("overflow-hidden w-full", containerClassName)}
       data-slot="carousel-content"
     >
       <div
