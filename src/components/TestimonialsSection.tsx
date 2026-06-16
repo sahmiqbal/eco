@@ -57,13 +57,9 @@ export function TestimonialsSection() {
   const { t } = useLanguage()
 
   return (
-    <section className="container max-w-7xl px-4 py-2 overflow-hidden">
+    <section className="max-w-7xl mx-auto px-4 py-4 md:py-5 overflow-hidden">
       <div className="mb-12 text-center">
-        <p className="mb-2 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-          {t('trustTitle')}
-        </p>
-
-        <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+        <h2 className="text-4xl md:text-6xl font-bold tracking-tight animate-fade-up gold-text">
           {t('trustHeading')}
         </h2>
       </div>
@@ -104,10 +100,10 @@ export function TestimonialsSection() {
                     p-4
                     shadow-xl
                     transition-all
-                    duration-500
+                    duration-100
                     hover:-translate-y-2
-                    hover:shadow-2xl
-                    hover:shadow-primary/15
+                    hover:shadow-1xl
+                    hover:shadow-primary/100
                   "
                 >
                   <div className="mb-3 flex gap-1 text-gold">

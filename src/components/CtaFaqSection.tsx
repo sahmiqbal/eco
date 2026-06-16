@@ -23,8 +23,8 @@ const faqItems = [
 
 export function CtaFaqSection() {
   return (
-    <section className="bg-card py-20 text-foreground">
-      <div className="container mx-auto max-w-4xl px-4">
+    <section className="bg-card mt-4 text-foreground">
+      <div className="container mx-auto max-w-4xl px-1">
         <div className="faq-3d-card mx-auto max-w-4xl">
           <div className="faq-3d-scene">
             <div className="faq-3d-panel rounded-[2.5rem] border border-border bg-background shadow-[0_60px_140px_-70px_rgba(0,0,0,0.18)] transition-transform duration-1000 hover:-translate-y-1 hover:shadow-[0_70px_170px_-70px_rgba(0,0,0,0.24)]">
@@ -35,10 +35,8 @@ export function CtaFaqSection() {
                     <p className="inline-flex items-center justify-center gap-2 text-sm uppercase tracking-[0.32em] text-primary/80">
                       <Sparkles className="size-4" /> Customer support
                     </p>
-                    <h2 className="mt-4 text-3xl md:text-4xl font-semibold text-foreground">Frequently Asked Questions</h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-muted-foreground text-base leading-relaxed">
-                      Everything you need to know about our rituals, delivery, and skincare philosophy.
-                    </p>
+                    <h2 className="mt-2 text-3xl md:text-4xl font-semibold text-foreground">Frequently Asked Questions</h2>
+                    
                   </div>
 
                   <Accordion type="single" collapsible defaultValue="faq-item-1" className="space-y-4">

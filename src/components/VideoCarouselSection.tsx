@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   Carousel,
   CarouselContent,
@@ -7,6 +7,7 @@ import {
   CarouselNext,
   useCarousel,
 } from './ui/carousel'
+import { Volume2, VolumeX } from 'lucide-react'
 
 interface Video {
   id: string
@@ -16,237 +17,356 @@ interface Video {
   mp4Url?: string
 }
 
-export function VideoCarouselSection() {
-  // play inline inside the slide
-  const [playingId, setPlayingId] = useState<string | null>(null)
-  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
-  const [unmuteState, setUnmuteState] = useState<Record<string, boolean>>({})
-  
-  // Sample video data - replace with actual data from your source
-  // Use a same-origin MP4 file to avoid CORS blocking in hosted preview environments.
-  const sampleVideoUrl = '/videos/sample-video.mp4'
-  const [videos] = useState<Video[]>([
-    {
-      id: '1',
-      thumbnail: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-      title: 'Daily skincare ritual',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '2',
-      thumbnail: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=900&q=80',
-      title: 'Organic ingredients in action',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '3',
-      thumbnail: 'https://images.unsplash.com/photo-1523293831594-d0a8f2933f0f?auto=format&fit=crop&w=900&q=80',
-      title: 'Fresh harvest from our fields',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '4',
-      thumbnail: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&q=80',
-      title: 'Customer wellness story',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '5',
-      thumbnail: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80',
-      title: 'Healthy routine highlights',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '6',
-      thumbnail: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=80',
-      title: 'Glow from natural care',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '7',
-      thumbnail: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=900&q=80',
-      title: 'Self-care ritual with friends',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-    {
-      id: '8',
-      thumbnail: 'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?auto=format&fit=crop&w=900&q=80',
-      title: 'Pure botanical nourishment',
-      videoUrl: '',
-      mp4Url: sampleVideoUrl,
-    },
-  ])
+// Add your local videos here - update paths to match your /public/videos folder
+const VIDEOS: Video[] = [
+  {
+    id: '1',
+    title: 'Reel Video 1',
+    thumbnail: '',
+    videoUrl: '/videos/sample-video.mp4',
+    mp4Url: '/videos/sample-video.mp4',
+  },
+  {
+    id: '2',
+    title: 'Reel Video 2',
+    thumbnail: '',
+    videoUrl: '/videos/adlibrarydownloader.com-50641.mp4',
+    mp4Url: '/videos/adlibrarydownloader.com-50641.mp4',
+  },
+  {
+    id: '3',
+    title: 'Reel Video 1',
+    thumbnail: '',
+    videoUrl: '/videos/sample-video.mp4',
+    mp4Url: '/videos/sample-video.mp4',
+  },
+  {
+    id: '4',
+    title: 'Reel Video 2',
+    thumbnail: '',
+    videoUrl: '/videos/adlibrarydownloader.com-50641.mp4',
+    mp4Url: '/videos/adlibrarydownloader.com-50641.mp4',
+  },
+  {
+    id: '5',
+    title: 'Reel Video 1',
+    thumbnail: '',
+    videoUrl: '/videos/sample-video.mp4',
+    mp4Url: '/videos/sample-video.mp4',
+  },
+  {
+    id: '6',
+    title: 'Reel Video 2',
+    thumbnail: '',
+    videoUrl: '/videos/adlibrarydownloader.com-50641.mp4',
+    mp4Url: '/videos/adlibrarydownloader.com-50641.mp4',
+  },
+  {
+    id: '7',
+    title: 'Reel Video 1',
+    thumbnail: '',
+    videoUrl: '/videos/sample-video.mp4',
+    mp4Url: '/videos/sample-video.mp4',
+  },
+]
 
-  function SlideContent({ video }: { video: Video }) {
-    const carousel = useCarousel()
-    const mp4 = video.mp4Url ?? video.videoUrl
-    const isUnmuted = !!unmuteState[video.id]
-    const isActive = playingId === video.id
+const VIDEO_URLS = Array.from(new Set(VIDEOS.map((video) => video.mp4Url ?? video.videoUrl)))
 
-    const pauseOtherVideos = (keepId?: string | null) => {
-      Object.keys(videoRefs.current).forEach((k) => {
-        if (k === keepId) return
-        const other = videoRefs.current[k]
-        if (other && !other.paused) {
-          try { other.pause() } catch (e) {}
-        }
-      })
+async function captureVideoPoster(url: string): Promise<string | null> {
+  return new Promise((resolve) => {
+    const video = document.createElement('video')
+    video.src = url
+    video.crossOrigin = 'anonymous'
+    video.muted = true
+    video.playsInline = true
+    video.preload = 'metadata'
+
+    const cleanup = () => {
+      video.pause()
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata)
+      video.removeEventListener('timeupdate', handleTimeUpdate)
+      video.removeEventListener('seeked', handleSeeked)
+      video.removeEventListener('error', handleError)
+      video.removeAttribute('src')
+      video.load()
     }
 
-    const activateVideo = (id: string) => {
-      const videoElement = videoRefs.current[id]
-      pauseOtherVideos(id)
-      setPlayingId(id)
-      carousel?.pauseAutoplay?.()
+    let captured = false
 
-      if (!videoElement) return
+    const finishCapture = () => {
+      if (captured) return
+      captured = true
+      const width = video.videoWidth || 640
+      const height = video.videoHeight || 360
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        cleanup()
+        resolve(null)
+        return
+      }
 
-      const playPromise = videoElement.play()
-      if (playPromise?.catch) {
-        playPromise.catch(() => {
-          setPlayingId(null)
-          carousel?.resumeAutoplay?.()
-        })
+      try {
+        ctx.drawImage(video, 0, 0, width, height)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
+        cleanup()
+        resolve(dataUrl)
+      } catch (error) {
+        cleanup()
+        resolve(null)
       }
     }
 
+    const handleLoadedMetadata = () => {
+      const targetTime = Math.min(0.1, Math.max(0, (video.duration || 0) * 0.01))
+      if (targetTime === 0) {
+        finishCapture()
+        return
+      }
+      video.currentTime = targetTime
+    }
+
+    const handleTimeUpdate = () => {
+      if (video.currentTime > 0) {
+        finishCapture()
+      }
+    }
+
+    const handleSeeked = () => {
+      finishCapture()
+    }
+
+    const handleError = () => {
+      cleanup()
+      resolve(null)
+    }
+
+    video.addEventListener('loadedmetadata', handleLoadedMetadata)
+    video.addEventListener('timeupdate', handleTimeUpdate)
+    video.addEventListener('seeked', handleSeeked)
+    video.addEventListener('error', handleError)
+  })
+}
+
+export function VideoCarouselSection() {
+  const [playingId, setPlayingId] = useState<string | null>(null)
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
+  const [unmuteState, setUnmuteState] = useState<Record<string, boolean>>({})
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [posters, setPosters] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadPosters() {
+      const nextPosters: Record<string, string> = {}
+      await Promise.all(
+        VIDEO_URLS.map(async (url) => {
+          const poster = await captureVideoPoster(url)
+          if (poster && isMounted) {
+            nextPosters[url] = poster
+          }
+        })
+      )
+
+      if (isMounted) {
+        setPosters(nextPosters)
+      }
+    }
+
+    loadPosters()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  // Pause any playing videos on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(videoRefs.current).forEach((el) => {
+        try { el?.pause(); if (el) el.currentTime = 0 } catch (e) {}
+      })
+    }
+  }, [])
+
+  function SlideContent({ video }: { video: Video }) {
+    const { pauseAutoplay, resumeAutoplay } = useCarousel()
+    const mp4 = video.mp4Url ?? video.videoUrl
+    const isUnmuted = !!unmuteState[video.id]
+    const isActive = playingId === video.id
+    const videoRef = useRef<HTMLVideoElement | null>(null)
+    const videoSrc = isActive ? mp4 : undefined
+    const poster = video.thumbnail || posters[mp4] || undefined
+
+    useEffect(() => {
+      const videoElement = videoRef.current
+      if (!videoElement) return
+
+      videoRefs.current[video.id] = videoElement
+
+      const shouldIgnoreError = (error: any) =>
+        error?.name === 'AbortError' || error?.message?.includes('AbortError')
+
+      if (isActive) {
+        pauseAutoplay()
+
+        try {
+          videoElement.muted = !isUnmuted
+        } catch (e) {}
+
+        if (videoElement.src !== mp4) {
+          videoElement.src = mp4
+        }
+
+        const playPromise = videoElement.play()
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(() => {
+            setErrorMessage(null)
+          }).catch((error: any) => {
+            if (shouldIgnoreError(error)) return
+            console.error('Video playback failed:', error)
+            setErrorMessage(error?.message ?? 'Failed to play video')
+            setPlayingId(null)
+            resumeAutoplay()
+          })
+        }
+      } else {
+        videoElement.pause()
+      }
+    }, [isActive, mp4, isUnmuted, pauseAutoplay, resumeAutoplay])
+
+    const [isVideoReady, setIsVideoReady] = useState(false)
+
+    const activateVideo = () => {
+      setPlayingId(video.id)
+      setIsVideoReady(false)
+    }
+
+    const handleVideoEnded = () => {
+      if (isActive) {
+        setPlayingId(null)
+        setIsVideoReady(false)
+        resumeAutoplay()
+      }
+    }
+
+    const handleVideoPlaying = () => {
+      setIsVideoReady(true)
+      setErrorMessage(null)
+    }
+
     return (
-      <div className="overflow-hidden rounded-2xl bg-slate-950 shadow-xl shadow-slate-900/30 transition-transform duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl">
-        <div className="relative aspect-[9/16]">
-          <>
-            <video
-              ref={(el) => {
-                if (el) {
-                  videoRefs.current[video.id] = el
-                } else {
-                  delete videoRefs.current[video.id]
-                }
-              }}
-              controls={isUnmuted}
-              muted={!isUnmuted}
-              playsInline
-              preload="metadata"
-              poster={video.thumbnail}
-              className={`absolute inset-0 w-full h-full object-cover bg-black transition-opacity duration-300 ${isActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-            >
-              <source src={mp4} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+      <div
+        className="group overflow-hidden rounded-2xl shadow-xl transition-shadow transition-transform duration-500 hover:-translate-y-1 hover:shadow-2xl transform-gpu will-change-transform"
+        style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
+      >
+        <div
+          className="relative aspect-[9/16] overflow-hidden transform-gpu will-change-transform"
+          style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
+        >
+          <video
+            ref={videoRef}
+            controls={isActive}
+            muted={!isUnmuted}
+            playsInline
+            preload={isActive ? 'auto' : 'metadata'}
+            poster={poster}
+            src={videoSrc}
+            className="absolute inset-0 w-full h-full object-cover transform-gpu will-change-transform bg-transparent"
+            style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
+            onEnded={handleVideoEnded}
+            onPlaying={handleVideoPlaying}
+            onLoadedData={() => {
+              if (!isActive) return
+              setIsVideoReady(true)
+            }}
+            onError={() => {
+              setErrorMessage('Failed to load video source')
+              setPlayingId(null)
+              setIsVideoReady(false)
+              resumeAutoplay()
+            }}
+          />
 
-            <img
-              src={video.thumbnail}
-              alt={video.title}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
-            />
-
-            {!isActive && (
+          {(!isActive || !isVideoReady) && (
+            <div className="absolute inset-0 flex items-center justify-center">
               <button
-                type="button"
-                onClick={() => activateVideo(video.id)}
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 text-white shadow-lg transform transition-transform duration-300 hover:scale-105 focus:outline-none"
-                aria-label="Play reel inline"
+                onClick={activateVideo}
+                className="flex items-center justify-center w-16 h-16 rounded-full bg-white/95 text-slate-950 border border-slate-200 shadow-lg shadow-slate-900/10 transition-transform duration-300 hover:scale-105"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 text-white">
-                  <path d="M5 3v18l15-9L5 3z" fill="white" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                  <path d="M8 5.14v14l11-7-11-7z" />
                 </svg>
               </button>
-            )}
-
-            <div className={`absolute inset-x-4 bottom-4 rounded-3xl bg-black/50 px-4 py-3 text-white font-semibold text-sm md:text-base line-clamp-2 backdrop-blur-sm transition-opacity duration-300 ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              {video.title}
             </div>
+          )}
 
-            {isActive && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  const next = !isUnmuted
-                  setUnmuteState((s) => ({ ...s, [video.id]: next }))
-                  const v = videoRefs.current[video.id]
-                  if (v) {
-                    v.muted = !next
-                    v.controls = next
+          {isActive && (
+            <button
+              onClick={() => {
+                const videoEl = videoRef.current
+
+                setUnmuteState((prev) => {
+                  const nextMuted = !!prev[video.id]
+
+                  if (videoEl) {
+                    try {
+                      videoEl.muted = nextMuted
+                    } catch {}
                   }
-                }}
-                className="absolute left-3 top-3 z-30 bg-black/40 text-white rounded-full p-2 hover:bg-black/60 focus:outline-none"
-                aria-label={isUnmuted ? 'Mute' : 'Unmute'}
-              >
-                {isUnmuted ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4">
-                    <path d="M6 10v4h4l5 5V5l-5 5H6z" fill="white" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4">
-                    <path d="M6 10v4h4l5 5V5l-5 5H6z" fill="white" opacity="0.4" />
-                    <path d="M19 5l-1 1-2 2 2 2 1 1 1-1-1-1-1-1 1-1z" fill="white" />
-                  </svg>
-                )}
-              </button>
-            )}
-          </>
+
+                  return {
+                    ...prev,
+                    [video.id]: !prev[video.id],
+                  }
+                })
+              }}
+              className="absolute right-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/90 text-slate-950 shadow-lg shadow-slate-900/10 transition-colors duration-300 hover:bg-white"
+            >
+              {isUnmuted ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+            </button>
+          )}
         </div>
       </div>
     )
   }
 
   return (
-    <section className="py-12 md:py-16 overflow-hidden">
-      <div className="container mx-auto px-4 max-w-5xl">
-        
-        {/* Title */}
+    <section className="py-1 md:py-6 dark:bg-slate-950 overflow-visible">
+      <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground">
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight animate-fade-up gold-text">
             Trusted By 50,000+ Happy Customers
           </h2>
+          {errorMessage && (
+            <p className="mt-4 text-sm text-red-500">{errorMessage}</p>
+          )}
         </div>
 
-        {/* Carousel */}
-        <Carousel
-          opts={{
-            loop: true,
-            align: 'center',
-            containScroll: 'trimSnaps',
-            skipSnaps: false,
-          }}
-          id="video-carousel"
-          className="relative w-full"
-        >
-          <CarouselContent className="-ml-4">
-            {videos.map((video) => (
-              <CarouselItem
-                key={video.id}
-                className="
-                  pl-4
-                  basis-[80%]
-                  sm:basis-[55%]
-                  md:basis-[33.333%]
-                  lg:basis-[25%]
-                  xl:basis-[20%]
-                "
-              >
-                <SlideContent video={video} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-
-          <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 md:-left-10" />
-          <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 md:-right-10" />
-        </Carousel>
-
-        {/* Dots are handled automatically by the Carousel component */}
-
+        <div className="relative px-4 md:px-12 min-h-[420px] overflow-hidden">
+          {VIDEOS.length === 0 ? (
+            <div className="w-full py-20 flex items-center justify-center text-sm text-slate-500">No videos available</div>
+          ) : (
+            <Carousel
+              opts={{ loop: true, align: 'start' }}
+              className="w-full"
+            >
+              <CarouselContent className="flex h-full gap-4 box-border" containerClassName="pl-4">
+                {VIDEOS.map((video) => (
+                  <CarouselItem key={video.id} className="pl-4 box-border basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 shrink-0">
+                    <SlideContent video={video} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 md:-left-12 z-50" />
+              <CarouselNext className="right-2 md:-right-12 z-50" />
+            </Carousel>
+          )}
+        </div>
       </div>
-
-      {/* inline playback handled inside slides via `playingId` */}
-
     </section>
   )
 }
