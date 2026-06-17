@@ -260,7 +260,7 @@ export function VideoCarouselSection() {
 
     return (
       <div
-        className="group overflow-hidden rounded-2xl shadow-xl transition-shadow transition-transform duration-500 hover:-translate-y-1 hover:shadow-2xl transform-gpu will-change-transform"
+        className="group overflow-hidden rounded-2xl shadow-xl transition-shadow transition-transform duration-200 hover:-translate-y-1 hover:shadow-2xl transform-gpu will-change-transform"
         style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
       >
         <div
@@ -351,12 +351,12 @@ export function VideoCarouselSection() {
             <div className="w-full py-20 flex items-center justify-center text-sm text-slate-500">No videos available</div>
           ) : (
             <Carousel
-              opts={{ loop: true, align: 'start' }}
+              opts={{ loop: true, align: 'center' }}
               className="w-full"
             >
-              <CarouselContent className="flex h-full gap-4 box-border" containerClassName="pl-4">
+              <CarouselContent className="flex h-full gap-3 md:gap-4 box-border" containerClassName="px-2 md:pl-4">
                 {VIDEOS.map((video) => (
-                  <CarouselItem key={video.id} className="pl-4 box-border basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 shrink-0">
+                  <CarouselItem key={video.id} className="box-border px-3 basis-[75%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 shrink-0">
                     <SlideContent video={video} />
                   </CarouselItem>
                 ))}

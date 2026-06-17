@@ -45,116 +45,97 @@
 }
 
 /* ============================================================
-   BRAND THEME: Dar Nour — Moroccan Luxury Cosmetics
-   Primary: #D552A3 (Magenta Pink)
-   Secondary: #462C7D · #831C91 · #FF70BF
+   BRAND THEME: Pastel Bloom
+   Palette: #a53860 · #bde0fe · #a2d2ff
    ============================================================ */
 
 :root {
   --radius: 0.75rem;
 
-  /* Light Mode: White Background, Dark Text */
+  /* Light Mode */
   --background: #FFFFFF;
-  --foreground: #1a1a1a;
+  --foreground: #111827;
   --card: #FFFFFF;
-  --card-foreground: #1a1a1a;
+  --card-foreground: #111827;
   --popover: #FFFFFF;
-  --popover-foreground: #1a1a1a;
+  --popover-foreground: #111827;
 
-  /* Primary: Magenta Pink */
-  --primary: #D552A3;
-  --primary-foreground: #FFFFFF;
+  --primary: #a53860;
+  --primary-foreground: #ffffff;
 
-  /* Secondary: Deep Purple */
-  --secondary: #462C7D;
-  --secondary-foreground: #FFFFFF;
+  --secondary: #a53860;
+  --secondary-foreground: #ffffff;
 
-  /* Muted: Light Gray */
-  --muted: #F5F5F5;
-  --muted-foreground: #666666;
+  --muted: #f8faff;
+  --muted-foreground: #64748b;
 
-  /* Accent: Bright Pink */
-  --accent: #FF70BF;
-  --accent-foreground: #462C7D;
+  --destructive: #a53860;
+  --destructive-foreground: #ffffff;
 
-  /* Destructive: Magenta */
-  --destructive: #D552A3;
-  --destructive-foreground: #FFFFFF;
+  --border: #e5e7eb;
+  --input: #f8fafc;
+  --ring: #a2d2ff;
 
-  /* Border: Light Gray */
-  --border: #E5E5E5;
-  --input: #F9F9F9;
-  --ring: #D552A3;
+  --gold: #bde0fe;
+  --gold-foreground: #111827;
 
-  /* Gold accent */
-  --gold: #FF70BF;
-  --gold-foreground: #462C7D;
+  --chart-1: #cdb4db;
+  --chart-2: #a53860;
+  --chart-3: #a53860;
+  --chart-4: #bde0fe;
+  --chart-5: #a2d2ff;
 
-  /* Charts */
-  --chart-1: #D552A3;
-  --chart-2: #462C7D;
-  --chart-3: #831C91;
-  --chart-4: #FF70BF;
-  --chart-5: #9B3E7F;
-
-  /* Sidebar: Purple */
-  --sidebar: #462C7D;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #D552A3;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #831C91;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #6B4FA3;
-  --sidebar-ring: #D552A3;
+  --sidebar: #eef2ff;
+  --sidebar-foreground: #111827;
+  --sidebar-primary: #a53860;
+  --sidebar-primary-foreground: #111827;
+  --sidebar-accent: #a53860;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: #dbeafe;
+  --sidebar-ring: #a2d2ff;
 }
 
 .dark {
-  /* Dark Mode: Dark background with white/light text */
-  --background: #0F0F0F;
-  --foreground: #FFFFFF;
-  --card: #1A1A1A;
-  --card-foreground: #FFFFFF;
-  --popover: #242424;
-  --popover-foreground: #FFFFFF;
+  --background: #0b1120;
+  --foreground: #f8fafc;
+  --card: #111827;
+  --card-foreground: #f8fafc;
+  --popover: #111827;
+  --popover-foreground: #f8fafc;
 
-  /* Primary: Magenta Pink */
-  --primary: #D552A3;
-  --primary-foreground: #FFFFFF;
+  --primary: #a53860;
+  --primary-foreground: #ffffff;
 
-  /* Secondary: Deep Purple */
-  --secondary: #462C7D;
-  --secondary-foreground: #FFFFFF;
+  --secondary: #a53860;
+  --secondary-foreground: #ffffff;
 
-  /* Muted: Dark Gray */
-  --muted: #2A2A2A;
-  --muted-foreground: #B0B0B0;
+  --muted: #1f2937;
+  --muted-foreground: #cbd5e1;
 
-  /* Accent: Bright Pink */
-  --accent: #FF70BF;
-  --accent-foreground: #462C7D;
+  --destructive: #a53860;
+  --destructive-foreground: #ffffff;
 
-  /* Destructive: Magenta */
-  --destructive: #D552A3;
-  --destructive-foreground: #FFFFFF;
+  --border: #334155;
+  --input: #111827;
+  --ring: #a2d2ff;
 
-  /* Border: Dark Gray */
-  --border: #333333;
-  --input: #242424;
-  --ring: #D552A3;
+  --gold: #bde0fe;
+  --gold-foreground: #111827;
 
-  /* Gold accent */
-  --gold: #FF70BF;
-  --gold-foreground: #462C7D;
+  --chart-1: #cdb4db;
+  --chart-2: #a53860;
+  --chart-3: #a53860;
+  --chart-4: #bde0fe;
+  --chart-5: #a2d2ff;
 
-  /* Sidebar: Deep Purple */
-  --sidebar: #462C7D;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #D552A3;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #831C91;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #6B4FA3;
-  --sidebar-ring: #D552A3;
+  --sidebar: #111827;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #a53860;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #a53860;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #a2d2ff;
 }
 
 @layer base {
@@ -255,4 +236,64 @@
 .animate-testimonial-float {
   animation: testimonialFloat 8s ease-in-out infinite;
 }
+
+/* Navbar link underline animation */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%) scaleX(0);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: transform .25s ease;
+  transform-origin: center;
+}
+.nav-underline:hover::after,
+.nav-underline.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* No auto padding: navbar overlays the hero for a seamless integration */
+
+/* Mobile menu appear animation */
+@keyframes mobileMenuUp {
+  from { transform: translateY(18%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.mobile-menu-enter {
+  animation: mobileMenuUp 320ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+/* Menu link stagger animations */
+@keyframes menuLinkSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-link-1 { animation: menuLinkSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+.menu-link-2 { animation: menuLinkSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; }
+.menu-link-3 { animation: menuLinkSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both; }
+.menu-link-4 { animation: menuLinkSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both; }
+
+@keyframes closeButtonPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.close-button-animate {
+  animation: closeButtonPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+}
+
+.touch-manipulation { touch-action: manipulation; }
 
