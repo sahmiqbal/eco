@@ -21,16 +21,16 @@ export function Footer() {
   return (
     <footer className="w-full bg-background text-foreground py-10">
       <div className="flex w-full flex-col items-center justify-center gap-8 px-4 text-center">
-        <div className="relative w-full overflow-hidden rounded-[2rem] border border-primary/30 bg-white px-6 py-8 shadow-[0_10px_40px_-15px_rgba(213,82,163,0.2)]">
+        <div className="relative w-full overflow-hidden rounded-[2rem] border border-primary/30 bg-card px-6 py-8 shadow-[0_10px_40px_-15px_rgba(255,131,208,0.15)]">
           <div className="relative z-10 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-x-3 text-primary justify-center">
-              <Sparkles className="w-8 h-8" />
+            <div className="flex items-center gap-x-3 justify-center">
+              <img src="/images/logo.webp" alt={business.name} className="w-12 h-12 object-cover rounded-3xl shadow-[0_10px_30px_rgba(255,255,255,0.12)]" />
               <div>
-                <span className="font-semibold text-2xl tracking-[0.25em] uppercase text-foreground">{business.name}</span>
-                <p className="text-sm text-muted-foreground">Moroccan cosmetics</p>
+                <span className="font-extrabold text-3xl uppercase tracking-[0.28em] text-foreground">{business.name}</span>
+                <p className="mt-1 text-xs uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
               </div>
             </div>
-            <p className="max-w-xl text-sm text-foreground/80">Pure, natural, and timeless care with elevated elegance.</p>
+            <p className="max-w-xl text-sm leading-relaxed text-foreground/75">Pure, natural, and timeless care with elevated elegance.</p>
           </div>
 
           <div className="relative z-10 mt-8 flex flex-wrap justify-center gap-3">

@@ -86,7 +86,7 @@ export function AdminOrdersPage() {
       .map((item) => `• ${item.product_name} ×${item.quantity} = ${item.subtotal} MAD`)
       .join('\n')
     const msg = encodeURIComponent(
-      `Bonjour ${order.name} 🌸\nVotre commande Dar Nour :\n\n${itemsText}\n\nTotal: ${order.total} MAD\n\nNous confirmons votre commande. Merci ! 💕`
+      `Bonjour ${order.name} 🌸\nVotre commande LAHLINO :\n\n${itemsText}\n\nTotal: ${order.total} MAD\n\nNous confirmons votre commande. Merci ! 💕`
     )
     window.open(`https://wa.me/${order.phone.replace(/^0/, '212')}?text=${msg}`, '_blank')
   }

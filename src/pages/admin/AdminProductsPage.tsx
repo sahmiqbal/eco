@@ -140,7 +140,7 @@ export function AdminProductsPage() {
 
   useEffect(() => {
     supabase.from('products').select('*').order('created_at', { ascending: false })
-      .then(({ data }) => {
+      .then(({ data }: { data: Product[] | null }) => {
         setProducts((data as Product[]) ?? [])
         setLoading(false)
       })
@@ -155,15 +155,29 @@ export function AdminProductsPage() {
 
   const openEdit = (p: Product) => {
     setEditProduct(p)
+    const existingImageUrls = normalizeImageUrls(p.image_urls ?? (p.image_url ? [p.image_url] : []))
     setForm({
-      name: p.name, slug: p.slug, price: p.price,
-      price_2: p.price_2 ?? null, price_3plus: p.price_3plus ?? null,
-      image_url: p.image_url ?? '', image_urls: normalizeImageUrls(p.image_urls ?? (p.image_url ? [p.image_url] : [])),
-      before_image: p.before_image ?? '', after_image: p.after_image ?? '',
-      comparatives_images: normalizeImageUrls(p.comparatives_images ?? []), others_images: normalizeImageUrls(p.others_images ?? []),
-      description: p.description, ingredients: p.ingredients, category: p.category,
-      stock: p.stock, is_featured: p.is_featured,
-      imageFiles: [], beforeImageFile: null, afterImageFile: null, comparativesFiles: [], othersFiles: [],
+      name: p.name,
+      slug: p.slug,
+      price: p.price,
+      price_2: p.price_2 ?? null,
+      price_3plus: p.price_3plus ?? null,
+      image_url: existingImageUrls[0] ?? p.image_url ?? '',
+      image_urls: existingImageUrls,
+      before_image: p.before_image ?? '',
+      after_image: p.after_image ?? '',
+      comparatives_images: normalizeImageUrls(p.comparatives_images ?? []),
+      others_images: normalizeImageUrls(p.others_images ?? []),
+      description: p.description,
+      ingredients: p.ingredients,
+      category: p.category,
+      stock: p.stock,
+      is_featured: p.is_featured,
+      imageFiles: [],
+      beforeImageFile: null,
+      afterImageFile: null,
+      comparativesFiles: [],
+      othersFiles: [],
     })
     setErrors({})
     setSaveError('')
@@ -190,11 +204,15 @@ export function AdminProductsPage() {
 
     try {
       let imageUrls = normalizeImageUrls(form.image_urls)
-      const mainImageUrl = form.image_url?.trim() || null
+      const manualMainImage = form.image_url?.trim() || null
       let beforeImageUrl = form.before_image?.trim() || null
       let afterImageUrl = form.after_image?.trim() || null
       let comparativesImages = normalizeImageUrls(form.comparatives_images)
       let othersImages = normalizeImageUrls(form.others_images)
+
+      if (manualMainImage && !imageUrls.includes(manualMainImage)) {
+        imageUrls = [manualMainImage, ...imageUrls]
+      }
 
       // Upload new product images
       if (form.imageFiles.length > 0) {
@@ -226,9 +244,8 @@ export function AdminProductsPage() {
         othersImages = [...othersImages, ...uploadedUrls]
       }
 
-      const allImageUrls = mainImageUrl
-        ? [mainImageUrl, ...imageUrls.filter((url) => url !== mainImageUrl)]
-        : imageUrls
+      const allImageUrls = imageUrls
+      const primaryImageUrl = allImageUrls.length > 0 ? allImageUrls[0] : null
 
       const payload = {
         name: form.name,
@@ -237,10 +254,12 @@ export function AdminProductsPage() {
         price_2: form.price_2,
         price_3plus: form.price_3plus,
         image_urls: allImageUrls.length > 0 ? allImageUrls : null,
-        image_url: mainImageUrl || allImageUrls[0] || null,
+        image_url: primaryImageUrl,
         before_image: beforeImageUrl,
-        after_image: afterImageUrl,        comparatives_images: comparativesImages.length > 0 ? comparativesImages : null,
-        others_images: othersImages.length > 0 ? othersImages : null,        description: form.description,
+        after_image: afterImageUrl,
+        comparatives_images: comparativesImages.length > 0 ? comparativesImages : null,
+        others_images: othersImages.length > 0 ? othersImages : null,
+        description: form.description,
         ingredients: form.ingredients,
         category: form.category,
         stock: form.stock,

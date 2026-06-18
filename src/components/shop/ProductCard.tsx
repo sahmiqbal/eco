@@ -143,7 +143,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             size="sm"
             className="w-full rounded-full gap-2 text-xs md:text-sm"
             disabled={isOutOfStock}
-            onClick={() => addItem(product)}
+            onClick={() => addItem(product, 1)}
           >
             <ShoppingBag className="size-4" />
             {t('addToCart')}

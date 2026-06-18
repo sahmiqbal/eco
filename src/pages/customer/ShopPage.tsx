@@ -20,23 +20,37 @@ export function ShopPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const category = searchParams.get('category') ?? 'all'
 
   useEffect(() => {
+    let isMounted = true
     setLoading(true)
+    setError(null)
+
     let query = supabase.from('products').select('*').order('is_featured', { ascending: false }).order('created_at')
     if (category !== 'all') query = query.eq('category', category)
-    query.then(({ data }) => {
-      setProducts((data as Product[]) ?? [])
+    if (search.trim()) {
+      const searchValue = `%${search.trim()}%`
+      query = query.or(`name.ilike.${searchValue},description.ilike.${searchValue}`)
+    }
+
+    query.then(({ data, error: queryError }) => {
+      if (!isMounted) return
+      if (queryError) {
+        setError(queryError.message)
+        setProducts([])
+      } else {
+        setProducts((data as Product[]) ?? [])
+      }
       setLoading(false)
     })
-  }, [category])
 
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.description.toLowerCase().includes(search.toLowerCase())
-  )
+    return () => {
+      isMounted = false
+    }
+  }, [category, search])
 
   return (
     <div className="container mx-auto px-4 max-w-6xl py-8 animate-fade-up">
@@ -87,7 +101,11 @@ export function ShopPage() {
             </div>
           ))}
         </div>
-      ) : filtered.length === 0 ? (
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      ) : products.length === 0 ? (
         <div className="text-center py-20">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
             <ShoppingBag className="size-8 text-muted-foreground" />
@@ -98,12 +116,12 @@ export function ShopPage() {
       ) : (
         <>
           <p className="text-xs text-muted-foreground mb-4">
-            {filtered.length === 1
+            {products.length === 1
               ? t('productCountSingular')
-              : t('productCountPlural', { count: filtered.length })}
+              : t('productCountPlural', { count: products.length })}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filtered.map((product) => (
+            {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect } from 'react'
 import { Toaster } from '@/components/ui/sonner'
 import { CustomerLayout } from '@/components/layout/CustomerLayout'
 import { AdminLayout } from '@/components/admin/AdminLayout'
+import { AdminProtectedRoute } from '@/components/admin/AdminProtectedRoute'
 import { LanguageProvider } from '@/lib/language'
 import { HomePage } from '@/pages/customer/HomePage'
 import { ShopPage } from '@/pages/customer/ShopPage'
@@ -46,7 +47,7 @@ export function App() {
 
         <Route path="/admin/login" element={<AdminLoginPage />} />
 
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />

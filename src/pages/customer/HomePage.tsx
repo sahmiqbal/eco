@@ -42,7 +42,7 @@ export function HomePage() {
         <div className="absolute inset-0">
           <img
             src="/hero-banner.webp"
-            alt="Dar Nour"
+            alt="LAHLINO"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/55 to-transparent" />

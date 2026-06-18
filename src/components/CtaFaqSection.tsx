@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 const faqItems = [
   {
     value: 'faq-item-1',
-    question: 'What makes Dar Nour rituals different?',
+    question: 'What makes LAHLINO rituals different?',
     answer: 'Each ritual is crafted with premium natural ingredients, inspired by Moroccan beauty traditions and designed for modern self-care.',
   },
   {

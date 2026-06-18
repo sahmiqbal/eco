@@ -19,7 +19,7 @@ export function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -39,7 +39,7 @@ export function AdminLoginPage() {
           <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Sparkles className="size-7 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-sidebar-foreground">Dar Nour</h1>
+          <h1 className="text-2xl font-bold text-sidebar-foreground">LAHLINO</h1>
           <p className="text-sm text-sidebar-foreground/60 mt-1">{t('adminLoginTitle')}</p>
         </div>
 
@@ -51,7 +51,7 @@ export function AdminLoginPage() {
             <Input
               id="email"
               type="email"
-              placeholder="admin@darnour.ma"
+              placeholder="admin@lahlino.ma"
               className="rounded-xl bg-sidebar border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-foreground/40"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

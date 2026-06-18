@@ -96,27 +96,6 @@ export function CheckoutPage() {
     setSubmitError(null)
 
     try {
-      const productIds = items.map(({ product }) => product.id)
-      const { data: currentStocks, error: stockError } = await supabase
-        .from('products')
-        .select('id,stock')
-        .in('id', productIds)
-
-      if (stockError) {
-        throw new Error(t('stockCheckError'))
-      }
-
-      const insufficient = items.filter(({ product, quantity }) => {
-        const row = (currentStocks as { id: string, stock: number }[]).find((p) => p.id === product.id)
-        return !row || quantity > row.stock
-      })
-
-      if (insufficient.length > 0) {
-        setSubmitting(false)
-        setSubmitError(t('insufficientStockFor', { items: insufficient.map(({ product }) => product.name).join(', ') }))
-        return
-      }
-
       const orderItems = items.map(({ product, quantity }: CartItem) => ({
         product_id: product.id,
         product_name: product.name,
@@ -125,38 +104,21 @@ export function CheckoutPage() {
         subtotal: getBundlePrice(product, quantity) * quantity,
       }))
 
-      const { data, error } = await supabase
-        .from('orders')
-        .insert({
-          name: form.name,
-          phone: form.phone,
-          city: form.city,
-          address: form.address,
-          items: orderItems,
-          total,
-          status: 'pending',
-          contact_preference: form.contact_preference,
-        })
-        .select()
-        .single()
+      const { data, error } = await supabase.rpc('create_order_with_stock', {
+        customer_name: form.name,
+        customer_phone: form.phone,
+        customer_city: form.city,
+        customer_address: form.address,
+        items: orderItems,
+        total,
+        contact_preference: form.contact_preference,
+      })
 
       if (error) {
         throw new Error(error.message || JSON.stringify(error))
       }
 
-      setOrderId(data?.id ?? null)
-
-      try {
-        await supabase.rpc('decrement_stock', {
-          items: items.map(({ product, quantity }) => ({
-            product_id: product.id,
-            quantity,
-          }))
-        })
-      } catch (err) {
-        console.warn('Stock decrement failed:', err)
-      }
-
+      setOrderId((data as any)?.id ?? null)
       setSubmitting(false)
       setStep(3)
     } catch (error) {
@@ -178,7 +140,7 @@ export function CheckoutPage() {
         `• ${product.name} ×${quantity} = ${getBundlePrice(product, quantity) * quantity} MAD`
       ).join('\n')
       const message = encodeURIComponent(
-        `Bonjour Dar Nour 🌸\nJ'ai passé une commande:\n\n${itemsText}\n\nTotal: ${total} MAD\nNom: ${form.name}\nVille: ${form.city}\nAdresse: ${form.address}`
+        `Bonjour LAHLINO 🌸\nJ'ai passé une commande:\n\n${itemsText}\n\nTotal: ${total} MAD\nNom: ${form.name}\nVille: ${form.city}\nAdresse: ${form.address}`
       )
       window.open(`https://wa.me/212715100043?text=${message}`, '_blank')
       navigate('/shop')

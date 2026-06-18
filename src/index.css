@@ -45,97 +45,96 @@
 }
 
 /* ============================================================
-   BRAND THEME: Pastel Bloom
-   Palette: #a53860 · #bde0fe · #a2d2ff
+   BRAND THEME: LAHLINO Neon Noir
+   Palette: #050505 · #ff83d0 · #f8d984 · #1e1b27
    ============================================================ */
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.85rem;
 
-  /* Light Mode */
-  --background: #FFFFFF;
-  --foreground: #111827;
-  --card: #FFFFFF;
-  --card-foreground: #111827;
-  --popover: #FFFFFF;
-  --popover-foreground: #111827;
+  --background: #050505;
+  --foreground: #f8f0ff;
+  --card: #111017;
+  --card-foreground: #f8f0ff;
+  --popover: #12101a;
+  --popover-foreground: #f8f0ff;
 
-  --primary: #a53860;
-  --primary-foreground: #ffffff;
+  --primary: #ff83d0;
+  --primary-foreground: #111011;
 
-  --secondary: #a53860;
-  --secondary-foreground: #ffffff;
+  --secondary: #f7d170;
+  --secondary-foreground: #111011;
 
-  --muted: #f8faff;
-  --muted-foreground: #64748b;
+  --muted: #17141f;
+  --muted-foreground: #b3a5c9;
 
-  --destructive: #a53860;
-  --destructive-foreground: #ffffff;
+  --destructive: #ff83d0;
+  --destructive-foreground: #111011;
 
-  --border: #e5e7eb;
-  --input: #f8fafc;
-  --ring: #a2d2ff;
+  --border: #2a2635;
+  --input: #16131f;
+  --ring: #ffb2ea;
 
-  --gold: #bde0fe;
-  --gold-foreground: #111827;
+  --gold: #f7d170;
+  --gold-foreground: #111011;
 
-  --chart-1: #cdb4db;
-  --chart-2: #a53860;
-  --chart-3: #a53860;
-  --chart-4: #bde0fe;
-  --chart-5: #a2d2ff;
+  --chart-1: #ff83d0;
+  --chart-2: #f7d170;
+  --chart-3: #a36dce;
+  --chart-4: #e7a7ff;
+  --chart-5: #4c3b68;
 
-  --sidebar: #eef2ff;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #a53860;
-  --sidebar-primary-foreground: #111827;
-  --sidebar-accent: #a53860;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #dbeafe;
-  --sidebar-ring: #a2d2ff;
+  --sidebar: #0e0b17;
+  --sidebar-foreground: #f8f0ff;
+  --sidebar-primary: #ff83d0;
+  --sidebar-primary-foreground: #111011;
+  --sidebar-accent: #f7d170;
+  --sidebar-accent-foreground: #111011;
+  --sidebar-border: #2a2635;
+  --sidebar-ring: #ffb2ea;
 }
 
 .dark {
-  --background: #0b1120;
-  --foreground: #f8fafc;
-  --card: #111827;
-  --card-foreground: #f8fafc;
-  --popover: #111827;
-  --popover-foreground: #f8fafc;
+  --background: #050505;
+  --foreground: #f8f0ff;
+  --card: #111017;
+  --card-foreground: #f8f0ff;
+  --popover: #12101a;
+  --popover-foreground: #f8f0ff;
 
-  --primary: #a53860;
-  --primary-foreground: #ffffff;
+  --primary: #ff83d0;
+  --primary-foreground: #111011;
 
-  --secondary: #a53860;
-  --secondary-foreground: #ffffff;
+  --secondary: #f7d170;
+  --secondary-foreground: #111011;
 
-  --muted: #1f2937;
-  --muted-foreground: #cbd5e1;
+  --muted: #17141f;
+  --muted-foreground: #b3a5c9;
 
-  --destructive: #a53860;
-  --destructive-foreground: #ffffff;
+  --destructive: #ff83d0;
+  --destructive-foreground: #111011;
 
-  --border: #334155;
-  --input: #111827;
-  --ring: #a2d2ff;
+  --border: #2a2635;
+  --input: #16131f;
+  --ring: #ffb2ea;
 
-  --gold: #bde0fe;
-  --gold-foreground: #111827;
+  --gold: #f7d170;
+  --gold-foreground: #111011;
 
-  --chart-1: #cdb4db;
-  --chart-2: #a53860;
-  --chart-3: #a53860;
-  --chart-4: #bde0fe;
-  --chart-5: #a2d2ff;
+  --chart-1: #ff83d0;
+  --chart-2: #f7d170;
+  --chart-3: #a36dce;
+  --chart-4: #e7a7ff;
+  --chart-5: #4c3b68;
 
-  --sidebar: #111827;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #a53860;
-  --sidebar-primary-foreground: #f8fafc;
-  --sidebar-accent: #a53860;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #334155;
-  --sidebar-ring: #a2d2ff;
+  --sidebar: #0e0b17;
+  --sidebar-foreground: #f8f0ff;
+  --sidebar-primary: #ff83d0;
+  --sidebar-primary-foreground: #111011;
+  --sidebar-accent: #f7d170;
+  --sidebar-accent-foreground: #111011;
+  --sidebar-border: #2a2635;
+  --sidebar-ring: #ffb2ea;
 }
 
 @layer base {
@@ -154,12 +153,29 @@
   100% { background-position: 200% center; }
 }
 .gold-text {
-  background: linear-gradient(90deg, var(--gold) 20%, oklch(0.88 0.12 78) 50%, var(--gold) 80%);
+  background: linear-gradient(90deg, var(--gold) 20%, rgba(255, 131, 208, 0.95) 50%, var(--gold) 80%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: goldShimmer 3s linear infinite;
+}
+.neon-shadow {
+  text-shadow: 0 0 12px rgba(255, 131, 208, 0.45), 0 0 24px rgba(247, 209, 112, 0.25);
+}
+.bg-neon {
+  background: radial-gradient(circle at top left, rgba(255, 131, 208, 0.16), transparent 36%),
+              radial-gradient(circle at bottom right, rgba(247, 209, 112, 0.14), transparent 32%),
+              linear-gradient(180deg, rgba(5, 5, 5, 0.96), rgba(18, 16, 26, 0.98));
+}
+.button-neon {
+  @apply rounded-full px-6 py-3 font-semibold text-black;
+  background: linear-gradient(135deg, #ff83d0, #f7d170);
+  box-shadow: 0 15px 35px rgba(255, 131, 208, 0.22);
+}
+.button-neon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 40px rgba(255, 131, 208, 0.28);
 }
 
 @keyframes faqCardRotate {

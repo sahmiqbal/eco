@@ -46,15 +46,15 @@ export function AdminDashboardPage() {
 
     const channel = supabase
       .channel('orders-realtime')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload) => {
-        const order = payload.new as Order
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload: { new: Order }) => {
+        const order = payload.new
         setOrders((prev) => [order, ...prev])
         if (!seenIds.has(order.id)) {
           setNewOrders((prev) => [order, ...prev])
         }
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload) => {
-        const updated = payload.new as Order
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload: { new: Order }) => {
+        const updated = payload.new
         setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)))
       })
       .subscribe()
@@ -82,7 +82,7 @@ export function AdminDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-foreground">{t('dashboard')}</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">{t('adminPanel')} — Dar Nour</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('adminPanel')} — LAHLINO</p>
         </div>
         <DropdownMenu onOpenChange={(open) => { if (!open) clearNotifs() }}>
           <DropdownMenuTrigger asChild>

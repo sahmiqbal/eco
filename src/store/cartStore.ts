@@ -23,19 +23,19 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
 
-      addItem: (product) => {
+      addItem: (product, quantity = 1) => {
         const items = get().items
         const existing = items.find((i) => i.product.id === product.id)
         if (existing) {
           set({
             items: items.map((i) =>
               i.product.id === product.id
-                ? { ...i, quantity: i.quantity + 1 }
+                ? { ...i, quantity: i.quantity + quantity }
                 : i
             ),
           })
         } else {
-          set({ items: [...items, { product, quantity: 1 }] })
+          set({ items: [...items, { product, quantity }] })
         }
       },
 

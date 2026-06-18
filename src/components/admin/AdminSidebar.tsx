@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'dashboard', to: '/admin' },
   { icon: ShoppingBag, label: 'orders', to: '/admin/orders' },
   { icon: Package, label: 'productsTitle', to: '/admin/products' },
-]
+] as const
 
 interface AdminSidebarProps {
   notifCount?: number
@@ -33,12 +33,12 @@ export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
     <div className="flex flex-col h-full">
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-            <Sparkles className="size-4.5 text-primary-foreground" />
-          </div>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden bg-sidebar-foreground/5 shadow-sm">
+              <img src="/images/logo.webp" alt="LAHLINO" className="w-full h-full object-cover" />
+            </div>
           <div>
-            <p className="text-sm font-bold text-sidebar-foreground">Dar Nour</p>
-            <p className="text-[10px] text-sidebar-foreground/50 uppercase tracking-wider">Admin Panel</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sidebar-foreground">LAHLINO</p>
+            <p className="text-[10px] text-sidebar-foreground/60 uppercase tracking-[0.28em]">Admin Panel</p>
           </div>
         </div>
       </div>
@@ -91,10 +91,8 @@ export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
 
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar border-b border-sidebar-border flex items-center justify-between px-4 h-14">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-            <Sparkles className="size-3.5 text-primary-foreground" />
-          </div>
-          <span className="text-sm font-bold text-sidebar-foreground">Dar Nour Admin</span>
+            <img src="/images/logo.webp" alt="LAHLINO" className="w-8 h-8 rounded-2xl object-cover" />
+            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-sidebar-foreground">LAHLINO Admin</span>
         </div>
         <Button
           variant="ghost"

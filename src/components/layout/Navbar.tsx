@@ -44,18 +44,13 @@ export function Navbar() {
     <header className="fixed top-4 left-0 right-0 z-50">
       <div className="container mx-auto px-1 max-w-6xl">
         <div className="relative">
-          <div className="mx-auto flex items-center justify-between gap-1 rounded-[2rem] border border-[#a53860]/20 bg-white/80 dark:bg-slate-950/80 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+          <div className="mx-auto flex items-center justify-between gap-1 rounded-[2rem] border border-primary/20 bg-background/95 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
 
             <Link to="/" className="flex items-center gap-3">
-              <div
-                className="flex h-14 w-14 items-center justify-center rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.18)]"
-                style={{ background: '#a53860' }}
-              >
-                <Sparkles className="size-5 text-white" />
-              </div>
+              <img src="/images/logo.webp" alt="LAHLINO" className="h-14 w-14 rounded-3xl object-cover shadow-[0_10px_30px_rgba(0,0,0,0.18)]" />
               <div className="flex flex-col leading-tight">
-                <span className="text-sm font-semibold text-[#a53860] sm:text-lg">Dar Nour</span>
-                <span className="text-[10px] tracking-[0.34em] uppercase text-[#a53860] sm:text-xs">Cosmétiques Marocains</span>
+                <span className="text-base font-black uppercase tracking-[0.22em] text-foreground sm:text-xl">LAHLINO</span>
+                <span className="text-[10px] tracking-[0.38em] uppercase text-gold sm:text-[11px]">FEEL LIKE FAMILY</span>
               </div>
             </Link>
 
@@ -64,10 +59,10 @@ export function Navbar() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="group relative text-base font-medium text-white transition-colors hover:text-[#a53860]"
+                  className="group relative text-sm font-semibold uppercase tracking-[0.12em] text-foreground/80 transition-colors hover:text-gold"
                 >
                   {link.label}
-                  <span className="absolute left-0 -bottom-1 h-0.5 w-full scale-x-0 bg-[#a53860] transition-transform duration-300 group-hover:scale-x-100" />
+                  <span className="absolute left-0 -bottom-1 h-0.5 w-full scale-x-0 bg-gold transition-transform duration-300 group-hover:scale-x-100" />
                 </Link>
               ))}
             </nav>
@@ -75,7 +70,7 @@ export function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="sm" className="rounded-full border border-[#a53860]/20 bg-transparent text-[#a53860] shadow-sm shadow-[#a53860]/10 hover:bg-[#a53860]/10">
+                  <Button variant="secondary" size="sm" className="rounded-full border border-primary/20 bg-transparent text-primary shadow-sm shadow-primary/10 hover:bg-primary/10">
                     {languageLabels[language]}
                   </Button>
                 </DropdownMenuTrigger>
@@ -115,7 +110,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative rounded-full border border-[#bde0fe]/40 bg-[#bde0fe]/10 text-white transition hover:bg-[#bde0fe]/20"
+                className="relative rounded-full border border-primary/20 bg-primary/10 text-white transition hover:bg-primary/20"
                 onClick={() => navigate('/cart')}
                 aria-label={t('cartAria')}
               >
@@ -130,7 +125,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className={cn('rounded-full border border-[#a53860]/20 bg-transparent text-white transition hover:bg-[#a53860]/10', menuOpen ? 'bg-[#a53860]/15' : '')}
+                className={cn('rounded-full border border-primary/20 bg-transparent text-white transition hover:bg-primary/10', menuOpen ? 'bg-primary/15' : '')}
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Menu"
                 aria-expanded={menuOpen}
@@ -143,14 +138,14 @@ export function Navbar() {
           {menuOpen && (
             <div className="fixed inset-0 z-50 md:hidden mobile-menu-enter">
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-              <div className="relative z-50 flex h-full w-full flex-col items-center justify-between gap-0 rounded-[2rem] border border-[#a53860]/20 bg-white/95 dark:bg-slate-950/95 px-6 py-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+              <div className="relative z-50 flex h-full w-full flex-col items-center justify-between gap-0 rounded-[2rem] border border-primary/20 bg-background/95 px-6 py-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
                 
                 {/* Close button area */}
                 <div className="flex w-full justify-end">
                   <Button
                     onClick={() => setMenuOpen(false)}
                     aria-label="Close menu"
-                    className="close-button-animate group relative flex h-11 w-11 items-center justify-center rounded-full border border-[#a53860]/20 bg-[#a53860]/10 text-white transition-all duration-200 hover:bg-[#a53860]/15 hover:border-[#a53860]"
+                    className="close-button-animate group relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-white transition-all duration-200 hover:bg-primary/15 hover:border-primary"
                   >
                     <X className="size-5 transition-transform duration-300 group-hover:rotate-90" />
                   </Button>
@@ -163,10 +158,10 @@ export function Navbar() {
                       key={link.to}
                       to={link.to}
                       onClick={() => setMenuOpen(false)}
-                      className={`menu-link-${index + 1} group relative text-3xl font-semibold text-white transition-colors duration-200 hover:text-[#a53860]`}
+                      className={`menu-link-${index + 1} group relative text-3xl font-semibold text-white transition-colors duration-200 hover:text-primary`}
                     >
                       {link.label}
-                      <span className="absolute left-1/2 -bottom-2 h-1 w-0 -translate-x-1/2 rounded-full bg-[#a53860] transition-all duration-300 group-hover:w-12" />
+                      <span className="absolute left-1/2 -bottom-2 h-1 w-0 -translate-x-1/2 rounded-full bg-primary transition-all duration-300 group-hover:w-12" />
                     </Link>
                   ))}
                 </nav>
@@ -199,11 +194,11 @@ export function Navbar() {
                       navigate('/cart')
                       setMenuOpen(false)
                     }}
-                    className="group flex items-center gap-2 rounded-full bg-[#a53860] px-6 py-3 font-semibold text-white shadow-lg shadow-[#a53860]/30 transition-all duration-200 hover:shadow-[#a53860]/50 hover:scale-105"
+                    className="group flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white shadow-lg shadow-primary/30 transition-all duration-200 hover:shadow-primary/50 hover:scale-105"
                   >
                     <ShoppingBag className="size-5 transition-transform duration-300 group-hover:scale-110" />
                     {totalItems > 0 && (
-                      <Badge className="h-5 min-w-[1.25rem] rounded-full p-0 flex items-center justify-center bg-white text-[#a53860] text-[11px] font-bold">
+                      <Badge className="h-5 min-w-[1.25rem] rounded-full p-0 flex items-center justify-center bg-white text-primary text-[11px] font-bold">
                         {totalItems}
                       </Badge>
                     )}

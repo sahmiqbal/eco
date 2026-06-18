@@ -107,7 +107,7 @@ export function ProductPage() {
   const total = unitPrice * qty
 
   const addToCart = () => {
-    for (let i = 0; i < qty; i++) addItem(product)
+    addItem(product, qty)
   }
 
   return (
