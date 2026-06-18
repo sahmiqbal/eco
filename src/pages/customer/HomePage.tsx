@@ -45,8 +45,8 @@ export function HomePage() {
             alt="LAHLINO"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/55 to-transparent" />
-          <div className="absolute left-0 top-0 w-1/3 h-full bg-gradient-to-r from-foreground/98/40 to-transparent opacity-60" />
+         
+          
         </div>
 
         <div className="relative container mx-auto px-4 max-w-6xl py-20 md:py-28">
@@ -65,12 +65,12 @@ export function HomePage() {
               </p>
 
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-center md:justify-start">
-                <Button size="lg" className="w-full rounded-full gap-2 shadow-lg bg-gold text-gold-foreground hover:brightness-95 sm:w-auto" asChild>
+                <Button variant="uiverse" size="lg" className="w-full rounded-full gap-2 shadow-lg sm:w-auto" asChild>
                   <Link to="/shop">
                     {t('discoverPacks')} <ArrowRight className="size-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="w-full rounded-full border-white/30 text-white hover:bg-white/10 sm:w-auto" asChild>
+                <Button variant="uiverse" size="lg" className="w-full rounded-full gap-2 shadow-lg sm:w-auto" asChild>
                   <Link to="/shop?category=individual">
                     {t('individualProducts')}
                   </Link>
@@ -86,15 +86,20 @@ export function HomePage() {
       </section>
 
       {/* ── Featured Products ── */}
-      <section className="container mx-auto px-4 max-w-6xl py-16">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">{t('featuredSub')}</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+      <section className="container mx-auto px-4 max-w-6xl py-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-10 rounded-full bg-primary/40" />
+              <p className="text-[11px] uppercase tracking-[0.35em] font-semibold text-muted-foreground">
+                {t('featuredSub')}
+              </p>
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground max-w-3xl">
               {t('packsPopular')}
             </h2>
           </div>
-          <Button variant="ghost" size="sm" className="gap-1 text-primary hidden sm:flex" asChild>
+          <Button variant="uiverse" size="sm" className="gap-1 hidden sm:flex" asChild>
             <Link to="/shop">
               {t('viewAllProducts')} <ArrowRight className="size-4" />
             </Link>
@@ -123,30 +128,39 @@ export function HomePage() {
         )}
 
         <div className="text-center mt-8 sm:hidden">
-          <Button variant="outline" className="rounded-xl gap-2" asChild>
+          <Button variant="uiverse" className="rounded-xl gap-2" asChild>
             <Link to="/shop">{t('viewAllProductsShort')} <ArrowRight className="size-4" /></Link>
           </Button>
         </div>
       </section>
 
       {/* ── Perks ── */}
-      <section className="bg-primary/5 border-y border-primary/10 py-12">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {perks.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Icon className="size-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm text-foreground">{title}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">{desc}</p>
-                </div>
-              </div>
-            ))}
+      <section className="bg-primary/5 border-y border-primary/10 py-6 overflow-hidden flex w-full">
+  {/* L'container li fih l'animation, w drna lih hover bach yw9ef ila 7tit 3lih l'asouris */}
+  <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+    
+    {/* Kanbdaw l'boucle 3la l'perks (m3awda 2 mrat) */}
+    {[...perks, ...perks].map(({ icon: Icon, title, desc }, index) => (
+      <div key={index} className="flex items-center gap-3 mx-3 shrink-0">
+        
+        {/* L'icon w l'ktba dyalek */}
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <Icon className="size-5 text-primary" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-sm text-foreground">{title}</h4>
+            <p className="text-sm text-muted-foreground mt-0.5">{desc}</p>
           </div>
         </div>
-      </section>
+
+        {/* L'khat li kayfre9 binat'hom (Separator) */}
+        <span className="text-primary/20 text-3xl font-light ml-2">|</span>
+        
+      </div>
+    ))}
+  </div>
+</section>
 
       <TestimonialsSection />
 

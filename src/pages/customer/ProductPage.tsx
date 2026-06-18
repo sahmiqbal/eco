@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ShoppingBag, ArrowLeft, Package, Star, Minus, Plus, CircleAlert as AlertCircle } from 'lucide-react'
+import { ShoppingBag, ArrowLeft, Package, ShieldCheck, Truck, Star, Minus, Plus, CircleAlert as AlertCircle } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { Badge } from '../../components/ui/badge'
 import { Skeleton } from '../../components/ui/skeleton'
@@ -213,84 +213,314 @@ export function ProductPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-3xl border border-border bg-card p-3 sm:p-4 shadow-sm">
-            <div className="space-y-3 text-center">
-              <div className="rounded-3xl border border-border bg-background p-4 sm:p-5">
-                
-                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground pb-3">{t('tierPricing')}</p>
-                
-                <div className="flex flex-wrap justify-center gap-3 px-2 pb-3">
+          {/* Premium Luxury Card Container with Neon Border and Glow */}
+          <div 
+            className="relative rounded-[28px] overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 131, 208, 0.08) 0%, rgba(247, 209, 112, 0.06) 100%), rgba(17, 16, 23, 0.8)',
+              boxShadow: '0 0 40px rgba(255, 131, 208, 0.15), inset 0 0 1px rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 131, 208, 0.2)',
+            }}
+          >
+            {/* Soft Outer Glow */}
+            <div 
+              className="absolute inset-0 rounded-[28px]"
+              style={{
+                background: 'radial-gradient(circle at top right, rgba(255, 131, 208, 0.1) 0%, transparent 50%), radial-gradient(circle at bottom left, rgba(247, 209, 112, 0.08) 0%, transparent 50%)',
+                pointerEvents: 'none',
+              }}
+            />
+
+            <div className="relative space-y-5 p-5 sm:p-6">
+              {/* TIER PRICING HEADER */}
+              <div className="space-y-4">
+                <div className="flex justify-center">
+                  <div className="inline-flex items-center gap-3 rounded-full border border-primary/15 bg-card/75 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.35em] text-muted-foreground shadow-[0_0_24px_rgba(255,131,208,0.12)]">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary shadow-[0_0_12px_rgba(255,131,208,0.18)]">
+                      💎
+                    </span>
+                    {t('tierPricing')}
+                  </div>
+                </div>
+
+                {/* Pricing Tier Selection Cards */}
+                <div className="flex flex-col gap-2.5">
                   {[
-                    { qty: 1, price: product.price, label: '1 unité' },
-                    ...(product.price_2 ? [{ qty: 2, price: product.price_2, label: '2 unités' }] : []),
-                    ...(product.price_3plus ? [{ qty: 3, price: product.price_3plus, label: '3+ unités' }] : []),
+                    { qty: 1, price: product.price, label: '1 unité', discount: 0 },
+                    ...(product.price_2 ? [{ 
+                      qty: 2, 
+                      price: product.price_2, 
+                      label: '2 unités', 
+                      discount: Math.round(((product.price - product.price_2) / product.price) * 100)
+                    }] : []),
+                    ...(product.price_3plus ? [{ 
+                      qty: 3, 
+                      price: product.price_3plus, 
+                      label: '3+ unités', 
+                      discount: Math.round(((product.price - product.price_3plus) / product.price) * 100),
+                      badge: true
+                    }] : []),
                   ].map((tier) => (
                     <button
                       key={tier.qty}
                       type="button"
                       onClick={() => setQty(tier.qty)}
-                      className={cn(
-                        'min-w-[96px] max-w-[12rem] rounded-3xl px-4 py-3 text-sm transition-all text-center flex-1 sm:flex-none',
-                        qty >= tier.qty
-                          ? 'border border-primary bg-primary/10 text-primary font-semibold shadow-sm'
-                          : 'border border-border bg-white text-foreground hover:border-primary/50'
-                      )}
+                      className="relative group/tier transition-all duration-300 ease-out"
                     >
-                      <div className="font-semibold leading-tight">{tier.price} MAD</div>
-                      <div className="leading-tight text-xs text-muted-foreground">{tier.label}</div>
+                      {/* Selected Tier - Premium Gradient */}
+                      {qty >= tier.qty && (
+                        <div 
+                          className="absolute inset-0 rounded-[18px]"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(255, 131, 208, 0.25) 0%, rgba(247, 209, 112, 0.2) 100%)',
+                            boxShadow: '0 12px 40px -8px rgba(255, 131, 208, 0.35), inset 0 0 1px rgba(255, 255, 255, 0.15)',
+                            animation: 'pulse 3s ease-in-out infinite',
+                          }}
+                        />
+                      )}
+
+                      <div
+                        className={cn(
+                          'relative px-4 py-3.5 rounded-[18px] border transition-all duration-300 ease-out flex items-center justify-between gap-3',
+                          qty >= tier.qty
+                            ? 'border-primary/60 bg-gradient-to-r from-primary/15 to-gold/10 shadow-[0_8px_24px_rgba(255,131,208,0.25)]'
+                            : 'border-border/40 bg-card/30 hover:border-primary/30 hover:bg-card/50'
+                        )}
+                      >
+                        {/* Radio Indicator */}
+                        <div className={cn(
+                          'relative w-5 h-5 rounded-full border-2 transition-all duration-300 flex-shrink-0',
+                          qty >= tier.qty
+                            ? 'border-primary bg-primary/20'
+                            : 'border-border/60 group-hover/tier:border-primary/40'
+                        )}>
+                          {qty >= tier.qty && (
+                            <div 
+                              className="absolute inset-2 rounded-full"
+                              style={{
+                                background: 'var(--primary)',
+                                boxShadow: '0 0 12px rgba(255, 131, 208, 0.6)',
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Pricing Info */}
+                        <div className="flex-1 text-left">
+                          <div className="text-sm font-bold tracking-tight text-foreground">
+                            {tier.price} <span className="text-xs font-semibold text-muted-foreground">MAD</span>
+                          </div>
+                          <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                            {tier.label}
+                          </div>
+                        </div>
+
+                        {/* Discount Badge & Best Value Badge */}
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {tier.badge && (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-[0.1em]" 
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(255, 131, 208, 0.2) 0%, rgba(247, 209, 112, 0.15) 100%)',
+                                color: 'var(--gold)',
+                                border: '1px solid rgba(247, 209, 112, 0.3)',
+                              }}>
+                              ⭐ Best Value
+                            </span>
+                          )}
+                          {tier.discount > 0 && !tier.badge && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-[9px] font-bold"
+                              style={{
+                                background: 'rgba(255, 131, 208, 0.15)',
+                                color: 'var(--primary)',
+                                border: '1px solid rgba(255, 131, 208, 0.3)',
+                              }}>
+                              -{tier.discount}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
-                      {product.stock > 0 && (
-                <Badge className="bg-emerald-100/95 text-emerald-700 text-[10px] font-bold rounded-lg px-3 py-1.5 shadow-md">
-                  {product.stock} {t('available')}
-                </Badge>
-              )}
-              <div className="space-y-1">
-                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{t('quantity')}</p>
-                <div className="inline-flex items-center justify-center rounded-full border border-border bg-background gap-3">
-                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setQty(Math.max(1, qty - 1))}>
-                    <Minus className="size-4" />
+
+              {/* QUANTITY SELECTOR - Modern Capsule */}
+              <div className="space-y-2.5 pt-2">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground text-center">
+                  {t('quantity')}
+                </p>
+                <div 
+                  className="inline-flex w-full items-center justify-center gap-3 rounded-full border px-6 py-3"
+                  style={{
+                    background: 'rgba(17, 16, 23, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 131, 208, 0.15)',
+                    boxShadow: '0 0 20px rgba(255, 131, 208, 0.1), inset 0 0 1px rgba(255, 255, 255, 0.05)',
+                  }}
+                >
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="rounded-full h-9 w-9 hover:bg-primary/20 transition-all duration-200"
+                    onClick={() => setQty(Math.max(1, qty - 1))}
+                  >
+                    <Minus className="size-4 text-primary" />
                   </Button>
-                  <span className="min-w-[2rem] text-center text-sm font-semibold">{qty}</span>
-                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setQty(qty + 1)}>
-                    <Plus className="size-4" />
+                  <span className="min-w-[2rem] text-center text-base font-bold text-foreground tracking-wide">
+                    {qty}
+                  </span>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="rounded-full h-9 w-9 hover:bg-primary/20 transition-all duration-200"
+                    onClick={() => setQty(qty + 1)}
+                  >
+                    <Plus className="size-4 text-primary" />
                   </Button>
                 </div>
-              </div>
-              <div className="self-end">
-            
-            </div>
-              <div className="mx-auto max-w-[200px] space-y-1 rounded-3xl bg-white text-center">
-                <p className="text-xs uppercase font-bold tracking-[0.3em] text-muted-foreground">Total</p>
-                <p className="text-xl font-bold text-primary">{total} MAD</p>
               </div>
 
+              {/* TOTAL SECTION - Large Glass Card */}
+              <div 
+                className="rounded-[18px] border text-center backdrop-blur-md"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 131, 208, 0.1) 0%, rgba(247, 209, 112, 0.08) 100%)',
+                  border: '1px solid rgba(247, 209, 112, 0.25)',
+                  boxShadow: '0 8px 32px rgba(255, 131, 208, 0.15), inset 0 0 1px rgba(255, 255, 255, 0.1)',
+                }}
+              >
+                <p className="text-[10px] uppercase font-bold tracking-[0.25em] text-muted-foreground">
+                  {t('total')}
+                </p>
+                <div 
+                  className="text-3xl font-black tracking-tight"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    textShadow: '0 0 20px rgba(255, 131, 208, 0.2)',
+                  }}
+                >
+                  {total} <span className="text-lg font-bold text-muted-foreground">MAD</span>
+                </div>
+              </div>
+
+              {/* ACTION BUTTONS */}
               {product.stock === 0 ? (
-                <div className="rounded-3xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
-                  <AlertCircle className="size-4 inline-block mr-2" /> {t('temporarilyUnavailable')}
+                <div 
+                  className="rounded-[18px] border px-4 py-3.5 text-sm font-semibold text-center flex items-center justify-center gap-2"
+                  style={{
+                    background: 'rgba(255, 131, 208, 0.08)',
+                    border: '1px solid rgba(255, 131, 208, 0.22)',
+                    color: 'var(--primary)',
+                  }}
+                >
+                  <AlertCircle className="size-4" /> {t('temporarilyUnavailable')}
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <Button size="lg" className="w-full rounded-3xl gap-2" onClick={addToCart}>
-                    <ShoppingBag className="size-5" /> {t('addToCart')}
-                  </Button>
-                  <Button size="lg" variant="outline" className="w-full rounded-3xl" onClick={() => { addToCart(); navigate('/cart') }}>
-                    {t('orderNow')}
-                  </Button>
+                <div className="space-y-3 pt-2">
+                  {/* Primary CTA - Add to Cart */}
+                  <button
+                    onClick={addToCart}
+                    className="relative w-full group/btn overflow-hidden rounded-[18px] px-6 py-3.5 font-bold uppercase tracking-[0.1em] text-sm transition-all duration-300 flex items-center justify-center gap-2"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--primary) 0%, rgba(255, 131, 208, 0.8) 45%, var(--gold) 100%)',
+                      backgroundSize: '200% 200%',
+                      color: '#111011',
+                      boxShadow: '0 12px 40px -8px rgba(255, 131, 208, 0.4)',
+                      border: '1px solid rgba(255, 131, 208, 0.2)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 20px 50px -10px rgba(255, 131, 208, 0.5), inset 0 0 20px rgba(255, 131, 208, 0.12)';
+                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 12px 40px -8px rgba(255, 131, 208, 0.4)';
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    }}
+                  >
+                    <ShoppingBag className="size-5" />
+                    {t('addToCart')}
+                  </button>
+
+                  {/* Secondary CTA - Order Now */}
+                  <button
+                    onClick={() => { addToCart(); navigate('/cart') }}
+                    className="relative w-full group/btn overflow-hidden rounded-[18px] px-6 py-3.5 font-bold uppercase tracking-[0.1em] text-sm transition-all duration-300 flex items-center justify-center gap-2"
+                    style={{
+                      background: 'rgba(255, 131, 208, 0.05)',
+                      color: 'var(--primary)',
+                      border: '1.5px solid rgba(255, 131, 208, 0.4)',
+                      boxShadow: '0 0 20px rgba(255, 131, 208, 0.15)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 131, 208, 0.12)';
+                      e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 131, 208, 0.25)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 131, 208, 0.6)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 131, 208, 0.05)';
+                      e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 131, 208, 0.15)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 131, 208, 0.4)';
+                    }}
+                  >
+                    ⚡ {t('orderNow')}
+                  </button>
+                </div>
+              )}
+
+              {cartItem && (
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-center"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}>
+                    ✓ {cartItem.quantity} {t('inYourCart')}
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-1 text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
+                    <div 
+                      className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-semibold"
+                      style={{
+                        background: 'rgba(247, 209, 112, 0.12)',
+                        color: 'var(--gold)',
+                        border: '1px solid rgba(247, 209, 112, 0.25)',
+                        boxShadow: '0 0 16px rgba(247, 209, 112, 0.14)',
+                      }}
+                    >
+                      <Package className="size-3" />
+                      {product.stock} {t('available')}
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-card/55 px-3 py-1">
+                      <ShieldCheck className="size-3 text-primary" />
+                      Secure checkout
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-card/55 px-3 py-1">
+                      <Truck className="size-3 text-primary" />
+                      Fast delivery
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          {cartItem && (
-            <p className="text-sm text-primary text-center">✓ {cartItem.quantity} {t('inYourCart')}</p>
-          )}
-
           {product.ingredients && (
-            <div className="rounded-3xl border border-border bg-card p-5">
-              <p className="text-xs text-center uppercase tracking-[0.3em] text-muted-foreground mb-3">{t('ingredients')}</p>
+            <div 
+              className="rounded-[18px] border px-5 py-4 backdrop-blur-md"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 131, 208, 0.08) 0%, rgba(247, 209, 112, 0.06) 100%)',
+                border: '1px solid rgba(255, 131, 208, 0.15)',
+                boxShadow: '0 0 20px rgba(255, 131, 208, 0.1)',
+              }}
+            >
+              <p className="text-xs text-center uppercase tracking-[0.2em] text-muted-foreground mb-3 font-bold">
+                ✨ {t('ingredients')}
+              </p>
               <p className="text-sm text-muted-foreground leading-relaxed">{product.ingredients}</p>
             </div>
           )}

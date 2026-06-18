@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, Menu, X, Sparkles } from 'lucide-react'
+import { ShoppingBag, Menu, X, Sparkles, Truck } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -47,41 +47,36 @@ export function Navbar() {
           <div className="mx-auto flex items-center justify-between gap-1 rounded-[2rem] border border-primary/20 bg-background/95 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
 
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/logo.webp" alt="LAHLINO" className="h-14 w-14 rounded-3xl object-cover shadow-[0_10px_30px_rgba(0,0,0,0.18)]" />
-              <div className="flex flex-col leading-tight">
-                <span className="text-base font-black uppercase tracking-[0.22em] text-foreground sm:text-xl">LAHLINO</span>
-                <span className="text-[10px] tracking-[0.38em] uppercase text-gold sm:text-[11px]">FEEL LIKE FAMILY</span>
-              </div>
+              <img src="/images/logo.png" alt="LAHLINO" className="h-17 w-auto rounded-3xl object-cover shadow-[0_10px_30px_rgba(0,0,0,0.18)]" />
+             
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="group relative text-sm font-semibold uppercase tracking-[0.12em] text-foreground/80 transition-colors hover:text-gold"
+                  className="group relative text-sm font-semibold uppercase tracking-[0.12em] text-foreground/80 transition duration-300 hover:text-gold"
                 >
                   {link.label}
-                  <span className="absolute left-0 -bottom-1 h-0.5 w-full scale-x-0 bg-gold transition-transform duration-300 group-hover:scale-x-100" />
+                  <span className="absolute left-0 -bottom-1 h-0.5 w-full scale-x-0 bg-gradient-to-r from-gold/90 via-gold/70 to-gold transition-all duration-300 group-hover:scale-x-100" />
                 </Link>
               ))}
-            </nav>
 
-            <div className="hidden md:flex items-center gap-3">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="sm" className="rounded-full border border-primary/20 bg-transparent text-primary shadow-sm shadow-primary/10 hover:bg-primary/10">
                     {languageLabels[language]}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" sideOffset={8}>
+                <DropdownMenuContent align="end" sideOffset={8} className="w-32 sm:w-40 md:w-44">
                   {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
                     <DropdownMenuItem
                       key={lang}
                       onSelect={() => setLanguage(lang)}
                       className={cn(
                         language === lang ? 'font-semibold text-[#a53860]' : 'text-muted-foreground',
-                        'cursor-pointer'
+                        'cursor-pointer py-2.5 px-3'
                       )}
                     >
                       {languageLabels[lang]}
@@ -89,7 +84,9 @@ export function Navbar() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+            </nav>
 
+            <div className="hidden md:flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
@@ -107,6 +104,32 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-2 md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="rounded-full border border-primary/20 bg-transparent text-primary shadow-sm shadow-primary/10 hover:bg-primary/10"
+                  >
+                    {languageLabels[language]}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" sideOffset={8} className="w-44">
+                  {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
+                    <DropdownMenuItem
+                      key={lang}
+                      onSelect={() => setLanguage(lang)}
+                      className={cn(
+                        language === lang ? 'font-semibold text-[#a53860]' : 'text-muted-foreground',
+                        'cursor-pointer'
+                      )}
+                    >
+                      {languageLabels[lang]}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <Button
                 variant="ghost"
                 size="icon"
@@ -137,10 +160,8 @@ export function Navbar() {
 
           {menuOpen && (
             <div className="fixed inset-0 z-50 md:hidden mobile-menu-enter">
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
+              <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
               <div className="relative z-50 flex h-full w-full flex-col items-center justify-between gap-0 rounded-[2rem] border border-primary/20 bg-background/95 px-6 py-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
-                
-                {/* Close button area */}
                 <div className="flex w-full justify-end">
                   <Button
                     onClick={() => setMenuOpen(false)}
@@ -151,7 +172,13 @@ export function Navbar() {
                   </Button>
                 </div>
 
-                {/* Menu links - centered */}
+                <div className="flex flex-col items-center gap-x-3 justify-center">
+                              <img src="/images/logo.png" alt='LAHLINO' className="h-32 w-auto object-cover rounded-3xl" />
+                              <div>
+                                <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
+                              </div>
+                            </div>
+
                 <nav className="flex flex-col items-center gap-8 py-12">
                   {navLinks.map((link, index) => (
                     <Link
@@ -166,45 +193,19 @@ export function Navbar() {
                   ))}
                 </nav>
 
-                {/* Divider */}
-                <div className="h-px w-2/3 bg-gradient-to-r from-transparent via-[#a53860]/20 to-transparent" />
+                <div className="h-px w-2/3 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
-                {/* Language & Cart section */}
-                <div className="flex flex-col items-center gap-6 py-8">
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
-                      <Button
-                        key={lang}
-                        onClick={() => setLanguage(lang)}
-                        className={cn(
-                          'rounded-full px-5 py-2 text-sm font-medium transition-all duration-200',
-                          language === lang
-                            ? 'bg-[#a53860] text-white shadow-sm shadow-[#a53860]/20'
-                            : 'bg-transparent text-white border border-[#a53860]/20 hover:bg-[#a53860]/10'
-                        )}
-                      >
-                        {languageLabels[lang]}
-                      </Button>
-                    ))}
-                  </div>
+               
 
-                  {/* Cart link */}
-                  <Button
-                    onClick={() => {
-                      navigate('/cart')
-                      setMenuOpen(false)
-                    }}
-                    className="group flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white shadow-lg shadow-primary/30 transition-all duration-200 hover:shadow-primary/50 hover:scale-105"
-                  >
-                    <ShoppingBag className="size-5 transition-transform duration-300 group-hover:scale-110" />
-                    {totalItems > 0 && (
-                      <Badge className="h-5 min-w-[1.25rem] rounded-full p-0 flex items-center justify-center bg-white text-primary text-[11px] font-bold">
-                        {totalItems}
-                      </Badge>
-                    )}
-                    Voir le panier
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => {
+                    navigate('/cart')
+                    setMenuOpen(false)
+                  }}
+                  className="w-full rounded-[1.5rem] bg-gradient-to-r from-primary to-gold px-6 py-3.5 text-sm font-semibold text-black shadow-[0_25px_50px_rgba(255,131,208,0.25)] transition-all duration-200 hover:shadow-[0_30px_60px_rgba(255,131,208,0.35)]"
+                >
+                  Commencer vos achats
+                </Button>
               </div>
             </div>
           )}

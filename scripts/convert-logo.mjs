@@ -1,8 +1,8 @@
 import sharp from 'sharp'
 import fs from 'fs'
 
-const input = './public/images/LOGO.png'
-const output = './public/images/logo.webp'
+const input = './public/images/logo.png'
+const output = './public/images/logo.png'
 
 if (!fs.existsSync(input)) {
   console.error('Input file not found:', input)

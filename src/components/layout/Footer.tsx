@@ -21,13 +21,12 @@ export function Footer() {
   return (
     <footer className="w-full bg-background text-foreground py-10">
       <div className="flex w-full flex-col items-center justify-center gap-8 px-4 text-center">
-        <div className="relative w-full overflow-hidden rounded-[2rem] border border-primary/30 bg-card px-6 py-8 shadow-[0_10px_40px_-15px_rgba(255,131,208,0.15)]">
+        <div className="relative w-full overflow-hidden rounded-[2rem] border border-primary/30 bg-black px-6 py-8 shadow-[0_10px_40px_-15px_rgba(255,131,208,0.15)]">
           <div className="relative z-10 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-x-3 justify-center">
-              <img src="/images/logo.webp" alt={business.name} className="w-12 h-12 object-cover rounded-3xl shadow-[0_10px_30px_rgba(255,255,255,0.12)]" />
+            <div className="flex flex-col items-center gap-x-3 justify-center">
+              <img src="/images/logo.png" alt={business.name} className="h-32 w-auto object-cover rounded-3xl" />
               <div>
-                <span className="font-extrabold text-3xl uppercase tracking-[0.28em] text-foreground">{business.name}</span>
-                <p className="mt-1 text-xs uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
+                <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
               </div>
             </div>
             <p className="max-w-xl text-sm leading-relaxed text-foreground/75">Pure, natural, and timeless care with elevated elegance.</p>
@@ -40,27 +39,31 @@ export function Footer() {
                 <a
                   key={index}
                   href="#"
-                  className={`flex items-center gap-x-2 rounded-full border px-4 py-2 text-sm transition-all duration-300 ${link.active ? 'border-primary bg-primary/10 text-primary shadow-[0_0_20px_rgba(213,82,163,0.15)]' : 'border-border text-foreground/70 hover:border-primary hover:text-primary'}`}
+                  className={`group inline-flex shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 relative overflow-hidden border-2 border-primary bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] text-primary shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)] transition-all duration-300 leading-[1.4em] tracking-[0.06em] h-9 px-4 py-2 has-[>svg]:px-3 rounded-xl gap-2 ${link.active ? 'border-primary bg-primary/20 text-primary shadow-[0_0_24px_rgba(255,131,208,0.22)]' : 'border-border text-foreground/70 hover:border-primary hover:text-primary'}`}
                   onMouseEnter={() => link.text === 'SHOP' && setIsShopActive(true)}
                   onMouseLeave={() => link.text === 'SHOP' && setIsShopActive(false)}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="tracking-[0.2em]">{link.text}</span>
+                  <Icon className={`w-4 h-4 transition duration-300 ${link.active ? 'text-primary' : 'text-foreground/70 group-hover:text-primary'}`} />
+                  <span className="tracking-[0.2em] transition duration-300 group-hover:text-primary">{link.text}</span>
                 </a>
               )
             })}
           </div>
 
-          <div className="relative z-10 mt-8 flex flex-col items-center gap-3 text-sm text-gold sm:flex-row sm:justify-center">
+          <div className="relative z-10 mt-8 flex flex-col items-center gap-3 text-sm text-foreground sm:flex-row sm:justify-center">
             {contactItems.map((item, index) => {
               const Icon = item.icon
               const isEmail = typeof item.text === 'string' && item.text.includes('@')
               const isPhone = typeof item.text === 'string' && item.text.replace(/\s+/g, '').startsWith('+')
               const href = isEmail ? `mailto:${item.text}` : isPhone ? `tel:${item.text.replace(/\s+/g, '')}` : '#'
               return (
-                <a key={index} href={href} className="flex items-center gap-x-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 transition hover:bg-white/10">
-                  <Icon className="w-4 h-4 text-gold" />
-                  <span>{item.text}</span>
+                <a
+                  key={index}
+                  href={href}
+                  className="group inline-flex shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 relative overflow-hidden border-2 border-primary bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] text-primary shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)] transition-all duration-300 leading-[1.4em] tracking-[0.06em] h-9 px-4 py-2 has-[>svg]:px-3 rounded-xl gap-2 text-foreground/75 hover:border-gold/40 hover:bg-gold/10 hover:text-foreground"
+                >
+                  <Icon className="w-4 h-4 text-gold transition duration-300 group-hover:text-gold" />
+                  <span className="transition duration-300 group-hover:text-foreground">{item.text}</span>
                 </a>
               )
             })}

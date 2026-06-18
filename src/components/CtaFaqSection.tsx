@@ -23,7 +23,7 @@ const faqItems = [
 
 export function CtaFaqSection() {
   return (
-    <section className="bg-card mt-4 text-foreground">
+    <section className=" mt-4 text-foreground">
       <div className="container mx-auto max-w-4xl px-1">
         <div className="faq-3d-card mx-auto max-w-4xl">
           <div className="faq-3d-scene">
@@ -58,8 +58,9 @@ export function CtaFaqSection() {
 
                   <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
                     <Button
+                      variant="uiverse"
                       size="lg"
-                      className="rounded-full bg-primary px-8 py-4 text-primary-foreground shadow-[0_10px_30px_-15px_rgba(213,82,163,0.35)] transition hover:bg-primary/90"
+                      className="rounded-full px-8 py-4 gap-2 shadow-lg"
                       asChild
                     >
                       <Link to="/shop" className="flex items-center justify-center gap-2">
@@ -68,9 +69,9 @@ export function CtaFaqSection() {
                       </Link>
                     </Button>
                     <Button
-                      variant="outline"
+                      variant="uiverse"
                       size="lg"
-                      className="rounded-full border-border bg-background px-8 py-4 text-foreground transition hover:border-primary/40 hover:bg-primary/5"
+                      className="rounded-full px-8 py-4 gap-2 shadow-lg"
                       asChild
                     >
                       <Link to="/shop?category=individual" className="flex items-center justify-center gap-2">

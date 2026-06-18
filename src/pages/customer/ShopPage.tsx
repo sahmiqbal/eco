@@ -10,9 +10,9 @@ import { supabase } from '@/lib/supabase'
 import type { Product } from '@/types'
 
 const CATEGORIES = [
-  { value: 'all', labelKey: 'categoryAll' },
-  { value: 'pack', labelKey: 'categoryPack' },
-  { value: 'individual', labelKey: 'categoryIndividual' },
+  { value: 'all', label: 'All' },
+  { value: 'pack', label: '✦ Packs' },
+  { value: 'individual', label: 'Individual' },
 ]
 
 export function ShopPage() {
@@ -60,10 +60,10 @@ export function ShopPage() {
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder={t('searchPlaceholder')}
-            className="pl-9 rounded-xl"
+            placeholder="Search for a product..."
+            className="pl-10 rounded-2xl border border-primary/20 bg-background/80 text-foreground shadow-[inset_0_0_20px_rgba(255,131,208,0.05)]"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -74,7 +74,7 @@ export function ShopPage() {
               key={c.value}
               size="sm"
               variant={category === c.value ? 'default' : 'outline'}
-              className="rounded-xl"
+              className="rounded-2xl bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] border-2 border-primary px-4 py-2 text-sm font-medium shadow-[inset_0_0_10px_rgba(255,131,208,0.1),0_0_8px_rgba(255,131,208,0.08)] transition duration-300 hover:border-primary hover:text-primary"
               onClick={() => {
                 const params = new URLSearchParams()
                 if (c.value !== 'all') params.set('category', c.value)
@@ -82,7 +82,7 @@ export function ShopPage() {
                 setSearch('')
               }}
             >
-              {t(c.labelKey as any)}
+              {c.label}
             </Button>
           ))}
         </div>

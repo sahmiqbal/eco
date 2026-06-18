@@ -40,7 +40,7 @@ export function CartPage() {
             const unitPrice = getBundlePrice(product, quantity)
             const subtotal = unitPrice * quantity
             return (
-              <div key={product.id} className="bg-white border border-border rounded-[2rem] p-5 sm:p-6 flex flex-col gap-4 hover:shadow-lg transition sm:flex-row sm:items-center">
+              <div key={product.id} className="border border-border rounded-[2rem] p-5 sm:p-6 flex flex-col gap-4 hover:shadow-lg transition sm:flex-row sm:items-center">
                 <div className="w-full sm:w-32 h-52 sm:h-32 rounded-[1.5rem] overflow-hidden bg-muted shrink-0">
                   {getProductImage(product) ? (
                     <img src={getProductImage(product)!} alt={product.name} className="w-full h-full object-cover" />
@@ -100,7 +100,7 @@ export function CartPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-white border border-primary/20 rounded-[2rem] p-6 shadow-[0_10px_40px_-15px_rgba(213,82,163,0.15)] lg:sticky lg:top-24">
+          <div className=" border border-primary/20 rounded-[2rem] p-6 shadow-[0_10px_40px_-15px_rgba(213,82,163,0.15)] lg:sticky lg:top-24">
             <h3 className="font-bold text-2xl text-foreground mb-5 text-center">Order Summary</h3>
 
             <div className="space-y-4 mb-4 bg-background rounded-[1.5rem] p-4">
