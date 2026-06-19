@@ -44,10 +44,10 @@ export function Navbar() {
     <header className="fixed top-4 left-0 right-0 z-50">
       <div className="container mx-auto px-1 max-w-6xl">
         <div className="relative">
-          <div className="mx-auto flex items-center justify-between rounded-[2rem] border border-primary/20 bg-background/95 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+          <div className="mx-auto flex items-center justify-between rounded-[2rem] border border-primary/20 bg-black px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
 
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/logo.webp" alt="LAHLINO" className="h-17 w-auto rounded-3xl object-cover" />
+              <img src="/images/logo.webp" alt="LAHLINO" className="max-h-12 sm:max-h-14 md:max-h-16 w-auto object-contain rounded-sm" />
              
             </Link>
 

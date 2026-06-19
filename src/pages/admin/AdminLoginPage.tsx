@@ -9,7 +9,7 @@ import { useLanguage } from '@/lib/language'
 
 const adminEmail = import.meta.env.VITE_ADMIN_EMAIL ?? ''
 const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD ?? ''
-const isDev = import.meta.env.DEV
+
 
 export function AdminLoginPage() {
   const { t } = useLanguage()
@@ -51,9 +51,9 @@ export function AdminLoginPage() {
             <Input
               id="email"
               type="email"
-              placeholder="admin@lahlino.ma"
+              placeholder=""
               className="rounded-xl bg-sidebar border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-foreground/40"
-              value={email}
+              
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -66,9 +66,9 @@ export function AdminLoginPage() {
             <Input
               id="password"
               type="password"
-              placeholder="••••••••"
+              placeholder=""
               className="rounded-xl bg-sidebar border-sidebar-border text-sidebar-foreground"
-              value={password}
+              
               onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -80,13 +80,7 @@ export function AdminLoginPage() {
             </div>
           )}
 
-          {isDev && adminEmail && adminPassword && (
-            <div className="rounded-2xl border border-border bg-secondary p-3 text-xs text-muted-foreground mb-2">
-              Test admin credentials:
-              <div className="mt-1 font-semibold text-foreground">{adminEmail}</div>
-              <div className="font-semibold text-foreground">{adminPassword}</div>
-            </div>
-          )}
+ 
 
           <Button type="submit" className="w-full rounded-xl shadow-md" disabled={loading}>
             {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : <Lock className="size-4 mr-2" />}

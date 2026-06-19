@@ -1,5 +1,14 @@
 # Image Upload Setup
 
+ Product Images:
+1600×1200 px (4:3)
+
+Before/After:
+1600×900 px (16:9)
+
+Comparison Images:
+1080×1350 px (4:5)
+
 To enable image uploads for products, you need to set up the Supabase storage bucket:
 
 ## Option 1: Using Supabase Dashboard

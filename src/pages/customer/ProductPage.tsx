@@ -126,12 +126,12 @@ export function ProductPage() {
                   carouselSlides.map((src, index) => (
                     <CarouselItem key={`product-slide-${index}`}>
                       <div className="relative h-full w-full overflow-hidden">
-                        <img
-                          src={src}
-                          alt={`${product.name} image ${index + 1}`}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
+  <img
+    src={src}
+    alt={`${product.name} image ${index + 1}`}
+    className="h-full w-full object-contain"
+  />
+</div>
                     </CarouselItem>
                   ))
                 ) : (
@@ -555,20 +555,38 @@ export function ProductPage() {
       </div>
 
       {product.comparatives_images && product.comparatives_images.length > 0 && (
-        <div className="mt-10 flex gap-3 overflow-x-auto">
-          {(product.comparatives_images ?? []).map((src, i) => (
-            <img key={src + i} src={src} alt={`Comparative ${i + 1}`} className="min-w-[72%] sm:min-w-[48%] md:min-w-[32%] h-auto rounded-2xl" />
-          ))}
-        </div>
-      )}
+  <div className="mt-10 flex gap-3 overflow-x-auto">
+    {(product.comparatives_images ?? []).map((src, i) => (
+      <div
+        key={src + i}
+        className="min-w-[72%] sm:min-w-[48%] md:min-w-[32%] aspect-[4/5] rounded-2xl overflow-hidden bg-muted"
+      >
+        <img
+          src={src}
+          alt={`Comparative ${i + 1}`}
+          className="w-full h-full object-contain"
+        />
+      </div>
+    ))}
+  </div>
+)}
 
       {product.others_images && product.others_images.length > 0 && (
-        <div className=" flex gap-3 overflow-x-auto">
-          {(product.others_images ?? []).map((src, i) => (
-            <img key={src + i} src={src} alt={`Others ${i + 1}`} className="w-full h-auto rounded-2xl" />
-          ))}
-        </div>
-      )}
+  <div className="flex flex-col gap-3">
+    {(product.others_images ?? []).map((src, i) => (
+      <div
+        key={src + i}
+        className="w-full aspect-[4/5] rounded-2xl overflow-hidden bg-muted"
+      >
+        <img
+          src={src}
+          alt={`Others ${i + 1}`}
+          className="w-full h-full object-contain"
+        />
+      </div>
+    ))}
+  </div>
+)}
 
     </div>
   )

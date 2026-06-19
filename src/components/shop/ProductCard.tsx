@@ -55,12 +55,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 carouselSlides.map((src, index) => (
                   <CarouselItem key={`${product.id}-slide-${index}`}>
                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[2rem] bg-muted">
-                      <img
-                        src={src}
-                        alt={`${product.name} image ${index + 1}`}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
+                        <img
+                          src={src}
+                          alt={`${product.name} image ${index + 1}`}
+                          loading="lazy"
+                          className="h-full w-full object-contain"
+                        />
                     </div>
                   </CarouselItem>
                 ))
