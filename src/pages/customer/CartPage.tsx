@@ -40,7 +40,7 @@ export function CartPage() {
             const unitPrice = getBundlePrice(product, quantity)
             const subtotal = unitPrice * quantity
             return (
-              <div key={product.id} className="border border-border rounded-[2rem] p-5 sm:p-6 flex flex-col gap-4 hover:shadow-lg transition sm:flex-row sm:items-center">
+              <div key={product.id} className="border border-border rounded-[2rem] p-3 sm:p-6 flex flex-col gap-4 hover:shadow-lg transition sm:flex-row sm:items-center">
                 <div className="w-full sm:w-32 h-52 sm:h-32 rounded-[1.5rem] overflow-hidden bg-muted shrink-0">
                   {getProductImage(product) ? (
                     <img src={getProductImage(product)!} alt={product.name} className="w-full h-full object-cover" />
@@ -52,25 +52,20 @@ export function CartPage() {
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-between gap-5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
+                    <div className=" flex flew-row">
                       <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight tracking-tight line-clamp-2">{product.name}</h3>
-                      {product.category === 'pack' && (
+                      
+                    {product.category === 'pack' && (
                         <Badge className="bg-primary/10 text-primary border-0 text-xs mt-2">Pack</Badge>
                       )}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8 shrink-0 text-muted-foreground hover:text-primary"
-                      onClick={() => removeItem(product.id)}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
+                    
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center sm:justify-between">
-                    <div className="flex items-center border border-border rounded-2xl bg-background overflow-hidden">
-                      <Button
+                    <div className="flex items-center justify-between border border-border rounded-2xl bg-background overflow-hidden">
+                      <div>
+                        <Button
                         variant="ghost"
                         size="icon"
                         className="h-9 w-9 rounded-none"
@@ -87,6 +82,18 @@ export function CartPage() {
                       >
                         <Plus className="size-4" />
                       </Button>
+                      </div>
+
+                      <div>
+                          <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 shrink-0 text-muted-foreground hover:text-primary"
+                      onClick={() => removeItem(product.id)}
+                    >
+                      <Trash2 className="size-4" />
+                           </Button>
+                      </div>
                     </div>
                     <div className="text-center">
                       <p className="font-extrabold text-primary text-3xl sm:text-2xl">{subtotal} MAD</p>

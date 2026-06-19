@@ -44,7 +44,7 @@ export function Navbar() {
     <header className="fixed top-4 left-0 right-0 z-50">
       <div className="container mx-auto px-1 max-w-6xl">
         <div className="relative">
-          <div className="mx-auto flex items-center justify-between gap-1 rounded-[2rem] border border-primary/20 bg-background/95 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+          <div className="mx-auto flex items-center justify-between rounded-[2rem] border border-primary/20 bg-background/95 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
 
             <Link to="/" className="flex items-center gap-3">
               <img src="/images/logo.png" alt="LAHLINO" className="h-17 w-auto rounded-3xl object-cover shadow-[0_10px_30px_rgba(0,0,0,0.18)]" />
@@ -161,25 +161,25 @@ export function Navbar() {
           {menuOpen && (
             <div className="fixed inset-0 z-50 md:hidden mobile-menu-enter">
               <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-              <div className="relative z-50 flex h-full w-full flex-col items-center justify-between gap-0 rounded-[2rem] border border-primary/20 bg-background/95 px-6 py-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+              <div className="relative z-50 flex h-full w-full flex-col items-center justify-between gap-0 rounded-[2rem] border border-primary/20 bg-background/95 px-2 py-2 text-center shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
                 <div className="flex w-full justify-end">
                   <Button
                     onClick={() => setMenuOpen(false)}
                     aria-label="Close menu"
                     className="close-button-animate group relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-white transition-all duration-200 hover:bg-primary/15 hover:border-primary"
                   >
-                    <X className="size-5 transition-transform duration-300 group-hover:rotate-90" />
+                    <X className="size-5 text-gold transition-transform duration-300 group-hover:rotate-90" />
                   </Button>
                 </div>
 
                 <div className="flex flex-col items-center gap-x-3 justify-center">
-                              <img src="/images/logo.png" alt='LAHLINO' className="h-32 w-auto object-cover rounded-3xl" />
+                              <img src="/images/logo.png" alt='LAHLINO' className="h-[80px] w-auto object-cover rounded-3xl" />
                               <div>
                                 <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
                               </div>
                             </div>
 
-                <nav className="flex flex-col items-center gap-8 py-12">
+                <nav className="flex flex-col items-center gap-4 py-4">
                   {navLinks.map((link, index) => (
                     <Link
                       key={link.to}

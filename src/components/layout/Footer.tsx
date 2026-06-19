@@ -43,7 +43,7 @@ export function Footer() {
                   onMouseEnter={() => link.text === 'SHOP' && setIsShopActive(true)}
                   onMouseLeave={() => link.text === 'SHOP' && setIsShopActive(false)}
                 >
-                  <Icon className={`w-4 h-4 transition duration-300 ${link.active ? 'text-primary' : 'text-foreground/70 group-hover:text-primary'}`} />
+                  <Icon className={`w-4 h-4 transition duration-300 ${link.active ? 'text-primary' : 'text-gold group-hover:text-primary'}`} />
                   <span className="tracking-[0.2em] transition duration-300 group-hover:text-primary">{link.text}</span>
                 </a>
               )

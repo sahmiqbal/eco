@@ -27,7 +27,7 @@ export function PerksBanner() {
             {/* Perk item with icon and text */}
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Icon className="size-5 text-primary" />
+                <Icon className="size-5 text-white" />
               </div>
               <div>
                 <h4 className="font-semibold text-sm text-foreground">{title}</h4>
