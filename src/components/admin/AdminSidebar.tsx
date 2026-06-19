@@ -34,7 +34,7 @@ export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden bg-sidebar-foreground/5 shadow-sm">
-              <img src="/images/LAHLINO%20Logo%208K%20Upscale-Photoroom.png" alt="LAHLINO" className="w-full h-full object-cover" />
+              <img src="/images/logo.webp" alt="LAHLINO" className="w-full h-full object-cover" />
             </div>
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sidebar-foreground">LAHLINO</p>

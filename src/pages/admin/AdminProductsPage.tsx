@@ -370,7 +370,7 @@ export function AdminProductsPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg rounded-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-[95vw] sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>{editProduct ? t('editProduct') : t('newProduct')}</DialogTitle>
             <DialogDescription>{t('fillProductInfo')}</DialogDescription>
@@ -411,7 +411,7 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <div>
                 <Label className="text-xs mb-1.5 block">{t('priceLabel')} (MAD) *</Label>
                 <Input type="number" className="rounded-xl" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} aria-invalid={!!errors.price} />
@@ -427,7 +427,7 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs mb-1.5 block">{t('productStock')}</Label>
                 <Input type="number" className="rounded-xl" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} />
@@ -481,7 +481,7 @@ export function AdminProductsPage() {
                 </label>
                 {form.imageFiles.length > 0 && (
                   <div className="mt-3 space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {previewUrls.productImages.map((src, index) => (
                         <div key={index} className="overflow-hidden rounded-2xl border border-border bg-secondary">
                           <img src={src} alt={`Aperçu image ${index + 1}`} className="w-full h-24 object-cover" />
@@ -512,7 +512,7 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs mb-1.5 block">{t('imageBefore')}</Label>
                 <Input
@@ -537,7 +537,7 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs mb-1.5 block">{t('uploadBeforeImageLabel')}</Label>
                 <div className="border-2 border-dashed border-border rounded-xl p-3">
@@ -736,7 +736,7 @@ export function AdminProductsPage() {
             </div>
 
             <Separator />
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse sm:flex-row gap-3">
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setDialogOpen(false)}>
                 {t('cancel')}
               </Button>
