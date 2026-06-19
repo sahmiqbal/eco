@@ -91,7 +91,7 @@ export function AdminSidebar({ notifCount = 0 }: AdminSidebarProps) {
 
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar border-b border-sidebar-border flex items-center justify-between px-4 h-14">
         <div className="flex items-center gap-2">
-            <img src="/images/LAHLINO%20Logo%208K%20Upscale-Photoroom.png" alt="LAHLINO" className="w-8 h-8 rounded-2xl object-cover" />
+            <img src="/images/logo.webp" alt="LAHLINO" className="w-8 h-8 rounded-2xl object-cover" />
             <span className="text-sm font-semibold uppercase tracking-[0.18em] text-sidebar-foreground">LAHLINO Admin</span>
         </div>
         <Button

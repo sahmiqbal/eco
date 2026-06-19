@@ -19,17 +19,22 @@ export function Footer() {
   ]
 
   return (
-    <footer className="w-full bg-background text-foreground py-10">
-      <div className="flex w-full flex-col items-center justify-center gap-8 px-4 text-center">
+    <footer className="w-full bg-background text-foreground py-5">
+      <div className="flex w-full flex-col items-center justify-center gap-4 px-4 text-center">
         <div className="relative w-full overflow-hidden rounded-[2rem] border border-primary/30 bg-black px-6 py-8 shadow-[0_10px_40px_-15px_rgba(255,131,208,0.15)]">
           <div className="relative z-10 flex flex-col items-center gap-4">
             <div className="flex flex-col items-center gap-x-3 justify-center">
-              <img src="/images/logo.png" alt={business.name} className="h-32 w-auto object-cover rounded-3xl" />
+              <img src="/images/logo.webp" alt={business.name} className="h-32 w-auto object-cover rounded-3xl" />
               <div>
                 <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
               </div>
             </div>
-            <p className="max-w-xl text-sm leading-relaxed text-foreground/75">Pure, natural, and timeless care with elevated elegance.</p>
+            <p className="group inline-flex shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap 
+            outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none 
+            disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 relative
+             overflow-hidden bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] text-primary shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)] transition-all duration-300 leading-[1.4em]
+              tracking-[0.06em] h-9 px-4 py-2 has-[>svg]:px-3 rounded-xl gap-2 text-foreground/75">PURE</p>
+            <p className="max-w-xl text-sm font-bold uppercase text-white">PURE , NATURAL & HANDMADE.</p>
           </div>
 
           <div className="relative z-10 mt-8 flex flex-wrap justify-center gap-3">

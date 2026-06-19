@@ -40,68 +40,161 @@ export function CartPage() {
             const unitPrice = getBundlePrice(product, quantity)
             const subtotal = unitPrice * quantity
             return (
-              <div key={product.id} className="border border-border rounded-[2rem] p-3 sm:p-6 flex flex-col gap-4 hover:shadow-lg transition sm:flex-row sm:items-center">
-                <div className="w-full sm:w-32 h-52 sm:h-32 rounded-[1.5rem] overflow-hidden bg-muted shrink-0">
-                  {getProductImage(product) ? (
-                    <img src={getProductImage(product)!} alt={product.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Package className="size-10 text-muted-foreground/40" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-between gap-5">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div className=" flex flew-row">
-                      <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight tracking-tight line-clamp-2">{product.name}</h3>
-                      
-                    {product.category === 'pack' && (
-                        <Badge className="bg-primary/10 text-primary border-0 text-xs mt-2">Pack</Badge>
-                      )}
-                    </div>
-                    
-                  </div>
+              <div
+  key={product.id}
+  className="
+    rounded-[32px]
+    border border-pink-500/20
+    bg-black/60
+    backdrop-blur-xl
+    p-5
+    flex flex-col gap-5
+    shadow-[0_0_40px_rgba(236,72,153,0.08)]
+    transition-all duration-300
+    hover:border-pink-400/30
+    hover:shadow-[0_0_60px_rgba(236,72,153,0.12)]
+  "
+>
+  {/* Image */}
+  <div className="w-full h-56 rounded-[24px] overflow-hidden bg-muted">
+    {getProductImage(product) ? (
+      <img
+        src={getProductImage(product)!}
+        alt={product.name}
+        className="
+          w-full h-full
+          object-cover
+          transition-transform duration-700
+          hover:scale-105
+        "
+      />
+    ) : (
+      <div className="w-full h-full flex items-center justify-center">
+        <Package className="size-10 text-muted-foreground/40" />
+      </div>
+    )}
+  </div>
 
-                  <div className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center sm:justify-between">
-                    <div className="flex items-center justify-between border border-border rounded-2xl bg-background overflow-hidden">
-                      <div>
-                        <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 rounded-none"
-                        onClick={() => updateQuantity(product.id, quantity - 1)}
-                      >
-                        <Minus className="size-4" />
-                      </Button>
-                      <span className="w-10 text-center text-sm font-semibold text-foreground">{quantity}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 rounded-none"
-                        onClick={() => updateQuantity(product.id, quantity + 1)}
-                      >
-                        <Plus className="size-4" />
-                      </Button>
-                      </div>
+  {/* Title */}
+  <div className="flex items-center gap-3 flex-wrap">
+    <h3
+      className="
+        text-white
+        text-2xl
+        font-semibold
+        tracking-tight
+        leading-tight
+        flex-1
+      "
+    >
+      {product.name}
+    </h3>
 
-                      <div>
-                          <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8 shrink-0 text-muted-foreground hover:text-primary"
-                      onClick={() => removeItem(product.id)}
-                    >
-                      <Trash2 className="size-4" />
-                           </Button>
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <p className="font-extrabold text-primary text-3xl sm:text-2xl">{subtotal} MAD</p>
-                      <p className="text-xs text-muted-foreground mt-1">{unitPrice} MAD each</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    {product.category === "pack" && (
+      <Badge
+        className="
+          rounded-full
+          bg-pink-500/15
+          text-pink-400
+          border border-pink-500/20
+          px-3 py-1
+        "
+      >
+        Pack
+      </Badge>
+    )}
+  </div>
+
+  {/* Quantity + Delete */}
+  <div className="flex items-center gap-3">
+    <div
+      className="
+        flex-1
+        h-14
+        rounded-full
+        border border-pink-500/20
+        bg-white/[0.03]
+        backdrop-blur-md
+        flex items-center justify-between
+        px-3
+      "
+    >
+      <Button
+        variant="ghost"
+        size="icon"
+        className="
+          h-10 w-10
+          rounded-full
+          bg-pink-500/10
+          hover:bg-pink-500/20
+          text-pink-300
+        "
+        onClick={() => updateQuantity(product.id, quantity - 1)}
+      >
+        <Minus className="size-4" />
+      </Button>
+
+      <span className="text-lg font-semibold text-white">
+        {quantity}
+      </span>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="
+          h-10 w-10
+          rounded-full
+          bg-pink-500/10
+          hover:bg-pink-500/20
+          text-pink-300
+        "
+        onClick={() => updateQuantity(product.id, quantity + 1)}
+      >
+        <Plus className="size-4" />
+      </Button>
+    </div>
+
+    <Button
+      variant="ghost"
+      size="icon"
+      className="
+        h-14 w-14
+        rounded-full
+        border border-red-500/20
+        bg-red-500/5
+        text-red-400
+        hover:bg-red-500/10
+      "
+      onClick={() => removeItem(product.id)}
+    >
+      <Trash2 className="size-5" />
+    </Button>
+  </div>
+
+  {/* Price */}
+  <div>
+    <p
+      className="
+      text-center
+        text-5xl
+        font-black
+        tracking-tight
+        bg-gradient-to-r
+        from-pink-500
+        via-pink-300
+        to-amber-300
+        bg-clip-text
+        text-transparent
+      "
+    >
+      {subtotal} MAD
+    </p>
+
+    <p className="text-zinc-200 font-bold text-center text-sm mt-1">
+      {unitPrice} MAD each
+    </p>
+  </div>
+</div>
             )
           })}
         </div>

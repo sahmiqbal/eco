@@ -47,7 +47,7 @@ export function Navbar() {
           <div className="mx-auto flex items-center justify-between rounded-[2rem] border border-primary/20 bg-background/95 px-4 shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl">
 
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/logo.png" alt="LAHLINO" className="h-17 w-auto rounded-3xl object-cover shadow-[0_10px_30px_rgba(0,0,0,0.18)]" />
+              <img src="/images/logo.webp" alt="LAHLINO" className="h-17 w-auto rounded-3xl object-cover" />
              
             </Link>
 
@@ -56,10 +56,41 @@ export function Navbar() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="group relative text-sm font-semibold uppercase tracking-[0.12em] text-foreground/80 transition duration-300 hover:text-gold"
+                  className="
+group inline-flex shrink-0 items-center justify-center
+relative overflow-hidden
+h-9 px-4 py-2 rounded-xl gap-2
+text-sm font-semibold uppercase
+leading-[1.4em] tracking-[0.12em]
+whitespace-nowrap
+
+outline-none
+focus-visible:border-ring
+focus-visible:ring-[3px]
+focus-visible:ring-ring/50
+
+disabled:pointer-events-none
+disabled:opacity-50
+
+aria-invalid:border-destructive
+aria-invalid:ring-destructive/20
+dark:aria-invalid:ring-destructive/40
+
+[&_svg]:pointer-events-none
+[&_svg]:shrink-0
+[&_svg:not([class*='size-'])]:size-4
+has-[>svg]:px-3
+
+bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)]
+shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)]
+
+text-foreground/80
+transition-all duration-300
+hover:text-gold
+"
                 >
                   {link.label}
-                  <span className="absolute left-0 -bottom-1 h-0.5 w-full scale-x-0 bg-gradient-to-r from-gold/90 via-gold/70 to-gold transition-all duration-300 group-hover:scale-x-100" />
+                  <span className=" absolute left-0 -bottom-1 h-0.5 w-full scale-x-0 bg-gradient-to-r from-gold/90 via-gold/70 to-gold transition-all duration-300 group-hover:scale-x-100" />
                 </Link>
               ))}
 
@@ -173,7 +204,7 @@ export function Navbar() {
                 </div>
 
                 <div className="flex flex-col items-center gap-x-3 justify-center">
-                              <img src="/images/logo.png" alt='LAHLINO' className="h-[80px] w-auto object-cover rounded-3xl" />
+                              <img src="/images/logo.webp" alt='LAHLINO' className="h-[80px] w-auto object-cover rounded-3xl" />
                               <div>
                                 <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
                               </div>

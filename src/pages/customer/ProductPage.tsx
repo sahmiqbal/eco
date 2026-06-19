@@ -4,6 +4,7 @@ import { ShoppingBag, ArrowLeft, Package, ShieldCheck, Truck, Star, Minus, Plus,
 import { Button } from '../../components/ui/button'
 import { Badge } from '../../components/ui/badge'
 import { Skeleton } from '../../components/ui/skeleton'
+import { Tag, Sparkles } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -236,12 +237,38 @@ export function ProductPage() {
               {/* TIER PRICING HEADER */}
               <div className="space-y-4">
                 <div className="flex justify-center">
-                  <div className="inline-flex items-center gap-3 rounded-full border border-primary/15 bg-card/75 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.35em] text-muted-foreground shadow-[0_0_24px_rgba(255,131,208,0.12)]">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary shadow-[0_0_12px_rgba(255,131,208,0.18)]">
-                      💎
-                    </span>
-                    {t('tierPricing')}
-                  </div>
+                   <div className="flex items-center gap-2 sm:gap-3">
+    <Tag
+      size={18}
+      className="text-primary -rotate-12 drop-shadow-[0_0_8px_rgba(255,131,208,0.7)]"
+      fill="currentColor"
+    />
+
+    <h2
+      className="
+        text-sm
+        sm:text-lg
+        md:text-xl
+        font-extrabold
+        uppercase
+        tracking-[0.15em]
+        text-white
+        whitespace-nowrap
+      "
+      style={{
+        textShadow: "0 0 12px rgba(255,255,255,0.12)",
+      }}
+    >
+      {t("tierPricing")}
+    </h2>
+
+    <Sparkles
+      size={16}
+      className="text-primary drop-shadow-[0_0_8px_rgba(255,131,208,0.7)]"
+      fill="currentColor"
+    />
+    
+  </div>
                 </div>
 
                 {/* Pricing Tier Selection Cards */}
@@ -420,11 +447,11 @@ export function ProductPage() {
                   <AlertCircle className="size-4" /> {t('temporarilyUnavailable')}
                 </div>
               ) : (
-                <div className="space-y-3 pt-2">
+                <div className="space-y-2">
                   {/* Primary CTA - Add to Cart */}
                   <button
                     onClick={addToCart}
-                    className="relative w-full group/btn overflow-hidden rounded-[18px] px-6 py-3.5 font-bold uppercase tracking-[0.1em] text-sm transition-all duration-300 flex items-center justify-center gap-2"
+                    className="relative w-full group/btn overflow-hidden rounded-[18px] px-2 py-2 font-bold uppercase tracking-[0.1em] text-sm transition-all duration-300 flex items-center justify-center gap-2"
                     style={{
                       background: 'linear-gradient(135deg, var(--primary) 0%, rgba(255, 131, 208, 0.8) 45%, var(--gold) 100%)',
                       backgroundSize: '200% 200%',
@@ -448,7 +475,7 @@ export function ProductPage() {
                   {/* Secondary CTA - Order Now */}
                   <button
                     onClick={() => { addToCart(); navigate('/cart') }}
-                    className="relative w-full group/btn overflow-hidden rounded-[18px] px-6 py-3.5 font-bold uppercase tracking-[0.1em] text-sm transition-all duration-300 flex items-center justify-center gap-2"
+                    className="relative w-full group/btn overflow-hidden rounded-[18px] px-1 py-1 font-bold uppercase tracking-[0.1em] text-sm transition-all duration-300 flex items-center justify-center gap-2"
                     style={{
                       background: 'rgba(255, 131, 208, 0.05)',
                       color: 'var(--primary)',
