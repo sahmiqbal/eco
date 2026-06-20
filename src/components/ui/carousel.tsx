@@ -51,6 +51,8 @@ function Carousel({
   children,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
+  const isRTL = typeof document !== 'undefined' && document.documentElement.dir === 'rtl'
+
   const carouselOptions = React.useMemo<CarouselOptions>(() => ({
     align: "center",
     loop: true,
@@ -58,9 +60,10 @@ function Carousel({
     skipSnaps: false,
     speed: 9,
     containScroll: "trimSnaps",
+    direction: isRTL ? "rtl" : "ltr",
     ...opts,
     axis: orientation === "horizontal" ? "x" : "y",
-  }), [orientation, opts])
+  }), [orientation, opts, isRTL])
 
   const [carouselRef, api] = useEmblaCarousel(carouselOptions, plugins)
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
@@ -230,6 +233,7 @@ function CarouselPrevious({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+  const isRTL = typeof document !== 'undefined' && document.documentElement.dir === 'rtl'
 
   return (
     <Button
@@ -239,7 +243,9 @@ function CarouselPrevious({
       className={cn(
         "absolute size-8 rounded-full",
         orientation === "horizontal"
-          ? "top-1/2 -left-12 -translate-y-1/2"
+          ? isRTL
+            ? "top-1/2 -right-12 -translate-y-1/2"
+            : "top-1/2 -left-12 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
@@ -247,7 +253,7 @@ function CarouselPrevious({
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft />
+      {isRTL ? <ArrowRight /> : <ArrowLeft />}
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -260,6 +266,7 @@ function CarouselNext({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
+  const isRTL = typeof document !== 'undefined' && document.documentElement.dir === 'rtl'
 
   return (
     <Button
@@ -269,7 +276,9 @@ function CarouselNext({
       className={cn(
         "absolute size-8 rounded-full",
         orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
+          ? isRTL
+            ? "top-1/2 -left-12 -translate-y-1/2"
+            : "top-1/2 -right-12 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
@@ -277,7 +286,7 @@ function CarouselNext({
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight />
+      {isRTL ? <ArrowLeft /> : <ArrowRight />}
       <span className="sr-only">Next slide</span>
     </Button>
   )
