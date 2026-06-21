@@ -203,7 +203,7 @@ export function CheckoutPage() {
           </div>
           <div className="flex justify-between items-center text-sm">
             <span>{t('deliveryFee') || 'Delivery Fee'}</span>
-            <span className="text-green-600">Free</span>
+            <span className="text-green-600">{t('free') ?? 'Free'}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="font-bold">{t('total')}</span>
@@ -364,7 +364,7 @@ export function CheckoutPage() {
             </div>
             <div className="flex justify-between text-sm">
               <span>{t('deliveryFee') || 'Delivery Fee'}</span>
-              <span className="text-green-600">Free</span>
+              <span className="text-green-600">{t('free') ?? 'Free'}</span>
             </div>
             <div className="flex justify-between font-bold pt-2">
               <span>{t('total')}</span>

@@ -26,10 +26,10 @@ export function Navbar() {
   }
 
   const navLinks = [
-    { label: 'Accueil', to: '/' },
-    { label: 'Boutique', to: '/shop' },
-    { label: 'Nos Packs', to: '/shop?category=pack' },
-    { label: 'Nouveautés', to: '/shop?sort=new' },
+    { label: t('home'), to: '/' },
+    { label: t('shop'), to: '/shop' },
+    { label: t('packs'), to: '/shop?category=pack' },
+    { label: t('newArrivals'), to: '/shop?sort=new' },
   ]
 
   useEffect(() => {
@@ -181,7 +181,7 @@ hover:text-gold
                 size="icon"
                 className={cn('rounded-full border border-primary/20 bg-transparent text-white transition hover:bg-primary/10', menuOpen ? 'bg-primary/15' : '')}
                 onClick={() => setMenuOpen(!menuOpen)}
-                aria-label="Menu"
+                aria-label={menuOpen ? t('closeMenu') : t('openMenu')}
                 aria-expanded={menuOpen}
               >
                 {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -196,7 +196,7 @@ hover:text-gold
                 <div className="flex w-full justify-end">
                   <Button
                     onClick={() => setMenuOpen(false)}
-                    aria-label="Close menu"
+                    aria-label={t('closeMenu')}
                     className="close-button-animate group relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-white transition-all duration-200 hover:bg-primary/15 hover:border-primary"
                   >
                     <X className="size-5 text-gold transition-transform duration-300 group-hover:rotate-90" />
@@ -235,7 +235,7 @@ hover:text-gold
                   }}
                   className="w-full rounded-[1.5rem] bg-gradient-to-r from-primary to-gold px-6 py-3.5 text-sm font-semibold text-black shadow-[0_25px_50px_rgba(255,131,208,0.25)] transition-all duration-200 hover:shadow-[0_30px_60px_rgba(255,131,208,0.35)]"
                 >
-                  Commencer vos achats
+                  {t('startShopping')}
                 </Button>
               </div>
             </div>

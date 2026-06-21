@@ -156,6 +156,7 @@ export function VideoCarouselSection() {
   const [unmuteState, setUnmuteState] = useState<Record<string, boolean>>({})
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [posters, setPosters] = useState<Record<string, string>>({})
+  const isRTL = typeof document !== 'undefined' && document.documentElement.dir === 'rtl'
 
   useEffect(() => {
     let isMounted = true
@@ -361,8 +362,8 @@ export function VideoCarouselSection() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-2 md:-left-12 z-50" />
-              <CarouselNext className="right-2 md:-right-12 z-50" />
+              <CarouselPrevious className={isRTL ? 'right-2 md:-right-12 z-50' : 'left-2 md:-left-12 z-50'} />
+              <CarouselNext className={isRTL ? 'left-2 md:-left-12 z-50' : 'right-2 md:-right-12 z-50'} />
             </Carousel>
           )}
         </div>

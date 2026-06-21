@@ -59,7 +59,7 @@ export function TestimonialsSection() {
   return (
     <section className="max-w-7xl mx-auto px-4 py-4 md:py-5 overflow-hidden">
       <div className="mb-12 text-center">
-        <h2 className="text-4xl md:text-6xl font-bold tracking-tight animate-fade-up gold-text">
+        <h2 className="text-4xl py-3 md:text-6xl font-bold tracking-tight animate-fade-up gold-text">
           {t('trustHeading')}
         </h2>
       </div>

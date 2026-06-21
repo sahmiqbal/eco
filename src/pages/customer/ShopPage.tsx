@@ -10,9 +10,9 @@ import { supabase } from '@/lib/supabase'
 import type { Product } from '@/types'
 
 const CATEGORIES = [
-  { value: 'all', label: 'All' },
-  { value: 'pack', label: '✦ Packs' },
-  { value: 'individual', label: 'Individual' },
+  { value: 'all', labelKey: 'categoryAll' as const },
+  { value: 'pack', labelKey: 'categoryPack' as const },
+  { value: 'individual', labelKey: 'categoryIndividual' as const },
 ]
 
 export function ShopPage() {
@@ -62,7 +62,7 @@ export function ShopPage() {
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Search for a product..."
+            placeholder={t('searchPlaceholder')}
             className="pl-10 rounded-2xl border border-primary/20 bg-background/80 text-foreground shadow-[inset_0_0_20px_rgba(255,131,208,0.05)]"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -82,7 +82,7 @@ export function ShopPage() {
                 setSearch('')
               }}
             >
-              {c.label}
+              {t(c.labelKey)}
             </Button>
           ))}
         </div>

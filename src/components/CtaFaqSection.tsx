@@ -2,26 +2,29 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { Button } from './ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
-
-const faqItems = [
-  {
-    value: 'faq-item-1',
-    question: 'What makes LAHLINO rituals different?',
-    answer: 'Each ritual is crafted with premium natural ingredients, inspired by Moroccan beauty traditions and designed for modern self-care.',
-  },
-  {
-    value: 'faq-item-2',
-    question: 'How long does delivery take?',
-    answer: 'Orders typically arrive within 3-5 business days, with tracking updates sent immediately after shipment.',
-  },
-  {
-    value: 'faq-item-3',
-    question: 'Can I use these products on sensitive skin?',
-    answer: 'Yes. Our formulas are gentle, dermatologist-tested, and designed to nourish sensitive skin without irritation.',
-  },
-]
+import { useLanguage } from '@/lib/language'
 
 export function CtaFaqSection() {
+  const { t } = useLanguage()
+
+  const faqItems = [
+    {
+      value: 'faq-item-1',
+      questionKey: 'faqQuestion1' as const,
+      answerKey: 'faqAnswer1' as const,
+    },
+    {
+      value: 'faq-item-2',
+      questionKey: 'faqQuestion2' as const,
+      answerKey: 'faqAnswer2' as const,
+    },
+    {
+      value: 'faq-item-3',
+      questionKey: 'faqQuestion3' as const,
+      answerKey: 'faqAnswer3' as const,
+    },
+  ]
+
   return (
     <section className=" mt-4 text-foreground">
       <div className="container mx-auto max-w-4xl px-1">
@@ -33,9 +36,9 @@ export function CtaFaqSection() {
                 <div className="relative z-10">
                   <div className="mb-10 text-center">
                     <p className="inline-flex items-center justify-center gap-2 text-sm uppercase tracking-[0.32em] text-primary/80">
-                      <Sparkles className="size-4" /> Customer support
+                      <Sparkles className="size-4" /> {t('faqSub')}
                     </p>
-                    <h2 className="mt-2 text-3xl md:text-4xl font-semibold text-foreground">Frequently Asked Questions</h2>
+                    <h2 className="mt-2 text-3xl md:text-4xl font-semibold text-foreground">{t('faqTitle')}</h2>
                     
                   </div>
 
@@ -47,10 +50,10 @@ export function CtaFaqSection() {
                         className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-sm transition hover:border-primary/40"
                       >
                         <AccordionTrigger className="px-6 py-5 text-left text-base font-semibold text-foreground">
-                          {item.question}
+                          {t(item.questionKey)}
                         </AccordionTrigger>
                         <AccordionContent className="px-6 pb-5 text-muted-foreground">
-                          <p>{item.answer}</p>
+                          <p>{t(item.answerKey)}</p>
                         </AccordionContent>
                       </AccordionItem>
                     ))}
@@ -64,7 +67,7 @@ export function CtaFaqSection() {
                       asChild
                     >
                       <Link to="/shop" className="flex items-center justify-center gap-2">
-                        Shop Our Rituals
+                        {t('shopOurRituals')}
                         <ArrowRight className="size-4" />
                       </Link>
                     </Button>
@@ -75,7 +78,7 @@ export function CtaFaqSection() {
                       asChild
                     >
                       <Link to="/shop?category=individual" className="flex items-center justify-center gap-2">
-                        Browse Products
+                        {t('browseProducts')}
                         <ArrowRight className="size-4" />
                       </Link>
                     </Button>

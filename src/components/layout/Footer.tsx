@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { MessageCircle, Phone, Sparkles, AtSign, Home, ShoppingCart, Gift, ShoppingBag } from 'lucide-react'
 import { business } from '../../config/business'
+import { useLanguage } from '@/lib/language'
 
 export function Footer() {
   const [isShopActive, setIsShopActive] = useState(false)
+  const { t } = useLanguage()
 
   const contactItems = [
     { icon: MessageCircle, text: business.whatsapp },
@@ -12,10 +14,10 @@ export function Footer() {
   ]
 
   const navItems = [
-    { icon: Home, text: 'HOME', active: false },
-    { icon: ShoppingBag, text: 'SHOP', active: isShopActive },
-    { icon: Gift, text: 'PACKS', active: false },
-    { icon: ShoppingCart, text: 'CART', active: false },
+    { icon: Home, text: 'home', active: false },
+    { icon: ShoppingBag, text: 'shop', active: isShopActive },
+    { icon: Gift, text: 'packs', active: false },
+    { icon: ShoppingCart, text: 'cart', active: false },
   ]
 
   return (
@@ -26,15 +28,15 @@ export function Footer() {
             <div className="flex flex-col items-center gap-x-3 justify-center">
               <img src="/images/logo.webp" alt={business.name} className="h-32 w-auto object-cover rounded-3xl" />
               <div>
-                <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">FEEL LIKE FAMILY</p>
+                <p className="mt-1 text-xl font-bold uppercase tracking-[0.38em] text-gold/95">{t('brandTagline')}</p>
               </div>
             </div>
             <p className="group inline-flex shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap 
             outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none 
             disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 relative
              overflow-hidden bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] text-primary shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)] transition-all duration-300 leading-[1.4em]
-              tracking-[0.06em] h-9 px-4 py-2 has-[>svg]:px-3 rounded-xl gap-2 text-foreground/75">PURE</p>
-            <p className="max-w-xl text-sm font-bold uppercase text-white">PURE , NATURAL & HANDMADE.</p>
+              tracking-[0.06em] h-9 px-4 py-2 has-[>svg]:px-3 rounded-xl gap-2 text-foreground/75">{t('footerNavigation')}</p>
+            <p className="max-w-xl text-sm font-bold uppercase text-white">{t('footerTagline')}</p>
           </div>
 
           <div className="relative z-10 mt-8 flex flex-wrap justify-center gap-3">
@@ -45,11 +47,11 @@ export function Footer() {
                   key={index}
                   href="#"
                   className={`group inline-flex shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 relative overflow-hidden border-2 border-primary bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] text-primary shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)] transition-all duration-300 leading-[1.4em] tracking-[0.06em] h-9 px-4 py-2 has-[>svg]:px-3 rounded-xl gap-2 ${link.active ? 'border-primary bg-primary/20 text-primary shadow-[0_0_24px_rgba(255,131,208,0.22)]' : 'border-border text-foreground/70 hover:border-primary hover:text-primary'}`}
-                  onMouseEnter={() => link.text === 'SHOP' && setIsShopActive(true)}
-                  onMouseLeave={() => link.text === 'SHOP' && setIsShopActive(false)}
+                  onMouseEnter={() => link.text === 'shop' && setIsShopActive(true)}
+                  onMouseLeave={() => link.text === 'shop' && setIsShopActive(false)}
                 >
                   <Icon className={`w-4 h-4 transition duration-300 ${link.active ? 'text-primary' : 'text-gold group-hover:text-primary'}`} />
-                  <span className="tracking-[0.2em] transition duration-300 group-hover:text-primary">{link.text}</span>
+                  <span className="tracking-[0.2em] transition duration-300 group-hover:text-primary">{t(link.text as any)}</span>
                 </a>
               )
             })}
@@ -76,7 +78,8 @@ export function Footer() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center gap-2 text-xs text-foreground/50">
-          <span>© 2026 {business.name}. Purely Moroccan.</span>
+          <span>{t('rights').replace('LAHLINO', business.name)}</span>
+          <span>{t('madeWithLove')}</span>
           <div className="flex items-center gap-x-2 text-gold">
             <Sparkles className="w-3 h-3" />
             <Sparkles className="w-3 h-3" />

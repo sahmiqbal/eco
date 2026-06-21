@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, CircleCheck as CheckCircle, Truck, Shield } from 'lucide-react'
-import { Button } from '../../components/ui/button'
-import { Badge } from '../../components/ui/badge'
+
 import { ProductCard } from '../../components/shop/ProductCard'
 import { CtaFaqSection } from '../../components/CtaFaqSection'
 import { TestimonialsSection } from '../../components/TestimonialsSection'
 import { VideoCarouselSection } from '../../components/VideoCarouselSection'
+import { HeroSection } from '../../components/HeroSection'
 import { supabase } from '../../lib/supabase'
 import { useLanguage } from '../../lib/language'
 import type { Product } from '../../types'
 import { Skeleton } from '../../components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 
 export function HomePage() {
   const { t } = useLanguage()
@@ -37,53 +38,7 @@ export function HomePage() {
 
   return (
     <div className="animate-fade-up">
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/hero-banner.webp"
-            alt="LAHLINO"
-            className="w-full h-full object-cover"
-          />
-         
-          
-        </div>
-
-        <div className="relative container mx-auto px-4 max-w-6xl py-20 md:py-28">
-          <div className="relative z-10 grid grid-cols-1 gap-10 md:grid-cols-12 md:items-center">
-            <div className="md:col-span-6 lg:col-span-5 text-center md:text-left">
-              <Badge className="bg-gold/90 text-gold-foreground mb-4 text-[11px] tracking-[0.32em] rounded-full px-3 py-1 inline-flex items-center">
-                {t('heroBadge')}
-              </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4 max-w-xl mx-auto md:mx-0">
-                {t('heroTitleLine1')}
-                <br />
-                <span className="gold-text">{t('heroTitleLine2')}</span>
-              </h1>
-              <p className="mx-auto max-w-2xl text-white/85 text-base md:text-lg leading-relaxed mb-8 md:max-w-none">
-                {t('heroDescription')}
-              </p>
-
-              <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-center md:justify-start">
-                <Button variant="uiverse" size="lg" className="w-full rounded-full gap-2 shadow-lg sm:w-auto" asChild>
-                  <Link to="/shop">
-                    {t('discoverPacks')} <ArrowRight className="size-4" />
-                  </Link>
-                </Button>
-                <Button variant="uiverse" size="lg" className="w-full rounded-full gap-2 shadow-lg sm:w-auto" asChild>
-                  <Link to="/shop?category=individual">
-                    {t('individualProducts')}
-                  </Link>
-                </Button>
-              </div>
-            </div>
-
-            <div className="hidden md:block md:col-span-6 lg:col-span-7" aria-hidden>
-              {/* decorative spacing column to keep image visible and composition balanced */}
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* ── Featured Products ── */}
       <section className="container mx-auto px-4 max-w-6xl py-4">

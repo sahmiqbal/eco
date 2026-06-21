@@ -333,7 +333,7 @@ export function AdminOrdersPage() {
       )}
       <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-card">
         <div className="text-xs text-muted-foreground">
-          Page {page} sur {totalPages}
+          {t('pageLabel')} {page} {t('ofLabel')} {totalPages}
         </div>
         <div className="flex gap-2">
           <Button
@@ -342,14 +342,14 @@ export function AdminOrdersPage() {
             className="rounded-xl text-xs"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-          >Précédent</Button>
+          >{t('previousPage')}</Button>
           <Button
             size="sm"
             variant="outline"
             className="rounded-xl text-xs"
             onClick={() => setPage((p) => (p < totalPages ? p + 1 : p))}
             disabled={page >= totalPages}
-          >Suivant</Button>
+          >{t('nextPage')}</Button>
         </div>
       </div>
     </div>

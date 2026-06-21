@@ -32,7 +32,7 @@ export function CartPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 max-w-5xl py-8 animate-fade-up">
-      <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 text-center">Your Bag</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 text-center">{t('myCart')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-4">
@@ -100,7 +100,7 @@ export function CartPage() {
           px-3 py-1
         "
       >
-        Pack
+        {t('packBadge')}
       </Badge>
     )}
   </div>
@@ -200,39 +200,37 @@ export function CartPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className=" border border-primary/20 rounded-[2rem] p-6 shadow-[0_10px_40px_-15px_rgba(213,82,163,0.15)] lg:sticky lg:top-24">
-            <h3 className="font-bold text-2xl text-foreground mb-5 text-center">Order Summary</h3>
-
-            <div className="space-y-4 mb-4 bg-background rounded-[1.5rem] p-4">
-              {items.map(({ product, quantity }) => {
-                const unitPrice = getBundlePrice(product, quantity)
-                return (
-                  <div key={product.id} className="flex flex-col gap-1 text-sm">
-                    <span className="text-primary text-center font-bold line-clamp-2">{product.name}</span>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-foreground/70 font-bold">× {quantity}</span>
-                      <span className="font-semibold text-foreground">{unitPrice * quantity} MAD</span>
-                    </div>
+          <div className="border border-primary/20 rounded-[2rem] p-6 shadow-[0_10px_40px_-15px_rgba(213,82,163,0.15)] lg:sticky lg:top-24">
+            <h3 className="font-bold text-2xl text-foreground mb-5 text-center">{t('orderSummary')}</h3>
+            {items.map(({ product, quantity }) => {
+              const unitPrice = getBundlePrice(product, quantity)
+              return (
+                <div key={product.id} className="flex flex-col gap-1 text-sm">
+                  <span className="text-primary text-center font-bold line-clamp-2">{product.name}</span>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-foreground/70 font-bold">× {quantity}</span>
+                    <span className="font-semibold text-foreground">{unitPrice * quantity} MAD</span>
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
+          </div>
 
-            <div className="grid gap-3 py-4 text-sm">
+          <div className="grid gap-3 py-4 text-sm">
+            <div className="flex justify-between">
+              <span className="text-foreground/70">{t('subtotal')}</span>
+              <span className="font-semibold text-foreground">{total} MAD</span>
+            </div>
               <div className="flex justify-between">
-                <span className="text-foreground/70">Subtotal</span>
-                <span className="font-semibold text-foreground">{total} MAD</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-foreground/70">Delivery</span>
-                <span className="font-semibold text-green-600">Free</span>
+                <span className="text-foreground/70">{t('deliveryFee')}</span>
+                <span className="font-semibold text-green-600">{t('free') ?? 'Free'}</span>
               </div>
             </div>
 
             <Separator className="my-4" />
 
             <div className="flex justify-between items-center mb-6">
-              <span className="font-bold text-foreground">Total</span>
+              <span className="font-bold text-foreground">{t('total')}</span>
               <span className="text-3xl sm:text-4xl font-extrabold text-primary">{total} MAD</span>
             </div>
 
@@ -250,6 +248,6 @@ export function CartPage() {
           </div>
         </div>
       </div>
-    </div>
+    
   )
 }

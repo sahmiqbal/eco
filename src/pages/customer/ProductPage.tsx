@@ -199,8 +199,8 @@ export function ProductPage() {
               <BeforeAfter
                 beforeImage={beforeAfterImages[0]}
                 afterImage={beforeAfterImages[1]}
-                beforeLabel="Avant"
-                afterLabel="Après"
+                beforeLabel={t('imageBefore')}
+                afterLabel={t('imageAfter')}
               />
             </div>
           )}
@@ -274,17 +274,17 @@ export function ProductPage() {
                 {/* Pricing Tier Selection Cards */}
                 <div className="flex flex-col gap-2.5">
                   {[
-                    { qty: 1, price: product.price, label: '1 unité', discount: 0 },
+                    { qty: 1, price: product.price, label: t('oneUnit'), discount: 0 },
                     ...(product.price_2 ? [{ 
                       qty: 2, 
                       price: product.price_2, 
-                      label: '2 unités', 
+                      label: t('twoUnits', { price: product.price_2 }), 
                       discount: Math.round(((product.price - product.price_2) / product.price) * 100)
                     }] : []),
                     ...(product.price_3plus ? [{ 
                       qty: 3, 
                       price: product.price_3plus, 
-                      label: '3+ unités', 
+                      label: t('threePlusUnits', { price: product.price_3plus }), 
                       discount: Math.round(((product.price - product.price_3plus) / product.price) * 100),
                       badge: true
                     }] : []),
@@ -352,7 +352,7 @@ export function ProductPage() {
                                 color: 'var(--gold)',
                                 border: '1px solid rgba(247, 209, 112, 0.3)',
                               }}>
-                              ⭐ Best Value
+                              ⭐ {t('bestValue')}
                             </span>
                           )}
                           {tier.discount > 0 && !tier.badge && (
@@ -524,11 +524,11 @@ export function ProductPage() {
                     </div>
                     <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-card/55 px-3 py-1">
                       <ShieldCheck className="size-3 text-primary" />
-                      Secure checkout
+                      {t('secureCheckout')}
                     </div>
                     <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-card/55 px-3 py-1">
                       <Truck className="size-3 text-primary" />
-                      Fast delivery
+                      {t('fastDelivery')}
                     </div>
                   </div>
                 </div>
