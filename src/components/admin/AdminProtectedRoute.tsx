@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { Skeleton } from '@/components/ui/skeleton'
 import { supabase } from '@/lib/supabase'
 
-export function AdminProtectedRoute({ children }: { children: JSX.Element }) {
+export function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading')
   const location = useLocation()
 

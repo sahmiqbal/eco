@@ -16,11 +16,6 @@ import type { ContactPreference, CartItem } from '@/types'
 import { cn, getProductImage } from '@/lib/utils'
 import { toast } from 'sonner'
 
-const MOROCCAN_CITIES = [
-  'Casablanca', 'Rabat', 'Marrakech', 'Fès', 'Tanger', 'Agadir', 'Meknès',
-  'Oujda', 'Kenitra', 'Tétouan', 'Nador', 'Temara', 'El Jadida', 'Beni Mellal', 'Autre'
-]
-
 const STEPS = [
   { id: 1, labelKey: 'cartStep', icon: ShoppingBag },
   { id: 2, labelKey: 'infoStep', icon: User },

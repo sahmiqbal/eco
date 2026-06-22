@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, ShoppingBag, Package, LogOut, Sparkles, X, Menu
+  LayoutDashboard, ShoppingBag, Package, LogOut, X, Menu
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase'

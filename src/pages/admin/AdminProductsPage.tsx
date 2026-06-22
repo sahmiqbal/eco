@@ -401,7 +401,7 @@ export function AdminProductsPage() {
               <div>
                 <Label className="text-xs bg-black mb-1.5 block">{t('categoryLabel')}</Label>
                 <select
-                  className="h-9 w-full rounded-xl border border-input bg-black px-3 text-sm"
+                  className="h-9 w-full rounded-xl border border-input bg- px-3 text-sm"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value as 'pack' | 'individual' })}
                 >
