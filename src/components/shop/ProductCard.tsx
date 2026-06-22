@@ -35,7 +35,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
   return (
     <div className={cn(
-      'group relative flex flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl',
+      'animated-card-border group relative flex flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl',
       className
     )}>
       {isOutOfStock && (

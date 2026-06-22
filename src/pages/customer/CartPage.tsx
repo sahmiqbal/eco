@@ -3,15 +3,17 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Package } from 'lucide-re
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { useCartStore, getBundlePrice } from '@/store/cartStore'
-import { getProductImage } from '@/lib/utils'
+import { useCartStore, getBundlePrice, getDeliveryFee } from '@/store/cartStore'
+import { cn, getProductImage } from '@/lib/utils'
 import { useLanguage } from '@/lib/language'
 
 export function CartPage() {
   const { t } = useLanguage()
-  const { items, removeItem, updateQuantity, totalPrice } = useCartStore()
   const navigate = useNavigate()
-  const total = totalPrice()
+  const { items, removeItem, updateQuantity, totalPrice } = useCartStore()
+  const subtotal = totalPrice()
+  const deliveryFee = getDeliveryFee(items)
+  const total = subtotal + deliveryFee
 
   if (items.length === 0) {
     return (
@@ -223,7 +225,12 @@ export function CartPage() {
             </div>
               <div className="flex justify-between">
                 <span className="text-foreground/70">{t('deliveryFee')}</span>
-                <span className="font-semibold text-green-600">{t('free') ?? 'Free'}</span>
+                <span className={cn(
+                  'font-semibold',
+                  deliveryFee === 0 ? 'text-green-600' : 'text-foreground'
+                )}>
+                  {deliveryFee === 0 ? t('free') ?? 'Free' : `${deliveryFee} MAD`}
+                </span>
               </div>
             </div>
 

@@ -38,9 +38,9 @@ export function HomePage() {
 
   return (
     <div className="animate-fade-up">
-      <HeroSection />
-
-      {/* ── Featured Products ── */}
+      
+<HeroSection />
+      {/* ──  Featured Products ── */}
       <section className="container mx-auto px-4 max-w-6xl py-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
           <div className="space-y-3">

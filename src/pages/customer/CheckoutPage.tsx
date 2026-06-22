@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
 } from '@/components/ui/dialog'
-import { useCartStore, getBundlePrice } from '@/store/cartStore'
+import { useCartStore, getBundlePrice, getDeliveryFee } from '@/store/cartStore'
 import { supabase } from '@/lib/supabase'
 import { useLanguage } from '@/lib/language'
 import type { ContactPreference, CartItem } from '@/types'
@@ -55,7 +55,7 @@ export function CheckoutPage() {
   })
 
   const subtotal = totalPrice()
-  const deliveryFee = 0 // Always free
+  const deliveryFee = getDeliveryFee(items)
   const total = subtotal + deliveryFee
 
   if (items.length === 0 && step !== 3) {
@@ -203,7 +203,12 @@ export function CheckoutPage() {
           </div>
           <div className="flex justify-between items-center text-sm">
             <span>{t('deliveryFee') || 'Delivery Fee'}</span>
-            <span className="text-green-600">{t('free') ?? 'Free'}</span>
+            <span className={cn(
+              'font-medium',
+              deliveryFee === 0 ? 'text-green-600' : 'text-foreground'
+            )}>
+              {deliveryFee === 0 ? t('free') ?? 'Free' : `${deliveryFee} MAD`}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="font-bold">{t('total')}</span>
@@ -254,16 +259,14 @@ export function CheckoutPage() {
 
             <div>
               <Label htmlFor="city" className="text-sm font-medium mb-1.5 block">{t('cityLabel')}</Label>
-              <select
+              <Input
                 id="city"
-                className="h-9 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder={t('cityLabel')}
+                className="rounded-xl"
                 value={form.city}
-                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, city: e.target.value })}
                 aria-invalid={!!errors.city}
-              >
-                <option value="">{t('chooseCity')}</option>
-                {MOROCCAN_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              />
               {errors.city && <p className="text-xs text-destructive mt-1">{errors.city}</p>}
             </div>
 
@@ -364,7 +367,12 @@ export function CheckoutPage() {
             </div>
             <div className="flex justify-between text-sm">
               <span>{t('deliveryFee') || 'Delivery Fee'}</span>
-              <span className="text-green-600">{t('free') ?? 'Free'}</span>
+              <span className={cn(
+                'font-medium',
+                deliveryFee === 0 ? 'text-green-600' : 'text-foreground'
+              )}>
+                {deliveryFee === 0 ? t('free') ?? 'Free' : `${deliveryFee} MAD`}
+              </span>
             </div>
             <div className="flex justify-between font-bold pt-2">
               <span>{t('total')}</span>

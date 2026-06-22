@@ -264,7 +264,7 @@ const translations = {
     brandTagline: 'Moroccan cosmetics',
     heroBadge: '✦ Authentic Moroccan cosmetics',
     heroTitleLine1: 'The Hammam Ritual',
-    heroTitleLine2: 'Luxury',
+    heroTitleLine2: 'Feel Like Family',
     heroDescription: 'Rediscover the Moroccan hammam tradition with our natural care products made from Morocco’s beauty treasures.',
     discoverPacks: 'Discover our packs',
     individualProducts: 'Individual products',

@@ -18,6 +18,10 @@ function getBundlePrice(product: Product, qty: number): number {
   return product.price
 }
 
+export function getDeliveryFee(items: CartItem[]): number {
+  return items.every((item) => item.product.category === 'pack') ? 0 : 35
+}
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
