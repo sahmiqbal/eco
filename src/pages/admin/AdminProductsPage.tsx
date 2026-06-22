@@ -380,12 +380,12 @@ export function AdminProductsPage() {
               {saveError}
             </div>
           )}
-          <div className="space-y-4 py-2">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2">
+          <div className="space-y-5 py-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-3xl border border-border bg-muted/10 p-4">
+              <div className="sm:col-span-2">
                 <Label className="text-xs mb-1.5 block">{t('productName')} *</Label>
                 <Input
-                  className="rounded-xl"
+                  className="rounded-xl text-sm"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value, slug: toSlug(e.target.value) })}
                   placeholder={t('productName')}
@@ -399,9 +399,9 @@ export function AdminProductsPage() {
                 {errors.slug && <p className="text-xs text-destructive mt-1">{errors.slug}</p>}
               </div>
               <div>
-                <Label className="text-xs mb-1.5 block">{t('categoryLabel')}</Label>
+                <Label className="text-xs bg-black mb-1.5 block">{t('categoryLabel')}</Label>
                 <select
-                  className="h-9 w-full rounded-xl border border-input bg-transparent px-3 text-sm"
+                  className="h-9 w-full rounded-xl border border-input bg-black px-3 text-sm"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value as 'pack' | 'individual' })}
                 >
@@ -411,31 +411,31 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 rounded-3xl border border-border bg-muted/10 p-4">
               <div>
                 <Label className="text-xs mb-1.5 block">{t('priceLabel')} (MAD) *</Label>
-                <Input type="number" className="rounded-xl" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} aria-invalid={!!errors.price} />
+                <Input type="number" className="rounded-xl text-sm" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} aria-invalid={!!errors.price} />
                 {errors.price && <p className="text-xs text-destructive mt-1">{errors.price}</p>}
               </div>
               <div>
                 <Label className="text-xs mb-1.5 block">{t('price2Label')}</Label>
-                <Input type="number" className="rounded-xl" value={form.price_2 ?? ''} onChange={(e) => setForm({ ...form, price_2: e.target.value ? +e.target.value : null })} placeholder="Optionnel" />
+                <Input type="number" className="rounded-xl text-sm" value={form.price_2 ?? ''} onChange={(e) => setForm({ ...form, price_2: e.target.value ? +e.target.value : null })} placeholder="Optionnel" />
               </div>
               <div>
                 <Label className="text-xs mb-1.5 block">{t('price3plusLabel')}</Label>
-                <Input type="number" className="rounded-xl" value={form.price_3plus ?? ''} onChange={(e) => setForm({ ...form, price_3plus: e.target.value ? +e.target.value : null })} placeholder="Optionnel" />
+                <Input type="number" className="rounded-xl text-sm" value={form.price_3plus ?? ''} onChange={(e) => setForm({ ...form, price_3plus: e.target.value ? +e.target.value : null })} placeholder="Optionnel" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs mb-1.5 block">{t('productStock')}</Label>
-                <Input type="number" className="rounded-xl" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} />
+                <Input type="number" className="rounded-xl text-sm" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} />
               </div>
               <div className="col-span-2">
                 <Label className="text-xs mb-1.5 block">{t('mainImageUrlLabel')}</Label>
                 <Input
-                  className="rounded-xl"
+                  className="rounded-xl text-sm"
                   value={form.image_url ?? ''}
                   onChange={(e) => setForm({ ...form, image_url: e.target.value })}
                   placeholder="https://example.com/produit.webp"
@@ -450,7 +450,7 @@ export function AdminProductsPage() {
               <div className="col-span-2">
                 <Label className="text-xs mb-1.5 block">{t('additionalImagesLabel')}</Label>
                 <Textarea
-                  className="rounded-xl text-xs"
+                  className="rounded-xl text-sm min-h-[72px]"
                   value={(form.image_urls ?? []).join('\n')}
                   onChange={(e) => setForm({
                     ...form,
@@ -461,7 +461,7 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 rounded-3xl border border-border bg-muted/10 p-4">
               <Label className="text-xs mb-1.5 block">{t('uploadProductImages')}</Label>
               <div className="border-2 border-dashed border-border rounded-xl p-4">
                 <input
@@ -516,7 +516,7 @@ export function AdminProductsPage() {
               <div>
                 <Label className="text-xs mb-1.5 block">{t('imageBefore')}</Label>
                 <Input
-                  className="rounded-xl"
+                  className="rounded-xl text-sm"
                   value={form.before_image ?? ''}
                   onChange={(e) => setForm({ ...form, before_image: e.target.value })}
                   placeholder="https://example.com/before-image.webp"
@@ -527,7 +527,7 @@ export function AdminProductsPage() {
               <div>
                 <Label className="text-xs mb-1.5 block">{t('imageAfter')}</Label>
                 <Input
-                  className="rounded-xl"
+                  className="rounded-xl text-sm"
                   value={form.after_image ?? ''}
                   onChange={(e) => setForm({ ...form, after_image: e.target.value })}
                   placeholder="https://example.com/after-image.webp"
@@ -618,11 +618,11 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid gap-3">
+            <div className="grid gap-3 rounded-3xl border border-border bg-muted/10 p-4">
               <div>
                 <Label className="text-xs mb-1.5 block">COMPARATIVES</Label>
                 <Textarea
-                  className="rounded-xl text-xs"
+                  className="rounded-xl text-sm min-h-[72px]"
                   value={form.comparatives_images.join('\n')}
                   onChange={(e) => setForm({
                     ...form,
@@ -634,7 +634,7 @@ export function AdminProductsPage() {
               <div>
                 <Label className="text-xs mb-1.5 block">OTHERS</Label>
                 <Textarea
-                  className="rounded-xl text-xs"
+                  className="rounded-xl text-sm min-h-[72px]"
                   value={form.others_images.join('\n')}
                   onChange={(e) => setForm({
                     ...form,
@@ -645,7 +645,7 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 rounded-3xl border border-border bg-muted/10 p-4">
               <div>
                 <Label className="text-xs mb-1.5 block">Téléverser COMPARATIVES</Label>
                 <div className="border-2 border-dashed border-border rounded-xl p-3">
@@ -718,21 +718,23 @@ export function AdminProductsPage() {
               </div>
             </div>
 
-            <div>
-              <Label className="text-xs mb-1.5 block">{t('descriptionLabel')}</Label>
-              <Textarea className="rounded-xl min-h-[70px] text-sm" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            </div>
+            <div className="space-y-4 rounded-3xl border border-border bg-muted/10 p-4">
+              <div>
+                <Label className="text-xs mb-1.5 block">{t('descriptionLabel')}</Label>
+                <Textarea className="rounded-xl min-h-[90px] text-sm" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+              </div>
 
-            <div>
-              <Label className="text-xs mb-1.5 block">{t('ingredientsLabel')}</Label>
-              <Input className="rounded-xl text-sm" value={form.ingredients} onChange={(e) => setForm({ ...form, ingredients: e.target.value })} />
-            </div>
+              <div>
+                <Label className="text-xs mb-1.5 block">{t('ingredientsLabel')}</Label>
+                <Input className="rounded-xl text-sm" value={form.ingredients} onChange={(e) => setForm({ ...form, ingredients: e.target.value })} />
+              </div>
 
-            <div className="flex items-center gap-2">
-              <input type="checkbox" id="featured" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="rounded" />
-              <Label htmlFor="featured" className="text-sm cursor-pointer flex items-center gap-1">
-                <Star className="size-3.5 text-gold" /> {t('featuredProduct')}
-              </Label>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="featured" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="rounded" />
+                <Label htmlFor="featured" className="text-sm cursor-pointer flex items-center gap-1">
+                  <Star className="size-3.5 text-gold" /> {t('featuredProduct')}
+                </Label>
+              </div>
             </div>
 
             <Separator />

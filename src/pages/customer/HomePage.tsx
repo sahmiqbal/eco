@@ -43,14 +43,16 @@ export function HomePage() {
       {/* ──  Featured Products ── */}
       <section className="container mx-auto px-4 max-w-6xl py-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
+          <div className="space-y-3 text-center w-full md:w-auto">
+            <div className="flex items-center justify-center gap-3 animate-fade-up">
+
               <span className="h-px w-10 rounded-full bg-primary/40" />
               <p className="text-[11px] uppercase tracking-[0.35em] font-semibold text-muted-foreground">
                 {t('featuredSub')}
               </p>
+              <span className="h-px w-10 rounded-full bg-primary/40" />
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground max-w-3xl">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight max-w-3xl mx-auto animate-shimmer-text bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 bg-clip-text text-transparent">
               {t('packsPopular')}
             </h2>
           </div>
