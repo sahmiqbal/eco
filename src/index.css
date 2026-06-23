@@ -314,7 +314,7 @@
 
 .testimonial-3d-card {
   transform-style: preserve-3d;
-  animation: cardDrift 16s ease-in-out infinite;
+  animation: cardDrift 1s ease-in-out infinite;
 }
 
 @keyframes cardDrift {
