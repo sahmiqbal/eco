@@ -100,7 +100,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col justify-between gap-4 p-3 text-center md:p-6">
+      <div className="flex flex-1 flex-col justify-between gap-4 p-2 text-center md:p-2">
         <div>
           <Link to={`/shop/${product.slug}`} className="block">
             <h3 className="font-semibold text-sm text-foreground transition-colors hover:text-primary line-clamp-2 leading-snug md:text-base">

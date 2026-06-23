@@ -336,7 +336,7 @@ export function VideoCarouselSection() {
   }
 
   return (
-    <section className="py-1 md:py-6 dark:bg-slate-950 overflow-visible">
+    <section className="py-1 md:py-6 overflow-visible">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-10">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight animate-fade-up gold-text">

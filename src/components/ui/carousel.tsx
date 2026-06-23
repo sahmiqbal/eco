@@ -169,7 +169,7 @@ function Carousel({
       >
         {children}
         {scrollSnaps.length > 1 && (
-          <div className="mt-3 flex justify-center gap-2">
+          <div className="mt-1 flex justify-center gap-2">
             {scrollSnaps.map((_, index) => (
               <button
                 key={index}

@@ -75,16 +75,17 @@ export function HeroSection() {
               size="lg"
               className="w-full sm:w-auto rounded-full bg-gradient-to-r from-pink-500 to-rose-400 hover:scale-105 transition-all duration-300 text-white border-0 shadow-lg"
               asChild
+              variant="primary"
             >
               <Link to="/shop">
                 {t('discoverPacks')}
-                <ArrowRight className="size-4 ml-2" />
+                <ArrowRight className="size-5 ml-2" />
               </Link>
             </Button>
 
             <Button
-              size="lg"
-              variant="outline"
+              
+              variant="uiverse"
               className="w-full sm:w-auto rounded-full border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10"
               asChild
             >

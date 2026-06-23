@@ -2,6 +2,25 @@ import { useState } from 'react'
 import { MessageCircle, Phone, Sparkles, AtSign, Home, ShoppingCart, Gift, ShoppingBag } from 'lucide-react'
 import { business } from '../../config/business'
 import { useLanguage } from '@/lib/language'
+import { FaInstagram, FaFacebookF, FaTiktok } from "react-icons/fa6"
+
+const socialItems = [
+  {
+    icon: FaInstagram,
+    text: "Instagram",
+    href: "https://instagram.com/lahlino",
+  },
+  {
+    icon: FaTiktok,
+    text: "TikTok",
+    href: "https://tiktok.com/@lahlino",
+  },
+  {
+    icon: FaFacebookF,
+    text: "Facebook",
+    href: "https://facebook.com/lahlino",
+  },
+]
 
 export function Footer() {
   const [isShopActive, setIsShopActive] = useState(false)
@@ -75,6 +94,25 @@ export function Footer() {
               )
             })}
           </div>
+          <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-3 text-sm">
+  {socialItems.map((item, index) => {
+    const Icon = item.icon
+
+    return (
+      <a
+        key={index}
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group inline-flex items-center gap-2 rounded-xl border-2 border-primary bg-[linear-gradient(to_right,rgba(255,131,208,0.12)_1%,transparent_40%,transparent_60%,rgba(255,131,208,0.12)_100%)] px-4 py-2 text-foreground/75 shadow-[inset_0_0_10px_rgba(255,131,208,0.35),0_0_9px_3px_rgba(255,131,208,0.12)] transition-all duration-300 hover:border-gold/40 hover:bg-gold/10 hover:text-foreground"
+      >
+        <Icon className="h-4 w-4 text-gold transition duration-300" />
+        <span>{item.text}</span>
+      </a>
+    )
+  })}
+</div>
+          
         </div>
 
         <div className="relative z-10 flex flex-col items-center gap-2 text-xs text-foreground/50">
