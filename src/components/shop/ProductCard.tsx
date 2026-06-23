@@ -49,7 +49,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
       <Link to={`/shop/${product.slug}`} className="block overflow-hidden rounded-t-[2rem]">
         <div className="relative bg-card">
-          <Carousel opts={{ loop: true }} className="relative">
+          <Carousel opts={{ loop: true }} className="relative bg-black">
             <CarouselContent className="w-full">
               {carouselSlides.length > 0 ? (
                 carouselSlides.map((src, index) => (
