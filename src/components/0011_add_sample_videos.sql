@@ -1,4 +1,4 @@
--- Add sample videos from Pexels (free stock videos with proper CORS headers)
+-- Add samjple videos from Pexels (free stock videos with proper CORS headers)
 
 INSERT INTO public.videos (id, title, thumbnail_path, video_path, mp4_path)
 VALUES
