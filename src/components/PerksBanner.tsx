@@ -7,6 +7,7 @@ type Perk = {
   title: string
   desc: string
 }
+const isArabic = document.documentElement.dir === 'rtl'
 
 export function PerksBanner() {
   const { t } = useLanguage()
@@ -18,7 +19,8 @@ export function PerksBanner() {
   ]
 
   return (
-    <section className="bg-primary/5 border-y border-primary/10 py-6 overflow-hidden flex w-full">
+    <section  dir={isArabic ? 'rtl' : 'ltr'}
+  className="bg-primary/5 border-y border-primary/10 py-6 overflow-hidden w-full">
       {/* Marquee container with animation and hover pause */}
       <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
         {/* Duplicate array for seamless looping */}

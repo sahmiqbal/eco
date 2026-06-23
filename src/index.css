@@ -137,6 +137,15 @@
   --sidebar-ring: #ffb2ea;
 }
 
+/* Fix for marquee in Arabic/RTL */
+[dir="rtl"] .animate-marquee {
+  animation: marquee-rtl 20s linear infinite !important;
+}
+
+@keyframes marquee-rtl {
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
+}
 @layer base {
   * { @apply border-border; }
   body { @apply bg-background text-foreground antialiased; }
