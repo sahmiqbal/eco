@@ -688,7 +688,7 @@ const translations = {
     madeWithLove: 'مصنوع بحب ❤️ في المغرب',
     categoryAll: 'الكل',
     categoryPack: '✦ باقات',
-    categoryIndividual: 'فرادي',
+    categoryIndividual: 'فردي',
     adminPanel: 'لوحة الإدارة',
     logout: 'تسجيل الخروج',
     dashboard: 'لوحة التحكم',
