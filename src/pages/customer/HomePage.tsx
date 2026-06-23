@@ -47,7 +47,7 @@ export function HomePage() {
             <div className="flex items-center justify-center gap-3 animate-fade-up">
 
               <span className="h-px w-10 rounded-full bg-primary/40" />
-              <p className="text-[11px] uppercase tracking-[0.35em] font-semibold text-muted-foreground">
+              <p className="text-[11px] uppercase tracking-[0.35em] font-semibold text-primary/80 animate-fade-up">
                 {t('featuredSub')}
               </p>
               <span className="h-px w-10 rounded-full bg-primary/40" />

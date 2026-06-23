@@ -559,12 +559,12 @@ export function ProductPage() {
     {(product.comparatives_images ?? []).map((src, i) => (
       <div
         key={src + i}
-        className="min-w-[72%] sm:min-w-[48%] md:min-w-[32%] aspect-[4/5] rounded-2xl overflow-hidden bg-muted"
+        className="min-w-[72%] sm:min-w-[48%] md:min-w-[32%] aspect-[4/5] rounded-2xl overflow-hidden w-full"
       >
         <img
           src={src}
           alt={`Comparative ${i + 1}`}
-          className="w-full h-full object-contain"
+          className="w-full h-full"
         />
       </div>
     ))}
@@ -576,12 +576,12 @@ export function ProductPage() {
     {(product.others_images ?? []).map((src, i) => (
       <div
         key={src + i}
-        className="w-full aspect-[4/5] rounded-2xl overflow-hidden bg-muted"
+        className="w-full aspect-[4/5] rounded-2xl overflow-hidden"
       >
         <img
           src={src}
           alt={`Others ${i + 1}`}
-          className="w-full h-full object-contain"
+          className="w-full h-full"
         />
       </div>
     ))}
