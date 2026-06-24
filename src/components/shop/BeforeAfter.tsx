@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react'
 
 interface BeforeAfterProps {
@@ -16,20 +17,29 @@ export function BeforeAfter({
   const [sliderPosition, setSliderPosition] = useState(50)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const calculatePosition = (clientX: number) => {
     if (!containerRef.current) return
     const rect = containerRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const percentage = (x / rect.width) * 100
+    const isRTL = window.getComputedStyle(containerRef.current).direction === 'rtl'
+    
+    // Calculate distance from the physical left
+    const x = clientX - rect.left
+    let percentage = (x / rect.width) * 100
+
+    // In RTL, we want the percentage to represent the distance from the RIGHT
+    if (isRTL) {
+      percentage = 100 - percentage
+    }
+
     setSliderPosition(Math.min(Math.max(percentage, 0), 100))
   }
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    calculatePosition(e.clientX)
+  }
+
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return
-    const rect = containerRef.current.getBoundingClientRect()
-    const x = e.touches[0].clientX - rect.left
-    const percentage = (x / rect.width) * 100
-    setSliderPosition(Math.min(Math.max(percentage, 0), 100))
+    calculatePosition(e.touches[0].clientX)
   }
 
   return (
@@ -40,29 +50,35 @@ export function BeforeAfter({
       onTouchMove={handleTouchMove}
       style={{ aspectRatio: '4/3' }}
     >
-      {/* Before Image */}
+      {/* Background Image (Before) */}
       <img
         src={beforeImage}
         alt={beforeLabel}
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* After Image (Clipped) */}
+      {/* Clipped Image (After) - Anchored to the "start" of the text direction */}
       <div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-y-0 start-0 overflow-hidden"
         style={{ width: `${sliderPosition}%` }}
       >
         <img
           src={afterImage}
           alt={afterLabel}
-          className="absolute inset-0 w-full h-full object-cover"
+          // Critical: The inner image must be full width and anchored to the same "start" 
+          // to prevent it from sliding with the container.
+          className="absolute inset-y-0 start-0 w-[var(--container-width)] h-full object-cover"
+          style={{ width: containerRef.current?.offsetWidth || '100%' }}
         />
       </div>
 
-      {/* Slider Handle */}
+      {/* Slider Handle - Uses 'start' instead of 'left' */}
       <div
         className="absolute top-0 bottom-0 w-1 bg-white shadow-lg"
-        style={{ left: `${sliderPosition}%` }}
+        style={{ 
+          // Modern CSS 'inset-inline-start' works for both RTL and LTR
+          insetInlineStart: `${sliderPosition}%` 
+        }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-lg p-2">
           <div className="w-5 h-5 flex items-center justify-center">
@@ -74,11 +90,11 @@ export function BeforeAfter({
         </div>
       </div>
 
-      {/* Labels */}
-      <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+      {/* Labels - Using logical 'start' and 'end' */}
+      <div className="absolute top-4 start-4 bg-black/50 text-white px-3 py-1 rounded-lg text-xs font-semibold">
         {beforeLabel}
       </div>
-      <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+      <div className="absolute top-4 end-4 bg-black/50 text-white px-3 py-1 rounded-lg text-xs font-semibold">
         {afterLabel}
       </div>
     </div>

@@ -137,6 +137,7 @@
   --sidebar-ring: #ffb2ea;
 }
 
+
 /* Fix for marquee in Arabic/RTL */
 [dir="rtl"] .animate-marquee {
   animation: marquee-rtl 20s linear infinite !important;
