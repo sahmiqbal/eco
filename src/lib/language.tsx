@@ -119,7 +119,7 @@ const translations = {
     available: 'disponibles',
     secureCheckout: 'Paiement sécurisé',
     fastDelivery: 'Livraison rapide',
-    bestValue: 'Meilleur rapport qualité / prix',
+    bestValue: 'Meilleur qualité',
     orderSection: 'Commander',
     tierPricing: 'Tarifs dégressifs',
     quantity: 'Quantité',
